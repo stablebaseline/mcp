@@ -20,7 +20,7 @@ import { registerToolCommands } from "../commands/tool.js";
 // `tsup --shims` emits a CJS-style require shim that supports this.
 async function getVersion(): Promise<string> {
   try {
-    const url = new URL("../../package.json", import.meta.url);
+    const url = new URL("../package.json", import.meta.url);
     const { readFile } = await import("node:fs/promises");
     const text = await readFile(url, "utf8");
     return JSON.parse(text).version ?? "0.0.0";

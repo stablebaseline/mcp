@@ -1,6 +1,9 @@
 name: Release TypeScript SDK
 
 # Publishes @stablebaseline/sdk on tags of the form sdk-ts-vX.Y.Z.
+# Uses npm Trusted Publishing (OIDC) — no NPM_TOKEN secret required.
+# Configure once at https://www.npmjs.com/package/@stablebaseline/sdk/access
+# (Trusted Publishers tab) binding this workflow to the package.
 
 on:
   push:
@@ -13,7 +16,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write
+  id-token: write   # required for npm + Sigstore provenance
 
 jobs:
   publish:
@@ -22,9 +25,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           registry-url: https://registry.npmjs.org
+
+      - name: Upgrade npm to a Trusted-Publishing-capable version
+        run: npm install -g npm@latest
 
       - run: npm ci
 
@@ -39,8 +45,6 @@ jobs:
         working-directory: packages/sdk-typescript
         run: npm run build
 
-      - name: Publish
+      - name: Publish (Trusted Publishing + provenance)
         working-directory: packages/sdk-typescript
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

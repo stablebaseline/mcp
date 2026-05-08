@@ -14,7 +14,6 @@ openapi.json
 node_modules/
 .npm
 *.log
-package-lock.json
 npm-debug.log*
 
 # Python
