@@ -19,11 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-Note: This MIT licence covers the documentation, README, and assets in this
-repository only. The Stable Baseline product (the SaaS application, the MCP
-server implementation, and the company brain Knowledge Graph) is proprietary,
-closed-source, and provided as a service at https://stablebaseline.io under
-the Stable Baseline Terms of Service: https://stablebaseline.io/terms

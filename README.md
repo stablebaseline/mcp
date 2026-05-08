@@ -206,7 +206,9 @@ OAuth endpoints:
 
 ## License
 
-The product itself is closed-source SaaS. This documentation, README, and assets are MIT-licensed — see [LICENSE](./LICENSE).
+This repository (README, `llms-install.md`, brand assets, and any documentation) is licensed under the **MIT License** — see [LICENSE](./LICENSE). You can copy, fork, and adapt these docs freely.
+
+The Stable Baseline product itself — the SaaS application, the MCP server implementation, and the company brain Knowledge Graph — is proprietary, closed-source, and provided as a service at https://stablebaseline.io under the Stable Baseline [Terms of Service](https://stablebaseline.io/terms).
 
 ---
 
