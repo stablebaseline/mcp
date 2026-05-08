@@ -1,0 +1,28 @@
+# Mandatory reviewer for all changes. Code owners auto-request review on every
+# PR; combined with branch protection (require review from CODEOWNERS) the rule
+# is: nothing merges without an explicit approval from a human owner.
+#
+# Particularly load-bearing paths (workflows, manifests, scripts that gate
+# publish) are listed explicitly so they can't sneak through under a generic
+# "*" pattern that someone forgot to update.
+
+# Default — everything not matched by a specific rule below
+*                                @vineetnair
+
+# CI / release workflows — anyone editing these can publish to npm/PyPI on
+# our org's behalf, so mandate explicit owner approval.
+/.github/workflows/              @vineetnair
+/.github/CODEOWNERS              @vineetnair
+/.github/dependabot.yml          @vineetnair
+
+# Dependency manifests — supply-chain attack surface
+/package.json                    @vineetnair
+/package-lock.json               @vineetnair
+/packages/*/package.json         @vineetnair
+/packages/sdk-python/pyproject.toml  @vineetnair
+
+# Release + consistency guards
+/scripts/                        @vineetnair
+
+# Discovery + registry surfaces — third parties read these
+/registry/                       @vineetnair

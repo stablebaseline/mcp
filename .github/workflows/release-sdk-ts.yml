@@ -4,6 +4,9 @@ name: Release TypeScript SDK
 # Uses npm Trusted Publishing (OIDC) — no NPM_TOKEN secret required.
 # Configure once at https://www.npmjs.com/package/@stablebaseline/sdk/access
 # (Trusted Publishers tab) binding this workflow to the package.
+#
+# Actions are pinned by commit SHA (with a comment for the human-readable
+# tag) so that an upstream re-tagging cannot silently change what runs in CI.
 
 on:
   push:
@@ -14,16 +17,18 @@ on:
       version:
         required: true
 
-permissions:
-  contents: read
-  id-token: write   # required for npm + Sigstore provenance
+# Default to least privilege — id-token enabled only for the publish job.
+permissions: {}
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # required for npm + Sigstore provenance
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
