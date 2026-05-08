@@ -97,5 +97,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Refresh OpenAPI from production (gitignored, needed by check)
+        run: npm run codegen:openapi
       - name: Run check:surfaces
         run: npm run check:surfaces
