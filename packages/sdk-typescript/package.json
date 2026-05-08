@@ -50,7 +50,8 @@
     "codegen": "openapi-typescript ./openapi.json -o ./src/types.generated.ts",
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
     "prepublishOnly": "npm run codegen && npm run build",
-    "test": "node --test"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "openapi-fetch": "^0.13.4"
@@ -58,7 +59,8 @@
   "devDependencies": {
     "openapi-typescript": "^7.5.0",
     "tsup": "^8.3.5",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
   },
   "engines": {
     "node": ">=18"
