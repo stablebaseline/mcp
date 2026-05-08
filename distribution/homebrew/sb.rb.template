@@ -1,0 +1,45 @@
+# Homebrew formula template for the `sb` CLI.
+#
+# This file lives in `distribution/homebrew/` of the public repo. The
+# release workflow (`release-cli.yml`) updates the SHA256 placeholders on
+# every CLI tag and pushes the rendered file into the public Homebrew tap
+# repo at `github.com/stablebaseline/homebrew-tap` as `Formula/sb.rb`.
+#
+# Once the tap is published, install with:
+#
+#   brew install stablebaseline/tap/sb
+#
+class Sb < Formula
+  desc "Stable Baseline CLI — end-to-end agent-managed company brain from your terminal"
+  homepage "https://stablebaseline.io"
+  version "__VERSION__"
+  license "MIT"
+
+  on_macos do
+    on_arm do
+      url "https://github.com/stablebaseline/mcp/releases/download/cli-v#{version}/sb-macos-arm64.tar.gz"
+      sha256 "__SHA256_MACOS_ARM64__"
+    end
+    on_intel do
+      url "https://github.com/stablebaseline/mcp/releases/download/cli-v#{version}/sb-macos-x64.tar.gz"
+      sha256 "__SHA256_MACOS_X64__"
+    end
+  end
+
+  on_linux do
+    on_intel do
+      url "https://github.com/stablebaseline/mcp/releases/download/cli-v#{version}/sb-linux-x64.tar.gz"
+      sha256 "__SHA256_LINUX_X64__"
+    end
+  end
+
+  def install
+    bin.install "sb"
+    doc.install "README.md"
+  end
+
+  test do
+    assert_match version.to_s, shell_output("#{bin}/sb --version")
+    assert_match "Stable Baseline CLI", shell_output("#{bin}/sb --help")
+  end
+end

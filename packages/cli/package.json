@@ -1,0 +1,59 @@
+{
+  "name": "@stablebaseline/cli",
+  "version": "0.1.0",
+  "description": "sb — command-line client for Stable Baseline. End-to-end agent-managed company brain (docs, diagrams, plans, Knowledge Graph). 163 tools across 16 categories, all exposed at the CLI.",
+  "homepage": "https://stablebaseline.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stablebaseline/mcp.git",
+    "directory": "packages/cli"
+  },
+  "bugs": "https://github.com/stablebaseline/mcp/issues",
+  "license": "MIT",
+  "keywords": [
+    "stablebaseline",
+    "stable-baseline",
+    "sb",
+    "cli",
+    "mcp",
+    "model-context-protocol",
+    "knowledge-graph",
+    "company-brain",
+    "documentation",
+    "diagrams",
+    "plans",
+    "ai-agent"
+  ],
+  "type": "module",
+  "bin": {
+    "sb": "./dist/bin/sb.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup src/bin/sb.ts --format esm --dts --clean --shims",
+    "dev": "tsx src/bin/sb.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@stablebaseline/sdk": "^0.1.0",
+    "commander": "^12.1.0",
+    "kleur": "^4.1.5",
+    "open": "^10.1.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "@types/node": "^22.10.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

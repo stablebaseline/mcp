@@ -1,0 +1,69 @@
+{
+  "name": "@stablebaseline/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for the Stable Baseline REST API. End-to-end agent-managed company brain — docs, diagrams, plans, and a self-learning Knowledge Graph. 163 tools across 16 categories.",
+  "homepage": "https://stablebaseline.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stablebaseline/mcp.git",
+    "directory": "packages/sdk-typescript"
+  },
+  "bugs": "https://github.com/stablebaseline/mcp/issues",
+  "license": "MIT",
+  "keywords": [
+    "stablebaseline",
+    "stable-baseline",
+    "mcp",
+    "model-context-protocol",
+    "knowledge-graph",
+    "company-brain",
+    "documentation",
+    "diagrams",
+    "plans",
+    "ai-agent",
+    "rest-api",
+    "sdk",
+    "typescript"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./types": {
+      "types": "./dist/types.generated.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "openapi.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "codegen": "openapi-typescript ./openapi.json -o ./src/types.generated.ts",
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "prepublishOnly": "npm run codegen && npm run build",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.13.4"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.5.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

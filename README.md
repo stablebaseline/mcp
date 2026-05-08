@@ -11,8 +11,27 @@
 [![MCP Registry](https://img.shields.io/badge/MCP%20Registry-io.stablebaseline%2Fsb-orange)](https://registry.modelcontextprotocol.io/v0/servers?search=io.stablebaseline)
 [![Smithery](https://img.shields.io/badge/Smithery-stablebaseline%2Fsb--mcp-orange)](https://smithery.ai/servers/stablebaseline/sb-mcp)
 [![Tools](https://img.shields.io/badge/MCP%20tools-163-orange)](https://stablebaseline.io/docs/mcp/tools)
+[![npm CLI](https://img.shields.io/npm/v/@stablebaseline/cli?label=%40stablebaseline%2Fcli&color=orange)](https://www.npmjs.com/package/@stablebaseline/cli)
+[![npm SDK](https://img.shields.io/npm/v/@stablebaseline/sdk?label=%40stablebaseline%2Fsdk&color=orange)](https://www.npmjs.com/package/@stablebaseline/sdk)
+[![PyPI](https://img.shields.io/pypi/v/stablebaseline?label=stablebaseline&color=orange)](https://pypi.org/project/stablebaseline/)
 
 </div>
+
+---
+
+## How to use Stable Baseline
+
+Pick the surface that matches how you work — every option talks to the same handlers, the same auth, the same data:
+
+| Surface | What it's for | Install |
+|---|---|---|
+| **MCP server** | AI agents (Claude Code, Cursor, Windsurf, ChatGPT, Gemini, Smithery, …). Native protocol with prompts and resources. | Endpoint: [`api.stablebaseline.io/functions/v1/cloud-serve/mcp`](https://api.stablebaseline.io/functions/v1/cloud-serve/mcp). See [Quick start](#quick-start) below. |
+| **REST API** | Any HTTP client, Postman, OpenAPI codegen, Zapier-style integrators. Tool-RPC + idiomatic resource routes. | Live spec: [`/api/v1/openapi.json`](https://api.stablebaseline.io/functions/v1/cloud-serve/api/v1/openapi.json) · Interactive docs: [`/api/v1/docs`](https://api.stablebaseline.io/functions/v1/cloud-serve/api/v1/docs) |
+| **TypeScript SDK** | Node, browsers, Deno, Bun. Typed `client.tools.<toolName>(...)` surface. | `npm i @stablebaseline/sdk` — see [`packages/sdk-typescript`](packages/sdk-typescript/) |
+| **CLI (`sb`)** | Shells, scripts, CI/CD. `sb tool call <name> --json '{...}'`. | `npm i -g @stablebaseline/cli` — see [`packages/cli`](packages/cli/) |
+| **Python SDK** | Python apps, data work. Sync + async clients. | `pip install stablebaseline` — see [`packages/sdk-python`](packages/sdk-python/) |
+
+163 tools across 16 categories. Same brain, same Knowledge Graph, same RBAC — every surface.
 
 ---
 

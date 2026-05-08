@@ -1,0 +1,127 @@
+name: Release CLI
+
+# Builds standalone binaries for the `sb` CLI on every git tag of the form
+# `cli-vX.Y.Z` and uploads them to a GitHub Release. Also publishes
+# `@stablebaseline/cli` to npm using the secret `NPM_TOKEN`.
+#
+# Triggering a release:
+#   git tag cli-v0.1.0
+#   git push origin cli-v0.1.0
+
+on:
+  push:
+    tags:
+      - "cli-v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Tag to build (e.g. cli-v0.1.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write   # for npm provenance
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          - target: linux-x64
+            runner: ubuntu-latest
+            archive: tar.gz
+          - target: macos-x64
+            runner: macos-13
+            archive: tar.gz
+          - target: macos-arm64
+            runner: macos-latest
+            archive: tar.gz
+          - target: windows-x64
+            runner: windows-latest
+            archive: zip
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install workspace deps
+        run: npm ci
+
+      - name: Build CLI
+        working-directory: packages/cli
+        run: npm run build
+
+      - name: Compile single-file binary (Bun)
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Bun compile
+        working-directory: packages/cli
+        shell: bash
+        run: |
+          bun build --compile \
+            --target=bun-${{ matrix.target }} \
+            --outfile=sb${{ runner.os == 'Windows' && '.exe' || '' }} \
+            ./src/bin/sb.ts
+
+      - name: Archive
+        working-directory: packages/cli
+        shell: bash
+        run: |
+          if [ "${{ matrix.archive }}" = "zip" ]; then
+            7z a sb-${{ matrix.target }}.zip sb.exe README.md ../../LICENSE
+          else
+            tar -czf sb-${{ matrix.target }}.tar.gz sb README.md ../../LICENSE
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sb-${{ matrix.target }}
+          path: packages/cli/sb-${{ matrix.target }}.*
+
+  release:
+    name: GitHub Release + npm publish
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Generate SHA256 checksums
+        run: |
+          cd artifacts
+          find . -type f \( -name '*.tar.gz' -o -name '*.zip' \) -exec sha256sum {} \; > checksums.txt
+          cat checksums.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/**/*.tar.gz
+            artifacts/**/*.zip
+            artifacts/checksums.txt
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+
+      - name: Install workspace deps
+        run: npm ci
+
+      - name: Publish to npm
+        working-directory: packages/cli
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

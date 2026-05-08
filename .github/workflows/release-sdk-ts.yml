@@ -1,0 +1,46 @@
+name: Release TypeScript SDK
+
+# Publishes @stablebaseline/sdk on tags of the form sdk-ts-vX.Y.Z.
+
+on:
+  push:
+    tags:
+      - "sdk-ts-v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - run: npm ci
+
+      - name: Refresh OpenAPI spec from production
+        run: npm run codegen:openapi
+
+      - name: Generate types
+        working-directory: packages/sdk-typescript
+        run: npm run codegen
+
+      - name: Build
+        working-directory: packages/sdk-typescript
+        run: npm run build
+
+      - name: Publish
+        working-directory: packages/sdk-typescript
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

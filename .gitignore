@@ -1,0 +1,44 @@
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Generated types
+packages/sdk-typescript/src/types.generated.ts
+packages/sdk-typescript/openapi.json
+packages/sdk-python/openapi.json
+packages/cli/openapi.json
+openapi.json
+
+# Node
+node_modules/
+.npm
+*.log
+package-lock.json
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# CLI build outputs
+packages/cli/sb
+packages/cli/sb.exe
+packages/cli/sb-*.tar.gz
+packages/cli/sb-*.zip

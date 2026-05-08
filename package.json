@@ -1,0 +1,27 @@
+{
+  "name": "stablebaseline-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Stable Baseline — public repo. Houses the MCP discovery surface, the TypeScript SDK, the CLI, and the Python SDK as workspace packages.",
+  "homepage": "https://stablebaseline.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stablebaseline/mcp.git"
+  },
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "codegen:openapi": "node ./scripts/fetch-openapi.mjs",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm test --workspaces --if-present",
+    "fmt": "prettier --write \"packages/*/src/**/*.{ts,tsx,js}\""
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  }
+}

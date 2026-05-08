@@ -1,0 +1,23 @@
+# winget manifest template for the `sb` CLI.
+#
+# Three-file YAML set per winget spec — render at release time and submit
+# to https://github.com/microsoft/winget-pkgs as a PR to
+# `manifests/s/Stablebaseline/Sb/__VERSION__/`.
+#
+# This file is the **installer manifest**. The version manifest and locale
+# manifest are generated alongside it by the release workflow.
+
+PackageIdentifier: Stablebaseline.Sb
+PackageVersion: __VERSION__
+InstallerType: zip
+NestedInstallerType: portable
+NestedInstallerFiles:
+  - RelativeFilePath: sb.exe
+    PortableCommandAlias: sb
+Installers:
+  - Architecture: x64
+    InstallerUrl: https://github.com/stablebaseline/mcp/releases/download/cli-v__VERSION__/sb-windows-x64.zip
+    InstallerSha256: __SHA256_WINDOWS_X64__
+ReleaseDate: __RELEASE_DATE__
+ManifestType: installer
+ManifestVersion: 1.6.0
