@@ -16,7 +16,15 @@
     "codegen:openapi": "node ./scripts/fetch-openapi.mjs",
     "build": "npm run build --workspaces --if-present",
     "test": "npm test --workspaces --if-present",
-    "fmt": "prettier --write \"packages/*/src/**/*.{ts,tsx,js}\""
+    "fmt": "prettier --write \"packages/*/src/**/*.{ts,tsx,js}\"",
+    "check:surfaces": "node ./scripts/check-surfaces.mjs",
+    "bump:patch": "node ./scripts/bump-versions.mjs patch",
+    "bump:minor": "node ./scripts/bump-versions.mjs minor",
+    "bump:major": "node ./scripts/bump-versions.mjs major",
+    "release:patch": "node ./scripts/bump-versions.mjs patch --tag",
+    "release:minor": "node ./scripts/bump-versions.mjs minor --tag",
+    "release:major": "node ./scripts/bump-versions.mjs major --tag",
+    "prepare": "node ./scripts/install-git-hooks.mjs"
   },
   "engines": {
     "node": ">=20"
