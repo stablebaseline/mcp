@@ -1,12 +1,22 @@
-# Dependabot — auto-PRs for outdated dependencies and stale GitHub Actions.
+# Dependabot config.
 #
-# We group ecosystem updates so we don't get one PR per dep; the maintainer
-# can review the bundled diff in one pass. Major-version bumps are excluded
-# from grouping because they often require manual changes.
+# Policy:
+# - Auto-PR only for minor + patch bumps. Major bumps require manual
+#   review and are filtered out entirely (the `ignore` block below).
+# - Group all minor + patch bumps in each ecosystem into a single PR
+#   so we don't get one PR per dep on Monday morning.
+# - Limit 3 open PRs per ecosystem to keep the inbox calm.
+# - Weekly schedule (Monday 07:00 Sydney) so updates batch into one
+#   review session rather than dribbling all week.
+#
+# When a major bump matters (security advisory, feature we want, etc),
+# bump it manually. The github-action-pinned-by-SHA workflow change
+# also makes major action bumps a deliberate decision rather than
+# automatic.
 
 version: 2
 updates:
-  # Workspaces root
+  # ── Workspaces root ─────────────────────────────────────────────
   - package-ecosystem: npm
     directory: "/"
     schedule:
@@ -14,25 +24,24 @@ updates:
       day: monday
       time: "07:00"
       timezone: "Australia/Sydney"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     reviewers:
       - vineetnair
     labels:
       - dependencies
       - npm
-    groups:
-      production-deps:
-        dependency-type: production
+    ignore:
+      - dependency-name: "*"
         update-types:
-          - minor
-          - patch
-      dev-deps:
-        dependency-type: development
+          - version-update:semver-major
+    groups:
+      all-non-major:
+        patterns: ["*"]
         update-types:
           - minor
           - patch
 
-  # TypeScript SDK
+  # ── TypeScript SDK ──────────────────────────────────────────────
   - package-ecosystem: npm
     directory: "/packages/sdk-typescript"
     schedule:
@@ -40,15 +49,25 @@ updates:
       day: monday
       time: "07:00"
       timezone: "Australia/Sydney"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     reviewers:
       - vineetnair
     labels:
       - dependencies
       - npm
       - sdk-typescript
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - version-update:semver-major
+    groups:
+      all-non-major:
+        patterns: ["*"]
+        update-types:
+          - minor
+          - patch
 
-  # CLI
+  # ── CLI ─────────────────────────────────────────────────────────
   - package-ecosystem: npm
     directory: "/packages/cli"
     schedule:
@@ -56,15 +75,25 @@ updates:
       day: monday
       time: "07:00"
       timezone: "Australia/Sydney"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     reviewers:
       - vineetnair
     labels:
       - dependencies
       - npm
       - cli
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - version-update:semver-major
+    groups:
+      all-non-major:
+        patterns: ["*"]
+        update-types:
+          - minor
+          - patch
 
-  # Python SDK
+  # ── Python SDK ──────────────────────────────────────────────────
   - package-ecosystem: pip
     directory: "/packages/sdk-python"
     schedule:
@@ -72,16 +101,30 @@ updates:
       day: monday
       time: "07:00"
       timezone: "Australia/Sydney"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     reviewers:
       - vineetnair
     labels:
       - dependencies
       - pip
       - sdk-python
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - version-update:semver-major
+    groups:
+      all-non-major:
+        patterns: ["*"]
+        update-types:
+          - minor
+          - patch
 
-  # GitHub Actions — pinned-by-SHA dependencies in workflows still get
-  # offered upgrade PRs by Dependabot when the upstream cuts a new release.
+  # ── GitHub Actions ──────────────────────────────────────────────
+  # Workflow actions are pinned by commit SHA (see
+  # .github/workflows/*.yml). Dependabot still offers PRs when the
+  # upstream tags a new release; we only accept minor/patch here.
+  # Major action bumps tend to introduce breaking inputs / runtime
+  # changes and need a workflow review.
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
@@ -89,9 +132,19 @@ updates:
       day: monday
       time: "07:00"
       timezone: "Australia/Sydney"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     reviewers:
       - vineetnair
     labels:
       - dependencies
       - github-actions
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - version-update:semver-major
+    groups:
+      all-non-major:
+        patterns: ["*"]
+        update-types:
+          - minor
+          - patch
