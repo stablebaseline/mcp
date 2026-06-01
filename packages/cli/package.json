@@ -1,6 +1,6 @@
 {
   "name": "@stablebaseline/cli",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "sb — command-line client for Stable Baseline. End-to-end agent-managed company brain (docs, diagrams, plans, Knowledge Graph). 179 tools across 18 categories, all exposed at the CLI.",
   "homepage": "https://stablebaseline.io",
   "repository": {
