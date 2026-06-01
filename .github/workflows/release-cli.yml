@@ -55,6 +55,21 @@ jobs:
       - name: Install workspace deps
         run: npm ci
 
+      - name: Refresh OpenAPI spec from production
+        run: npm run codegen:openapi
+
+      # The standalone binary (bun --compile, below) bundles @stablebaseline/sdk
+      # from the workspace, so the SDK's dist/ must exist first. tsup only
+      # externalizes the dependency, so "Build CLI" alone leaves the SDK unbuilt
+      # and bun fails with "Could not resolve: @stablebaseline/sdk". codegen
+      # needs the spec fetched in the step above.
+      - name: Build SDK (bundled into the standalone binary)
+        working-directory: packages/sdk-typescript
+        shell: bash
+        run: |
+          npm run codegen
+          npm run build
+
       - name: Build CLI
         working-directory: packages/cli
         run: npm run build
