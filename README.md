@@ -31,7 +31,7 @@ Pick the surface that matches how you work — every option talks to the same ha
 | **CLI (`sb`)** | Shells, scripts, CI/CD. `sb tool call <name> --json '{...}'`. | `npm i -g @stablebaseline/cli` — see [`packages/cli`](packages/cli/) |
 | **Python SDK** | Python apps, data work. Sync + async clients. | `pip install stablebaseline` — see [`packages/sdk-python`](packages/sdk-python/) |
 
-163 tools across 16 categories. Same brain, same Knowledge Graph, same RBAC — every surface.
+179 tools across 18 categories. Same brain, same Knowledge Graph, same RBAC — every surface.
 
 ---
 
@@ -39,7 +39,7 @@ One workspace where humans and any MCP-compatible AI agent — Claude Code, Curs
 
 **Lean, fast, secure, and affordable** — flexible enough for one person organising a personal mind, through to small businesses, growing businesses, and enterprise.
 
-163 MCP tools across 16 categories let an agent drive **end-to-end**: sign-up → billing → org/workspace/project → members → teams → permissions → brain scope → docs → diagrams → plans, all without a human touching the UI.
+179 MCP tools across 18 categories let an agent drive **end-to-end**: sign-up → billing → org/workspace/project → members → teams → permissions → brain scope → docs → diagrams → plans, all without a human touching the UI.
 
 ## Endpoint
 
@@ -213,7 +213,7 @@ OAuth endpoints:
 ## Status
 
 - 🟢 **MCP Registry**: `io.stablebaseline/sb` — `active`, `isLatest`. Listed.
-- 🟢 **Smithery**: published with `configSchema` (Quick Setup). 163 tools / 8 prompts / 6 resources discovered.
+- 🟢 **Smithery**: published with `configSchema` (Quick Setup). 179 tools / 8 prompts / 6 resources discovered.
 - 🟢 **`.well-known/mcp.json`**: live, schema 2024-11-05.
 - 🟢 **Endpoint**: `api.stablebaseline.io/functions/v1/cloud-serve/mcp` — accepts POST with `mcp-protocol-version: 2025-03-26`.
 
