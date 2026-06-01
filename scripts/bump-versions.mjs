@@ -59,12 +59,33 @@ async function readVersion(target) {
   }
 }
 
-async function writeVersion(target, newVersion) {
+async function readPackageName(target) {
+  if (target.kind !== "json") return null;
+  const text = await readFile(join(repoRoot, target.path), "utf8");
+  return JSON.parse(text).name ?? null;
+}
+
+const DEP_BUCKETS = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"];
+
+async function writeVersion(target, newVersion, internalNames) {
   const text = await readFile(join(repoRoot, target.path), "utf8");
   let updated;
   if (target.kind === "json") {
     const obj = JSON.parse(text);
     obj.version = newVersion;
+    // Keep internal cross-package deps in lockstep. A workspace package that
+    // depends on a sibling publishable package (e.g. cli -> @stablebaseline/sdk)
+    // must point at the NEW version: otherwise the old `^x.y.z` range no longer
+    // satisfies the bumped sibling, npm stops linking the workspace and instead
+    // resolves the sibling from the registry, the lockfile desyncs, and CI's
+    // `npm ci` fails with "Missing: <pkg>@<old> from lock file".
+    for (const bucket of DEP_BUCKETS) {
+      const deps = obj[bucket];
+      if (!deps) continue;
+      for (const name of internalNames) {
+        if (name && name !== obj.name && deps[name]) deps[name] = `^${newVersion}`;
+      }
+    }
     // Preserve trailing newline if present.
     const hasTrailingNewline = text.endsWith("\n");
     updated = JSON.stringify(obj, null, 2) + (hasTrailingNewline ? "\n" : "");
@@ -82,6 +103,17 @@ function git(args) {
   }).trim();
 }
 
+// Resync the workspace lockfile to the just-written package.json versions.
+// `--package-lock-only` updates package-lock.json without touching node_modules,
+// so it's fast and safe to run in any environment.
+function npmInstallLockOnly() {
+  const npmBin = process.platform === "win32" ? "npm.cmd" : "npm";
+  execFileSync(npmBin, ["install", "--package-lock-only"], {
+    cwd: repoRoot,
+    stdio: ["ignore", "inherit", "inherit"],
+  });
+}
+
 async function main() {
   const versions = await Promise.all(TARGETS.map(readVersion));
   const distinct = new Set(versions);
@@ -96,13 +128,22 @@ async function main() {
 
   console.log(`Bumping all 3 packages to ${newVersion} (was ${baseVersion})`);
 
+  const internalNames = (await Promise.all(TARGETS.map(readPackageName))).filter(Boolean);
+
   for (const target of TARGETS) {
-    await writeVersion(target, newVersion);
+    await writeVersion(target, newVersion, internalNames);
     console.log(`  ✓ ${target.path}`);
   }
 
+  // Keep package.json ↔ package-lock.json in sync. Without this, CI's `npm ci`
+  // (a strict sync check) fails on every release with "Missing: <pkg>@<old>
+  // from lock file".
+  console.log("Regenerating package-lock.json…");
+  npmInstallLockOnly();
+  console.log("  ✓ package-lock.json");
+
   if (tagAndPush) {
-    git(["add", ...TARGETS.map((t) => t.path)]);
+    git(["add", ...TARGETS.map((t) => t.path), "package-lock.json"]);
     git(["commit", "-m", `release: bump to v${newVersion}`]);
 
     for (const target of TARGETS) {

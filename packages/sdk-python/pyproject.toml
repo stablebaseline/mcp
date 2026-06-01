@@ -1,5 +1,11 @@
+# hatchling is capped below 1.30: 1.30.0 emits `Metadata-Version: 2.5`, which
+# neither twine (6.2) nor packaging (26.2) nor PyPI accept yet ("not a valid
+# metadata version"), so the publish step rejects the wheel. `python -m build`
+# resolves the backend from THIS list (the isolated build env), not from any
+# `pip install hatchling` in CI, so the cap must live here. Lift it once the
+# upload toolchain recognises 2.5.
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling<1.30"]
 build-backend = "hatchling.build"
 
 [project]
