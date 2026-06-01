@@ -25,26 +25,17 @@ on:
 permissions: {}
 
 jobs:
+  # All four standalone binaries are cross-compiled on a SINGLE Linux runner.
+  # Bun's `--compile --target=` cross-compiles to every OS/arch from one host
+  # (https://bun.sh/docs/bundler/executables), so the old per-OS matrix is gone.
+  # That matrix depended on the Intel `macos-13` runner, which is scarce and can
+  # sit queued for many minutes — gating the whole release (npm publish included)
+  # behind it. One ubuntu runner builds all targets in ~1-2 min.
   build:
-    name: Build ${{ matrix.target }}
-    runs-on: ${{ matrix.runner }}
+    name: Build standalone binaries
+    runs-on: ubuntu-latest
     permissions:
       contents: read
-    strategy:
-      matrix:
-        include:
-          - target: linux-x64
-            runner: ubuntu-latest
-            archive: tar.gz
-          - target: macos-x64
-            runner: macos-13
-            archive: tar.gz
-          - target: macos-arm64
-            runner: macos-latest
-            archive: tar.gz
-          - target: windows-x64
-            runner: windows-latest
-            archive: zip
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -58,12 +49,12 @@ jobs:
       - name: Refresh OpenAPI spec from production
         run: npm run codegen:openapi
 
-      # The standalone binary (bun --compile, below) bundles @stablebaseline/sdk
+      # The standalone binaries (bun --compile, below) bundle @stablebaseline/sdk
       # from the workspace, so the SDK's dist/ must exist first. tsup only
       # externalizes the dependency, so "Build CLI" alone leaves the SDK unbuilt
       # and bun fails with "Could not resolve: @stablebaseline/sdk". codegen
       # needs the spec fetched in the step above.
-      - name: Build SDK (bundled into the standalone binary)
+      - name: Build SDK (bundled into the standalone binaries)
         working-directory: packages/sdk-typescript
         shell: bash
         run: |
@@ -74,34 +65,47 @@ jobs:
         working-directory: packages/cli
         run: npm run build
 
-      - name: Compile single-file binary (Bun)
+      - name: Set up Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
           bun-version: latest
 
-      - name: Bun compile
+      # Cross-compile every target from this one Linux host. NOTE: bun's target
+      # triples use "darwin" (not "macos"). Each binary is staged in its own dir
+      # with README + LICENSE so the archive root stays clean.
+      - name: Cross-compile binaries (all targets)
         working-directory: packages/cli
         shell: bash
         run: |
-          bun build --compile \
-            --target=bun-${{ matrix.target }} \
-            --outfile=sb${{ runner.os == 'Windows' && '.exe' || '' }} \
-            ./src/bin/sb.ts
+          set -euo pipefail
+          build() {
+            local triple="$1" dir="$2" bin="$3"
+            echo "==> $triple -> stage/$dir/$bin"
+            mkdir -p "stage/$dir"
+            bun build --compile --target="$triple" --outfile="stage/$dir/$bin" ./src/bin/sb.ts
+            cp README.md ../../LICENSE "stage/$dir/"
+          }
+          build bun-linux-x64    linux-x64   sb
+          build bun-darwin-x64   macos-x64   sb
+          build bun-darwin-arm64 macos-arm64 sb
+          build bun-windows-x64  windows-x64 sb.exe
 
       - name: Archive
-        working-directory: packages/cli
+        working-directory: packages/cli/stage
         shell: bash
         run: |
-          if [ "${{ matrix.archive }}" = "zip" ]; then
-            7z a sb-${{ matrix.target }}.zip sb.exe README.md ../../LICENSE
-          else
-            tar -czf sb-${{ matrix.target }}.tar.gz sb README.md ../../LICENSE
-          fi
+          set -euo pipefail
+          tar -czf ../sb-linux-x64.tar.gz   -C linux-x64   sb README.md LICENSE
+          tar -czf ../sb-macos-x64.tar.gz   -C macos-x64   sb README.md LICENSE
+          tar -czf ../sb-macos-arm64.tar.gz -C macos-arm64 sb README.md LICENSE
+          ( cd windows-x64 && zip -q ../../sb-windows-x64.zip sb.exe README.md LICENSE )
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: sb-${{ matrix.target }}
-          path: packages/cli/sb-${{ matrix.target }}.*
+          name: sb-binaries
+          path: |
+            packages/cli/sb-*.tar.gz
+            packages/cli/sb-*.zip
 
   release:
     name: GitHub Release + npm publish
