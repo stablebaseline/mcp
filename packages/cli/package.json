@@ -1,7 +1,7 @@
 {
   "name": "@stablebaseline/cli",
-  "version": "0.2.0",
-  "description": "sb — command-line client for Stable Baseline. End-to-end agent-managed company brain (docs, diagrams, plans, Knowledge Graph). 179 tools across 18 categories, all exposed at the CLI.",
+  "version": "0.3.0",
+  "description": "sb — command-line client for Stable Baseline. End-to-end agent-managed company brain (docs, diagrams, plans, Knowledge Graph). 180 tools across 18 categories, all exposed at the CLI.",
   "homepage": "https://stablebaseline.io",
   "repository": {
     "type": "git",
@@ -42,7 +42,7 @@
     "pretest": "npm run build"
   },
   "dependencies": {
-    "@stablebaseline/sdk": "^0.2.0",
+    "@stablebaseline/sdk": "^0.3.0",
     "commander": "^12.1.0",
     "kleur": "^4.1.5",
     "open": "^10.1.0"
