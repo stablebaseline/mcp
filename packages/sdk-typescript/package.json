@@ -1,6 +1,6 @@
 {
   "name": "@stablebaseline/sdk",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "TypeScript SDK for the Stable Baseline REST API. End-to-end agent-managed company brain — docs, diagrams, plans, and a self-learning Knowledge Graph. 180 tools across 18 categories.",
   "homepage": "https://stablebaseline.io",
   "repository": {
