@@ -111,6 +111,9 @@ function npmInstallLockOnly() {
   execFileSync(npmBin, ["install", "--package-lock-only"], {
     cwd: repoRoot,
     stdio: ["ignore", "inherit", "inherit"],
+    // Node >=18 refuses to spawn a .cmd shim without a shell on Windows
+    // (EINVAL). npm is npm.cmd there, so run through the shell.
+    shell: process.platform === "win32",
   });
 }
 
