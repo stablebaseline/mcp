@@ -22,7 +22,7 @@
               "value": "https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/token"
             }
           },
-          "clientId": "REPLACE_WITH_OAUTH_CLIENT_ID"
+          "clientId": "ee6bb6b0-05e1-484c-a922-c3499f473635"
         },
         "uiDefinition": null
       }
