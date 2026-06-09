@@ -1,0 +1,57 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Stable Baseline",
+    "description": "Stable Baseline is an agent-managed company brain. People and AI agents co-author living documents, generate 40-plus kinds of diagrams and infographics, design freeform whiteboards, manage plans and tasks, and search a shared, self-updating knowledge graph from one secure workspace.",
+    "version": "1.0",
+    "contact": {
+      "name": "Stable Baseline",
+      "url": "https://stablebaseline.io/contact",
+      "email": "support@stablebaseline.io"
+    }
+  },
+  "host": "api.stablebaseline.io",
+  "basePath": "/functions/v1/cloud-serve",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/mcp": {
+      "post": {
+        "summary": "Invoke the Stable Baseline MCP server",
+        "description": "Streamable HTTP entry point that exposes every Stable Baseline tool to agents. Tools are discovered dynamically from the live server, so new and updated tools appear automatically.",
+        "operationId": "InvokeServer",
+        "x-ms-agentic-protocol": "mcp-streamable-1.0",
+        "x-ms-visibility": "important",
+        "responses": {
+          "200": {
+            "description": "A successful Model Context Protocol response from the server.",
+            "schema": {
+              "type": "object",
+              "description": "Model Context Protocol JSON-RPC response payload."
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization"
+    }
+  },
+  "security": [
+    {
+      "api_key": []
+    }
+  ],
+  "tags": []
+}
