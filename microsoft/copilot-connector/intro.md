@@ -11,15 +11,14 @@ Orixian Solutions Pty Ltd (trading as Stable Baseline), Mount Waverley, Victoria
 ## Prerequisites
 
 - A Stable Baseline account and organisation. Sign up at [app.stablebaseline.io](https://app.stablebaseline.io).
-- A Stable Baseline MCP API key (it starts with `sta_`). Mint one at [app.stablebaseline.io/settings/mcp-keys](https://app.stablebaseline.io/settings/mcp-keys).
 
 ## How to get a connection
 
-1. Sign in to Stable Baseline and open Settings, then MCP keys.
-2. Create a key. Copy it straight away (it is shown once). Keys carry your workspace permissions, so treat them like a password.
-3. When you create a connection for this connector, set the **Authorization (Bearer key)** field to the word `Bearer`, a space, then your key. For example: `Bearer sta_xxxxxxxxxxxx`.
+This connector uses **OAuth 2.0**, so there is no key to copy or paste:
 
-The key is sent on every request in the standard `Authorization` header. You can revoke a key at any time from the same settings page.
+1. Add the connector and choose **Create connection**.
+2. You are redirected to Stable Baseline to sign in and authorise the connection.
+3. After you approve, the connection is ready. The connector receives an access token scoped to your own workspace permissions. You can revoke access at any time from Settings, then OAuth Clients in Stable Baseline.
 
 ## What you can do
 
@@ -37,7 +36,7 @@ For the complete, always-current tool list and per-area guides, see [stablebasel
 
 ## Authentication
 
-API key sent as a bearer token in the `Authorization` header. Keys are scoped to the calling user's workspace permissions, so a connection can only do what that user can do. OAuth 2.1 is also supported by the underlying service and may be offered as an additional connection method in a later release.
+OAuth 2.0 authorization-code flow. Each user signs in to Stable Baseline and consents; the resulting token is scoped to that user's own workspace permissions, so a connection can only do what that user can do. The underlying service also supports API keys (bearer `sta_` tokens) for clients that cannot use OAuth.
 
 ## Throttling and limits
 

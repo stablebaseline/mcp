@@ -12,7 +12,8 @@ Microsoft certifies MCP servers through the **connector certification program**:
 | Enrolled in **Microsoft 365 & Copilot** program | Done |
 | Publisher added | Done |
 | Business verification (required for "verified publisher") | **Pending with Microsoft** (gates submission) |
-| Connector package (this folder) | Ready |
+| Connector package (this folder) | Ready (OAuth 2.0) |
+| OAuth client for Power Platform (in Stable Baseline) | In progress — confidential client + Power Platform redirect URI |
 | Evaluation evidence pack | Ready (`eval-evidence.md`) |
 | Reviewer demo dataset | Seeded (Northwind Robotics; see `eval-evidence.md` section 3) |
 | Offer created + submitted in Partner Center | Blocked on verification |
@@ -24,7 +25,7 @@ You cannot submit until business verification completes (typically a few busines
 | File | Purpose |
 |---|---|
 | `apiDefinition.swagger.json` | Swagger 2.0 definition. A single `POST /mcp` operation tagged `x-ms-agentic-protocol: mcp-streamable-1.0`. Copilot Studio discovers all tools dynamically from the live server. |
-| `apiProperties.json` | Connection auth (API key as a bearer token), `iconBrandColor` (`#0B1220`), publisher metadata. |
+| `apiProperties.json` | Connection auth (**OAuth 2.0**, Generic `oauth2` identity provider — authorize/token/refresh URLs, scopes, `clientId` placeholder), `iconBrandColor` (`#0B1220`), publisher metadata. The client **secret is never committed** — it is entered in the maker portal / Partner Center. |
 | `intro.md` | Public documentation generated into Microsoft's docs and discovery surfaces. |
 | `icon.png` | 200x200 connector icon. Solid brand navy, centred logo under 70%, no rounded edges. |
 | `settings.json` | `paconn` settings (fill `connectorId` and `environment` at submission time). |
@@ -37,7 +38,8 @@ Production host only: `https://api.stablebaseline.io/functions/v1/cloud-serve/mc
 - [ ] Business verification complete  ← waiting on Microsoft
 - [x] Enrolled in the Microsoft 365 and Copilot program
 - [x] Own / control the MCP endpoint (`api.stablebaseline.io`)
-- [x] Server supports an approved auth method (API key bearer token; OAuth 2.1 also available)
+- [x] Server supports an approved auth method (**OAuth 2.0** chosen for this connector; API key also available)
+- [ ] OAuth client registered in Stable Baseline with Power Platform's redirect URI allowlisted ← in progress
 
 ## Submission steps (once verified)
 
@@ -53,13 +55,13 @@ Production host only: `https://api.stablebaseline.io/functions/v1/cloud-serve/mc
 
 ## Test credentials to provide reviewers
 
-Microsoft tests each tool with credentials you supply. Prepare:
+This connector uses OAuth, so reviewers **sign in** rather than paste a key. Supply:
 
-- A dedicated **test organisation** in Stable Baseline with sample content (a few documents, a diagram, a whiteboard, a plan).
-- A **test MCP key** (`sta_...`) scoped to that org, minted at app.stablebaseline.io/settings/mcp-keys.
-- A short note: enter the key in the connection as `Bearer sta_...`.
+- The OAuth **client id and client secret** (entered in Partner Center for the offer; the secret is shown once when the client is created in Stable Baseline — store it in a password manager).
+- A dedicated **test account** in a throwaway Stable Baseline organisation with sample content (a few documents, a diagram, a whiteboard, a plan), so reviewers can sign in and exercise the tools.
+- A short note: choose **Create connection**, sign in with the test account, and authorise.
 
-Use a throwaway test org and rotate or revoke the key after certification. Do not submit a key tied to real customer data.
+Use a throwaway org and rotate the client secret / disable the test account after certification. Do not point reviewers at an org with real customer data.
 
 ## EVAL evidence (prepared)
 
@@ -67,11 +69,25 @@ Including evaluation evidence is not mandatory but can significantly expedite re
 
 A fictional demo dataset (Northwind Robotics) was seeded for review: DOC-2666 (handbook), WBD-105 (onboarding-flow whiteboard), PLN-3 → PHA-1 → TAS-156 + TAS-157 (plan/phase/tasks), IMP-155 (improvement). For the live reviewer handoff, replicate it in a throwaway org per `eval-evidence.md` section 3.
 
-## Authentication notes
+## Authentication notes — OAuth 2.0 (chosen method)
 
-The connector authenticates with an **API key sent as a bearer token** in the `Authorization` header. The connection field expects the full header value, for example `Bearer sta_...`. Keys carry the calling user's workspace permissions, so a connection can only do what that user can do (least privilege).
+The connector uses the OAuth 2.0 authorization-code flow against Stable Baseline's own OAuth server. Each user signs in and consents; the token is scoped to that user's workspace permissions (least privilege). The underlying service also supports API keys (`sta_` bearer tokens) for clients that cannot do OAuth.
 
-OAuth 2.1 is supported by the underlying service (authorize at `app.stablebaseline.io/oauth/authorize`, token at `api.stablebaseline.io/oauth/token`). If we later offer OAuth as the connection method, we must register a multitenant app and provide client id/secret at submission, and renew those credentials at least one month before they expire.
+Connector OAuth config (Generic `oauth2` identity provider):
+
+| Field | Value |
+|---|---|
+| Authorization URL | `https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/authorize` |
+| Token URL | `https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/token` |
+| Refresh URL | `https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/token` |
+| Scopes | `openid profile email` |
+| Client ID / Secret | from the **Microsoft Copilot Studio** OAuth client registered in Stable Baseline (Settings → MCP Setup → OAuth Clients) |
+
+Gotchas (from Microsoft's connector docs):
+
+- **Put the client secret in an environment variable**, not typed inline — otherwise it is not included when the solution is exported to `solution.zip`.
+- **The redirect URL is generated by the connector** (Security tab). Whatever it shows must be allowlisted on the Stable Baseline OAuth client. We pre-added the shared global redirect `https://global.consent.azure-apim.net/redirect`; if the connector uses a *unique* redirect (the "Update to unique redirect URL" option / `GlobalPerConnector`), add that exact URL to the client instead.
+- The OAuth client is currently registered under the **Orixian** org. Before GA, verify a maker in another customer's tenant can consent against *their own* Stable Baseline org through the same client.
 
 ## After certification
 
@@ -85,3 +101,6 @@ OAuth 2.1 is supported by the underlying service (authorize at `app.stablebaseli
 - [Prepare connector files for certification](https://learn.microsoft.com/en-us/connectors/custom-connectors/certification-submission)
 - [Verified publisher certification process](https://learn.microsoft.com/en-us/connectors/custom-connectors/submit-for-certification)
 - [Extend an agent with MCP](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agent-extend-action-mcp)
+- [Connect your agent to an existing MCP server (OAuth + redirect)](https://learn.microsoft.com/en-us/microsoft-copilot-studio/mcp-add-existing-server-to-agent)
+- [Specify connection parameters (Generic OAuth 2.0)](https://learn.microsoft.com/en-us/connectors/custom-connectors/connection-parameters)
+- [Configure authentication for MCP and API plugins in Microsoft 365 Copilot](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/plugin-authentication)

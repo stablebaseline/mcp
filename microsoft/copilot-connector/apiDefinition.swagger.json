@@ -42,15 +42,25 @@
     }
   },
   "securityDefinitions": {
-    "api_key": {
-      "type": "apiKey",
-      "in": "header",
-      "name": "Authorization"
+    "oauth2": {
+      "type": "oauth2",
+      "flow": "accessCode",
+      "authorizationUrl": "https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/authorize",
+      "tokenUrl": "https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/token",
+      "scopes": {
+        "openid": "Sign in",
+        "profile": "Basic profile",
+        "email": "Email address"
+      }
     }
   },
   "security": [
     {
-      "api_key": []
+      "oauth2": [
+        "openid",
+        "profile",
+        "email"
+      ]
     }
   ],
   "tags": []

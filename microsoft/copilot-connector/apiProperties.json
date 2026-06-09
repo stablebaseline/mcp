@@ -1,18 +1,30 @@
 {
   "properties": {
     "connectionParameters": {
-      "api_key": {
-        "type": "securestring",
-        "uiDefinition": {
-          "displayName": "Authorization (Bearer key)",
-          "description": "Enter the word Bearer, a space, then your Stable Baseline MCP key (it starts with sta_). Mint a key at app.stablebaseline.io/settings/mcp-keys.",
-          "tooltip": "Example: Bearer sta_xxxxxxxxxxxx",
-          "constraints": {
-            "tabIndex": 2,
-            "clearText": false,
-            "required": "true"
-          }
-        }
+      "token": {
+        "type": "oAuthSetting",
+        "oAuthSettings": {
+          "identityProvider": "oauth2",
+          "scopes": [
+            "openid",
+            "profile",
+            "email"
+          ],
+          "redirectMode": "Global",
+          "customParameters": {
+            "AuthorizationUrl": {
+              "value": "https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/authorize"
+            },
+            "TokenUrl": {
+              "value": "https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/token"
+            },
+            "RefreshUrl": {
+              "value": "https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/token"
+            }
+          },
+          "clientId": "REPLACE_WITH_OAUTH_CLIENT_ID"
+        },
+        "uiDefinition": null
       }
     },
     "iconBrandColor": "#0B1220",
