@@ -13,6 +13,8 @@ Microsoft certifies MCP servers through the **connector certification program**:
 | Publisher added | Done |
 | Business verification (required for "verified publisher") | **Pending with Microsoft** (gates submission) |
 | Connector package (this folder) | Ready |
+| Evaluation evidence pack | Ready (`eval-evidence.md`) |
+| Reviewer demo dataset | Seeded (Northwind Robotics; see `eval-evidence.md` section 3) |
 | Offer created + submitted in Partner Center | Blocked on verification |
 
 You cannot submit until business verification completes (typically a few business days). Everything else is ready to go.
@@ -59,9 +61,11 @@ Microsoft tests each tool with credentials you supply. Prepare:
 
 Use a throwaway test org and rotate or revoke the key after certification. Do not submit a key tied to real customer data.
 
-## Optional: EVAL evidence (speeds up review)
+## EVAL evidence (prepared)
 
-Including evaluation evidence is not mandatory but can significantly expedite review. Prepare a short pack showing each tool returning a valid response for normal, edge-case, and adversarial inputs (for example, transcripts or screenshots from a Copilot Studio test agent that connected to the live server).
+Including evaluation evidence is not mandatory but can significantly expedite review. The pack is ready: see [`eval-evidence.md`](./eval-evidence.md). It contains real transcripts from live calls against the production endpoint covering documents, whiteboards, diagrams, plans/tasks, improvements, and knowledge-graph retrieval, plus five safe-failure modes (input validation, no-leak not-found, tenant isolation, least-privilege capability gating, auth required), attribution/telemetry, and prompt-injection-as-data handling. Rendered demo output is in [`eval-assets/`](./eval-assets/).
+
+A fictional demo dataset (Northwind Robotics) was seeded for review: DOC-2666 (handbook), WBD-105 (onboarding-flow whiteboard), PLN-3 → PHA-1 → TAS-156 + TAS-157 (plan/phase/tasks), IMP-155 (improvement). For the live reviewer handoff, replicate it in a throwaway org per `eval-evidence.md` section 3.
 
 ## Authentication notes
 
