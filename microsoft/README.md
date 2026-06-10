@@ -13,8 +13,8 @@ Microsoft certifies MCP servers through the **connector certification program**:
 | Publisher added | Done |
 | Business verification (required for "verified publisher") | **Pending with Microsoft** (gates submission) |
 | Connector package (this folder) | Ready (OAuth 2.0) |
-| Connector **solution.zip** built (pac CLI) | Done — exported from env, staged on Azure blob with a read SAS (see "Build the connector solution") |
-| OAuth client for Power Platform (in Stable Baseline) | Done — confidential client `ee6bb6b0-…`; both shared + connector-unique redirect URIs allowlisted and verified |
+| Connector **solution.zip** built | Done — connector `sb_stablebaseline` (clean prefix), exported from env, staged on Azure blob with a read SAS (see "Build the connector solution") |
+| OAuth client for Power Platform (in Stable Baseline) | Done — confidential client `ee6bb6b0-…`; both shared + connector-unique (`…/redirect/sb-5f…`) redirect URIs allowlisted and verified |
 | Evaluation evidence pack | Ready (`eval-evidence.md`) |
 | Reviewer demo dataset | Seeded (Northwind Robotics; see `eval-evidence.md` section 3) |
 | Offer created + submitted in Partner Center | Blocked on verification |
@@ -40,7 +40,7 @@ Production host only: `https://api.stablebaseline.io/functions/v1/cloud-serve/mc
 - [x] Enrolled in the Microsoft 365 and Copilot program
 - [x] Own / control the MCP endpoint (`api.stablebaseline.io`)
 - [x] Server supports an approved auth method (**OAuth 2.0** chosen for this connector; API key also available)
-- [x] OAuth client registered in Stable Baseline with Power Platform's redirect URI allowlisted (both the shared `…/redirect` and the connector-unique `…/redirect/new-5fstable-20baseline-5f331acd82b125f090`)
+- [x] OAuth client registered in Stable Baseline with Power Platform's redirect URI allowlisted (both the shared `…/redirect` and the connector-unique `…/redirect/sb-5fstable-20baseline-5f331acd82b125f090`)
 
 ## Build the connector solution (pac CLI)
 
@@ -54,16 +54,23 @@ ENV=b8a7de26-3019-ef14-83e0-e3e18aeb71c5
 # 1. auth once (interactive, work account)
 "$PAC" auth create --environment $ENV          # profile "sbconn", vineet@orixian.com.au
 
-# 2. empty solution shell → pack → import (creates the solution in the env)
-"$PAC" solution init --publisher-name OrixianSolutions --publisher-prefix sb --outputDirectory <proj>
+# 2. one clean publisher: the env default publisher, renamed to "Stable Baseline" / prefix "sb"
+#    (changed via Dataverse Web API PATCH on the publisher row; uniquename stays
+#     DefaultPublisherorg3754fa67 but friendlyname/prefix are nice). Scaffold + import an empty
+#     unmanaged solution owned by it:
+"$PAC" solution init --publisher-name DefaultPublisherorg3754fa67 --publisher-prefix sb --outputDirectory <proj>
 "$PAC" solution pack   --zipfile <empty.zip> --folder <proj>/src --packagetype Unmanaged
 "$PAC" solution import --path <empty.zip> --environment $ENV --publish-changes
 
-# 3. create the connector INTO the solution (no --secret flag; secret goes in Partner Center)
-"$PAC" connector create --environment $ENV --solution-unique-name StableBaselineConnector \
-  --api-definition-file "$SRC/apiDefinition.swagger.json" \
-  --api-properties-file "$SRC/apiProperties.json" \
-  --icon-file "$SRC/icon.png"
+# 3. create the connector INTO the solution with an explicit sb_ name via the Dataverse Web API
+#    POST {org}/api/data/v9.2/connectors  (header: MSCRM.SolutionUniqueName=StableBaselineConnector)
+#    fields: name=sb_stablebaseline, displayname="Stable Baseline", connectortype=1,
+#            introducedversion="1.0", iconbrandcolor, iconblob(base64 PNG),
+#            openapidefinition(swagger string), connectionparameters(JSON string).
+#    ⚠ pac connector create has NO name/prefix flag and ALWAYS emits new_<name> regardless of the
+#      solution's or environment's publisher (verified). Only the maker portal or the Web API can
+#      set a real publisher prefix on a connector. Bearer token: az account get-access-token
+#      --resource {org}.
 
 # 4. export the populated solution → this is the artifact we submit
 "$PAC" solution export --environment $ENV --name StableBaselineConnector --path <solution.zip> --overwrite
@@ -71,9 +78,9 @@ ENV=b8a7de26-3019-ef14-83e0-e3e18aeb71c5
 
 Result (built 2026-06-10):
 
-- Connector id in env: `dae42c7f-bb64-f111-a826-000d3ad14fdf` (logical name `new_stable-20baseline`).
-- `solution.zip` contains `Connector/…_openapidefinition.json` (with `x-ms-agentic-protocol: mcp-streamable-1.0`, host `api.stablebaseline.io`), `…_connectionparameters.json` (OAuth, `clientId` present, **no secret**), `…_iconblob.Png`, and `solution.xml` (`RootComponent type="372"` = Connector). Verified valid.
-- **Redirect gotcha (resolved):** the env defaulted the connection to `redirectMode: GlobalPerConnector` and generated a unique redirect `https://global.consent.azure-apim.net/redirect/new-5fstable-20baseline-5f331acd82b125f090`. That exact URL is now allowlisted on OAuth client `ee6bb6b0-…` (alongside the shared `…/redirect`). A live GET to `/oauth/authorize` confirms the server accepts the client + unique redirect and rejects bogus redirects.
+- Connector id in env: `7e63cd89-c164-f111-a826-000d3ad14fdf`, logical name **`sb_stablebaseline`** (internalid `shared_sb-5fstable-20baseline-5f331acd82b125f090`). No `new_`.
+- `solution.zip` contains `Connector/sb_stablebaseline_openapidefinition.json` (with `x-ms-agentic-protocol: mcp-streamable-1.0`, host `api.stablebaseline.io`), `…_connectionparameters.json` (OAuth, `clientId` present, **0 secret occurrences**), `…_iconblob.Png`, and `solution.xml` (`RootComponent type="372"` = Connector). Verified valid.
+- **Redirect (resolved):** the env forces `redirectMode: GlobalPerConnector` and generated the unique redirect `https://global.consent.azure-apim.net/redirect/sb-5fstable-20baseline-5f331acd82b125f090`. That URL is allowlisted on OAuth client `ee6bb6b0-…` (alongside the shared `…/redirect`). A live GET to `/oauth/authorize` confirms the server accepts the client + this redirect and rejects bogus redirects.
 - **Staged for Partner Center:** uploaded to Azure blob `clouddocskgstg779102` / container `copilot-connector` / `StableBaselineConnector.zip`. Regenerate the read SAS (≥15 days) at submission time:
   ```bash
   az storage blob generate-sas --account-name clouddocskgstg779102 --container-name copilot-connector \
@@ -129,7 +136,7 @@ Connector OAuth config (Generic `oauth2` identity provider):
 Gotchas (from Microsoft's connector docs):
 
 - **The client secret stays out of the solution.** We build with `pac connector create` (no secret arg); the exported `solution.zip` carries the `clientId` but no secret. The secret is entered in Partner Center for the offer. (If you ever build in the maker portal instead, put the secret in an environment variable so it is not silently dropped on export.)
-- **The redirect URL is generated by the connector** (Security tab). Whatever it shows must be allowlisted on the Stable Baseline OAuth client. Our env produced a *unique* redirect (`GlobalPerConnector`): `https://global.consent.azure-apim.net/redirect/new-5fstable-20baseline-5f331acd82b125f090` — **now allowlisted** on client `ee6bb6b0-…` alongside the shared `https://global.consent.azure-apim.net/redirect`. If a rebuild changes the connector logical name, the unique redirect changes too — re-allowlist it.
+- **The redirect URL is generated by the connector** (Security tab). Whatever it shows must be allowlisted on the Stable Baseline OAuth client. Our env produced a *unique* redirect (`GlobalPerConnector`): `https://global.consent.azure-apim.net/redirect/sb-5fstable-20baseline-5f331acd82b125f090` — **now allowlisted** on client `ee6bb6b0-…` alongside the shared `https://global.consent.azure-apim.net/redirect`. If a rebuild changes the connector logical name, the unique redirect changes too — re-allowlist it.
 - The OAuth client is currently registered under the **Orixian** org. Before GA, verify a maker in another customer's tenant can consent against *their own* Stable Baseline org through the same client.
 
 ## After certification
