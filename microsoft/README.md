@@ -13,7 +13,8 @@ Microsoft certifies MCP servers through the **connector certification program**:
 | Publisher added | Done |
 | Business verification (required for "verified publisher") | **Pending with Microsoft** (gates submission) |
 | Connector package (this folder) | Ready (OAuth 2.0) |
-| OAuth client for Power Platform (in Stable Baseline) | In progress — confidential client + Power Platform redirect URI |
+| Connector **solution.zip** built (pac CLI) | Done — exported from env, staged on Azure blob with a read SAS (see "Build the connector solution") |
+| OAuth client for Power Platform (in Stable Baseline) | Done — confidential client `ee6bb6b0-…`; both shared + connector-unique redirect URIs allowlisted and verified |
 | Evaluation evidence pack | Ready (`eval-evidence.md`) |
 | Reviewer demo dataset | Seeded (Northwind Robotics; see `eval-evidence.md` section 3) |
 | Offer created + submitted in Partner Center | Blocked on verification |
@@ -39,7 +40,49 @@ Production host only: `https://api.stablebaseline.io/functions/v1/cloud-serve/mc
 - [x] Enrolled in the Microsoft 365 and Copilot program
 - [x] Own / control the MCP endpoint (`api.stablebaseline.io`)
 - [x] Server supports an approved auth method (**OAuth 2.0** chosen for this connector; API key also available)
-- [ ] OAuth client registered in Stable Baseline with Power Platform's redirect URI allowlisted ← in progress
+- [x] OAuth client registered in Stable Baseline with Power Platform's redirect URI allowlisted (both the shared `…/redirect` and the connector-unique `…/redirect/new-5fstable-20baseline-5f331acd82b125f090`)
+
+## Build the connector solution (pac CLI)
+
+The verified-publisher path submits the connector as a Dataverse **solution**, not the raw files. We build it with the Power Platform CLI (`pac`, installed via the MSI — the dotnet-tool install is broken under .NET 9). A dedicated Power Platform environment holds the build so it never touches production data: **Stable Baseline Connector** (`b8a7de26-3019-ef14-83e0-e3e18aeb71c5`, Dataverse `org3754fa67.crm6.dynamics.com`).
+
+```bash
+PAC=...PowerAppsCLI/.../pac.exe
+SRC=sb-mcp-repo/microsoft/copilot-connector
+ENV=b8a7de26-3019-ef14-83e0-e3e18aeb71c5
+
+# 1. auth once (interactive, work account)
+"$PAC" auth create --environment $ENV          # profile "sbconn", vineet@orixian.com.au
+
+# 2. empty solution shell → pack → import (creates the solution in the env)
+"$PAC" solution init --publisher-name OrixianSolutions --publisher-prefix sb --outputDirectory <proj>
+"$PAC" solution pack   --zipfile <empty.zip> --folder <proj>/src --packagetype Unmanaged
+"$PAC" solution import --path <empty.zip> --environment $ENV --publish-changes
+
+# 3. create the connector INTO the solution (no --secret flag; secret goes in Partner Center)
+"$PAC" connector create --environment $ENV --solution-unique-name StableBaselineConnector \
+  --api-definition-file "$SRC/apiDefinition.swagger.json" \
+  --api-properties-file "$SRC/apiProperties.json" \
+  --icon-file "$SRC/icon.png"
+
+# 4. export the populated solution → this is the artifact we submit
+"$PAC" solution export --environment $ENV --name StableBaselineConnector --path <solution.zip> --overwrite
+```
+
+Result (built 2026-06-10):
+
+- Connector id in env: `dae42c7f-bb64-f111-a826-000d3ad14fdf` (logical name `new_stable-20baseline`).
+- `solution.zip` contains `Connector/…_openapidefinition.json` (with `x-ms-agentic-protocol: mcp-streamable-1.0`, host `api.stablebaseline.io`), `…_connectionparameters.json` (OAuth, `clientId` present, **no secret**), `…_iconblob.Png`, and `solution.xml` (`RootComponent type="372"` = Connector). Verified valid.
+- **Redirect gotcha (resolved):** the env defaulted the connection to `redirectMode: GlobalPerConnector` and generated a unique redirect `https://global.consent.azure-apim.net/redirect/new-5fstable-20baseline-5f331acd82b125f090`. That exact URL is now allowlisted on OAuth client `ee6bb6b0-…` (alongside the shared `…/redirect`). A live GET to `/oauth/authorize` confirms the server accepts the client + unique redirect and rejects bogus redirects.
+- **Staged for Partner Center:** uploaded to Azure blob `clouddocskgstg779102` / container `copilot-connector` / `StableBaselineConnector.zip`. Regenerate the read SAS (≥15 days) at submission time:
+  ```bash
+  az storage blob generate-sas --account-name clouddocskgstg779102 --container-name copilot-connector \
+    --name StableBaselineConnector.zip --permissions r --https-only --full-uri \
+    --expiry $(date -u -d "+180 days" '+%Y-%m-%dT%H:%MZ') \
+    --account-key "$(az storage account keys list -n clouddocskgstg779102 -g clouddocs-kg-rg --query '[0].value' -o tsv)"
+  ```
+
+To rebuild after changing any file in `copilot-connector/`: re-run step 3 with `pac connector update` (or delete + recreate), then step 4. The OAuth **client secret is never in the solution** — it is entered in Partner Center for the offer.
 
 ## Submission steps (once verified)
 
@@ -85,8 +128,8 @@ Connector OAuth config (Generic `oauth2` identity provider):
 
 Gotchas (from Microsoft's connector docs):
 
-- **Put the client secret in an environment variable**, not typed inline — otherwise it is not included when the solution is exported to `solution.zip`.
-- **The redirect URL is generated by the connector** (Security tab). Whatever it shows must be allowlisted on the Stable Baseline OAuth client. We pre-added the shared global redirect `https://global.consent.azure-apim.net/redirect`; if the connector uses a *unique* redirect (the "Update to unique redirect URL" option / `GlobalPerConnector`), add that exact URL to the client instead.
+- **The client secret stays out of the solution.** We build with `pac connector create` (no secret arg); the exported `solution.zip` carries the `clientId` but no secret. The secret is entered in Partner Center for the offer. (If you ever build in the maker portal instead, put the secret in an environment variable so it is not silently dropped on export.)
+- **The redirect URL is generated by the connector** (Security tab). Whatever it shows must be allowlisted on the Stable Baseline OAuth client. Our env produced a *unique* redirect (`GlobalPerConnector`): `https://global.consent.azure-apim.net/redirect/new-5fstable-20baseline-5f331acd82b125f090` — **now allowlisted** on client `ee6bb6b0-…` alongside the shared `https://global.consent.azure-apim.net/redirect`. If a rebuild changes the connector logical name, the unique redirect changes too — re-allowlist it.
 - The OAuth client is currently registered under the **Orixian** org. Before GA, verify a maker in another customer's tenant can consent against *their own* Stable Baseline org through the same client.
 
 ## After certification
