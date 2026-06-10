@@ -13,7 +13,8 @@ Microsoft certifies MCP servers through the **connector certification program**:
 | Publisher added | Done |
 | Business verification (required for "verified publisher") | **Pending with Microsoft** (gates submission) |
 | Connector package (this folder) | Ready (OAuth 2.0) |
-| Connector **solution.zip** built | Done — connector `sb_stablebaseline` (clean prefix), exported from env, staged on Azure blob with a read SAS (see "Build the connector solution") |
+| Connector **submission package** built | Done — connector `sb_stablebaseline` (clean prefix) + test-flow solution, packaged Package-Deployer style (`intro.md` + pdpkg → `PkgAssets/` → 2 solutions), staged on Azure blob with a read SAS. Passed `ConnectorPackageValidator.ps1` and Solution Checker (0 findings). |
+| **Partner Center offer pack** | Ready — every form field paste-ready in [`partner-center-offer.md`](./partner-center-offer.md) |
 | OAuth client for Power Platform (in Stable Baseline) | Done — confidential client `ee6bb6b0-…`; both shared + connector-unique (`…/redirect/sb-5f…`) redirect URIs allowlisted and verified |
 | PKCE for non-PKCE connectors | Done — cloud-serve injects PKCE for confidential clients that omit it (Power Platform can't send it; GoTrue requires it). See "Authentication notes". |
 | **Live connection test in Power Platform** | **Done — `Create connection` signs in/consents, `InvokeServer` (`tools/list`) returns `200` with the tool catalogue.** OAuth path proven end to end. |
@@ -74,36 +75,68 @@ ENV=b8a7de26-3019-ef14-83e0-e3e18aeb71c5
 #      set a real publisher prefix on a connector. Bearer token: az account get-access-token
 #      --resource {org}.
 
-# 4. export the populated solution → this is the artifact we submit
-"$PAC" solution export --environment $ENV --name StableBaselineConnector --path <solution.zip> --overwrite
+# 4. export the connector solution
+"$PAC" solution export --environment $ENV --name StableBaselineConnector --path <connector.zip> --overwrite
+
+# 5. FLOW solution (REQUIRED by certification): a second solution containing the connector,
+#    a connection reference, and a sample cloud flow that calls InvokeServer. Created headlessly
+#    via the Dataverse Web API:
+#      POST /solutions            (uniquename StableBaselineConnectorFlow, publisher = sb)
+#      POST /AddSolutionComponent (ComponentType 372 = the connector)
+#      POST /connectionreferences (logicalname sb_stablebaselineconn, connectorid /providers/Microsoft.PowerApps/apis/<internalid>)
+#        ⚠ then PATCH {"CustomConnectorId@odata.bind":"/connectors(<id>)"} — for CUSTOM connectors the
+#          reference must bind the connector row via the CustomConnectorId lookup (nav-property name,
+#          case-sensitive) or export fails with "requires the custom connector to be added to a solution".
+#      POST /workflows            (category 5 modern flow, draft; clientdata = manual trigger +
+#                                  OpenApiConnection action on operationId InvokeServer)
+"$PAC" solution export --environment $ENV --name StableBaselineConnectorFlow --path <flow.zip> --overwrite
+
+# 6. package (Package Deployer layout) + validate. Microsoft's validator REQUIRES this shape:
+#      submission.zip
+#      ├── intro.md
+#      └── StableBaselineConnector.pdpkg.zip
+#          └── PkgAssets/
+#              ├── StableBaselineConnector.zip       (connector solution: Connector folder ONLY)
+#              └── StableBaselineConnectorFlow.zip   (flow solution: Connector + Workflows folders)
+#    Build the zips with PowerShell Compress-Archive (python-zipfile entries trip Expand-Archive).
+#    ⚠ Run ConnectorPackageValidator.ps1 under WINDOWS POWERSHELL 5.1 (powershell.exe) — it is broken
+#      under pwsh 7 (DirectoryInfo.ToString() returns full paths there and its path concat fails).
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ConnectorPackageValidator.ps1 \
+  -zipFilePath <submission.zip> -isPluginEnabled n        # → "Validation successful"
+
+# 7. Solution Checker (certification step 2) — must be clean:
+"$PAC" solution check --path "<dir>\*.zip" --outputDirectory <results> --geo Australia
+#    Gotcha: the checker REQUIRES x-ms-connector-metadata (Website / Privacy policy / Categories)
+#    in the swagger — without it, one Medium per solution. Now in apiDefinition.swagger.json.
 ```
 
-Result (built 2026-06-10):
+Result (built 2026-06-11):
 
 - Connector id in env: `7e63cd89-c164-f111-a826-000d3ad14fdf`, logical name **`sb_stablebaseline`** (internalid `shared_sb-5fstable-20baseline-5f331acd82b125f090`). No `new_`.
-- `solution.zip` contains `Connector/sb_stablebaseline_openapidefinition.json` (with `x-ms-agentic-protocol: mcp-streamable-1.0`, host `api.stablebaseline.io`), `…_connectionparameters.json` (OAuth, `clientId` present, **0 secret occurrences**), `…_iconblob.Png`, and `solution.xml` (`RootComponent type="372"` = Connector). Verified valid.
+- Flow solution `StableBaselineConnectorFlow` (id `57c08661…`): connector + connection reference `sb_stablebaselineconn` (`63c08661…`) + draft test flow "Stable Baseline test flow" (`94279767…`).
+- Connector solution contains `Connector/sb_stablebaseline_openapidefinition.json` (with `x-ms-agentic-protocol: mcp-streamable-1.0`, host `api.stablebaseline.io`, `x-ms-connector-metadata`), `…_connectionparameters.json` (OAuth, `clientId` present, **0 secret occurrences**), `…_iconblob.Png`, and `solution.xml` (`RootComponent type="372"` = Connector).
+- **`StableBaselineConnector-submission.zip` passed `ConnectorPackageValidator.ps1` ("Validation successful") and Solution Checker (0 critical / 0 high / 0 medium / 0 low).**
 - **Redirect (resolved):** the env forces `redirectMode: GlobalPerConnector` and generated the unique redirect `https://global.consent.azure-apim.net/redirect/sb-5fstable-20baseline-5f331acd82b125f090`. That URL is allowlisted on OAuth client `ee6bb6b0-…` (alongside the shared `…/redirect`). A live GET to `/oauth/authorize` confirms the server accepts the client + this redirect and rejects bogus redirects.
-- **Staged for Partner Center:** uploaded to Azure blob `clouddocskgstg779102` / container `copilot-connector` / `StableBaselineConnector.zip`. Regenerate the read SAS (≥15 days) at submission time:
+- **Staged for Partner Center:** uploaded to Azure blob `clouddocskgstg779102` / container `copilot-connector` / `StableBaselineConnector-submission.zip`. Regenerate the read SAS (≥15 days) at submission time:
   ```bash
   az storage blob generate-sas --account-name clouddocskgstg779102 --container-name copilot-connector \
-    --name StableBaselineConnector.zip --permissions r --https-only --full-uri \
+    --name StableBaselineConnector-submission.zip --permissions r --https-only --full-uri \
     --expiry $(date -u -d "+180 days" '+%Y-%m-%dT%H:%MZ') \
     --account-key "$(az storage account keys list -n clouddocskgstg779102 -g clouddocs-kg-rg --query '[0].value' -o tsv)"
   ```
+- **Every Partner Center form field is paste-ready in [`partner-center-offer.md`](./partner-center-offer.md)** (offer name, SAS, OAuth ids, categories, legal/support URLs, reviewer note, compliance table, post-submission timeline).
 
-To rebuild after changing any file in `copilot-connector/`: re-run step 3 with `pac connector update` (or delete + recreate), then step 4. The OAuth **client secret is never in the solution** — it is entered in Partner Center for the offer.
+To rebuild after changing any file in `copilot-connector/`: `pac connector update` (step 3 of the build), then re-export BOTH solutions, re-package, re-validate, re-upload (steps 4–7). The OAuth **client secret is never in the solution** — it is entered in Partner Center for the offer.
 
 ## Submission steps (once verified)
 
+**Everything below is pre-filled, field by field, in [`partner-center-offer.md`](./partner-center-offer.md) — open that and copy-paste.** In short:
+
 1. Sign in to [Partner Center](https://partner.microsoft.com/dashboard/home) as `Vineet@orixian.com.au`.
-2. Open the **New offer** dropdown and choose the **Connectors and Agents for Microsoft Copilot Studio** category.
-3. Provide offer metadata, legal and support info, and logos.
-4. Package and upload the connector files in `copilot-connector/`:
-   - Validate the package structure with Microsoft's `ConnectorPackageValidator.ps1`.
-   - Upload the zip to a storage blob and generate a SAS URL valid for at least 15 days.
-   - Submit the SAS URL in Partner Center.
-5. Supply **test credentials** so reviewers can validate every tool (see below).
-6. Submit. Microsoft runs automated validation, a manual review that tests each tool, and a responsible AI evaluation, then deploys across regions.
+2. **Marketplace offers → Microsoft 365 and Copilot → New offer → Connectors & Agents in Microsoft Copilot Studio**.
+3. Packages tab: SAS URI + OAuth client id/secret. Properties tab: categories, Standard Contract, privacy + support links. Availability: no HideKey → Review and publish.
+4. Supply **test credentials** when Microsoft asks (see below).
+5. Microsoft runs automated validation (24–48 h report), you test in a preview environment (48 business hours) and press **Go live**, then deployment takes 10–14 days across regions.
 
 ## Test credentials to provide reviewers
 

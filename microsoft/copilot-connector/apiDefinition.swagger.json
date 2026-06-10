@@ -63,5 +63,19 @@
       ]
     }
   ],
+  "x-ms-connector-metadata": [
+    {
+      "propertyName": "Website",
+      "propertyValue": "https://stablebaseline.io"
+    },
+    {
+      "propertyName": "Privacy policy",
+      "propertyValue": "https://stablebaseline.io/privacy"
+    },
+    {
+      "propertyName": "Categories",
+      "propertyValue": "Productivity;Collaboration"
+    }
+  ],
   "tags": []
 }
