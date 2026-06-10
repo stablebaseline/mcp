@@ -117,13 +117,14 @@ Result (built 2026-06-11):
 - Connector solution contains `Connector/sb_stablebaseline_openapidefinition.json` (with `x-ms-agentic-protocol: mcp-streamable-1.0`, host `api.stablebaseline.io`, `x-ms-connector-metadata`), `…_connectionparameters.json` (OAuth, `clientId` present, **0 secret occurrences**), `…_iconblob.Png`, and `solution.xml` (`RootComponent type="372"` = Connector).
 - **`StableBaselineConnector-submission.zip` passed `ConnectorPackageValidator.ps1` ("Validation successful") and Solution Checker (0 critical / 0 high / 0 medium / 0 low).**
 - **Redirect (resolved):** the env forces `redirectMode: GlobalPerConnector` and generated the unique redirect `https://global.consent.azure-apim.net/redirect/sb-5fstable-20baseline-5f331acd82b125f090`. That URL is allowlisted on OAuth client `ee6bb6b0-…` (alongside the shared `…/redirect`). A live GET to `/oauth/authorize` confirms the server accepts the client + this redirect and rejects bogus redirects.
-- **Staged for Partner Center:** uploaded to Azure blob `clouddocskgstg779102` / container `copilot-connector` / `StableBaselineConnector-submission.zip`. Regenerate the read SAS (≥15 days) at submission time:
+- **Staged for Partner Center:** uploaded to Azure blob `clouddocskgstg779102` / container `copilot-connector` / `StableBaselineConnector-submission-dcb5ce01.zip`. **Regenerate the SAS** (read-only, ≥15 days) at submission time and paste it straight into Partner Center:
   ```bash
   az storage blob generate-sas --account-name clouddocskgstg779102 --container-name copilot-connector \
-    --name StableBaselineConnector-submission.zip --permissions r --https-only --full-uri \
+    --name StableBaselineConnector-submission-dcb5ce01.zip --permissions r --https-only --full-uri \
     --expiry $(date -u -d "+180 days" '+%Y-%m-%dT%H:%MZ') \
     --account-key "$(az storage account keys list -n clouddocskgstg779102 -g clouddocs-kg-rg --query '[0].value' -o tsv)"
   ```
+  ⚠ **Never commit a minted SAS to this repo — it is public.** A SAS committed on 2026-06-11 triggered a GitGuardian alert; it was revoked by deleting that blob and re-staging under the suffixed name above. Do not reuse the old blob name `StableBaselineConnector-submission.zip` (re-creating it would make the leaked signature valid again).
 - **Every Partner Center form field is paste-ready in [`partner-center-offer.md`](./partner-center-offer.md)** (offer name, SAS, OAuth ids, categories, legal/support URLs, reviewer note, compliance table, post-submission timeline).
 
 To rebuild after changing any file in `copilot-connector/`: `pac connector update` (step 3 of the build), then re-export BOTH solutions, re-package, re-validate, re-upload (steps 4–7). The OAuth **client secret is never in the solution** — it is entered in Partner Center for the offer.
