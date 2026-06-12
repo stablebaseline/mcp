@@ -20,7 +20,8 @@ Microsoft certifies MCP servers through the **connector certification program**:
 | **Live connection test in Power Platform** | **Done — `Create connection` signs in/consents, `InvokeServer` (`tools/list`) returns `200` with the tool catalogue.** OAuth path proven end to end. |
 | Evaluation evidence pack | Ready (`eval-evidence.md`) |
 | Reviewer demo dataset | Seeded (Northwind Robotics; see `eval-evidence.md` section 3) |
-| Offer created + submitted in Partner Center | Blocked on verification |
+| Offer created + fully staged in Partner Center | **Done (2026-06-12)** — offer "Stable Baseline" (product `29bef883`): all four tabs **Complete**, package accepted ("Payload processing status: Completed"), OAuth client id + secret + SAS saved |
+| Offer **published** | **Blocked on Developer-program verification only.** Publish attempt 2026-06-12 returned "Your account is not currently eligible to publish to the marketplace." When Legal info → Developer tab shows Accepted: open the offer → Review and submit → **Publish**. One click. |
 
 You cannot submit until business verification completes (typically a few business days). Everything else is ready to go.
 

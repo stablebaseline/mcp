@@ -30,6 +30,14 @@ Then **Save draft**.
 
 The package at that SAS URI passed Microsoft's `ConnectorPackageValidator.ps1` ("Validation successful") and Solution Checker (0 findings at every severity). Structure: `intro.md` + `StableBaselineConnector.pdpkg.zip` → `PkgAssets/` → connector solution + flow solution.
 
+**Partner Center's live checker (verified empirically 2026-06-12, by iterating package shapes against the Save-draft validation):**
+
+- It downloads the SAS package on every save and validates it; errors surface as a red banner (and the underlying `PUT …/packagesets/…` API call 400s — watch the network tab if the banner is unclear).
+- Required shape = exactly the validator shape: outer zip → `intro.md` + **exactly one** "solution package" zip at root → `PkgAssets/` → solution zips. ("Solution package not found at root" = solutions placed at the wrong depth; "Only one solution package zip should be present at the root" = both solution zips placed flat; "'PkgAssets' folder missing" = bare Dataverse solution zip used.)
+- **The connector solution must contain ONLY the intended connector.** The checker appears to read the first connector folder alphabetically; a stray duplicate with empty `connectionparameters` (`{}`) produced *"Looks like this is not an OAuth connector. Kindly uncheck the box to proceed further."* A duplicate "Stable Baseline - 1" had been accidentally created in the maker portal (Create vs Update misclick) and silently joined the solution. Fix: `RemoveSolutionComponent` (Web API; note the quirky shape `{"SolutionComponent":{"solutioncomponentid":"<connector id>","@odata.type":"Microsoft.Dynamics.CRM.solutioncomponent"},"ComponentType":372,"SolutionUniqueName":…}`) → re-export → re-upload.
+- Paste hygiene: a single leading space in the SAS URI field fails the whole save with a generic `InvalidArgument` (fault 41601) and **no UI error**. Trim before pasting.
+- On success the Packages tab shows **Status: Complete** and Review-and-submit shows "Payload processing status: Completed".
+
 ## 3. Properties tab
 
 | Field | Value |
