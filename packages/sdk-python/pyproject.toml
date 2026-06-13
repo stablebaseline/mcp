@@ -5,7 +5,7 @@
 # `pip install hatchling` in CI, so the cap must live here. Lift it once the
 # upload toolchain recognises 2.5.
 [build-system]
-requires = ["hatchling<1.30"]
+requires = ["hatchling<1.31"]
 build-backend = "hatchling.build"
 
 [project]
