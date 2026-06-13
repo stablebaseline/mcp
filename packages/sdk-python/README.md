@@ -1,9 +1,9 @@
 # stablebaseline
 
 [![PyPI](https://img.shields.io/pypi/v/stablebaseline?color=orange)](https://pypi.org/project/stablebaseline/)
-[![Tools](https://img.shields.io/badge/MCP%20tools-163-orange)](https://stablebaseline.io/docs/mcp/tools)
+[![Tools](https://img.shields.io/badge/MCP%20tools-184-orange)](https://stablebaseline.io/docs/mcp/tools)
 
-Python SDK for the **[Stable Baseline](https://stablebaseline.io) REST API** — the simplest, most complete, end-to-end agent-managed company brain. Living docs, 40+ visual diagrams, plans, and a self-learning Knowledge Graph. 163 tools across 16 categories.
+Python SDK for the **[Stable Baseline](https://stablebaseline.io) REST API** — the simplest, most complete, end-to-end agent-managed company brain. Living docs, 40+ visual diagrams, plans, and a self-learning Knowledge Graph. 184 tools across 19 categories.
 
 ## Install
 
@@ -56,7 +56,7 @@ StableBaseline()                               # picks up SB_API_KEY / SB_ACCESS
 
 ## Tool dispatch
 
-Each method on `client.tools` corresponds to one of the [163 MCP tools](https://stablebaseline.io/docs/mcp/tools):
+Each method on `client.tools` corresponds to one of the [184 MCP tools](https://stablebaseline.io/docs/mcp/tools):
 
 ```python
 sb.tools.listOrganisations()

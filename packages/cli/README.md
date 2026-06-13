@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/@stablebaseline/cli?color=orange)](https://www.npmjs.com/package/@stablebaseline/cli)
 
-Command-line client for **[Stable Baseline](https://stablebaseline.io)** — the simplest, most complete, end-to-end agent-managed company brain. Drive 163 MCP tools (docs, diagrams, plans, Knowledge Graph, members, billing, settings) from your terminal.
+Command-line client for **[Stable Baseline](https://stablebaseline.io)** — the simplest, most complete, end-to-end agent-managed company brain. Drive 184 MCP tools (docs, diagrams, plans, Knowledge Graph, members, billing, settings) from your terminal.
 
 ## Install
 
@@ -39,7 +39,7 @@ sb tool list                          # all categories grouped
 sb tool list --category=documents     # filter by category
 sb tool search "schedule a task"      # natural-language search
 
-# Call any tool (163 of them)
+# Call any tool (184 of them)
 sb tool call listOrganisations
 sb tool call createDocument --json '{"folderId":"<uuid>","title":"X","cdmd":"# Hi"}'
 sb tool call kg_search --json '{"query":"compliance posture","mode":"global"}' --pretty

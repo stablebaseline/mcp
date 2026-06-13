@@ -7,7 +7,7 @@
     doc = sb.tools.createDocument(folder_id="...", title="X", cdmd="# Hi")
 
 The same surface is available asynchronously via :class:`AsyncStableBaseline`.
-163 MCP tools across 16 categories — see https://stablebaseline.io/docs/mcp/tools.
+184 MCP tools across 19 categories — see https://stablebaseline.io/docs/mcp/tools.
 """
 
 from .client import (
@@ -22,4 +22,11 @@ __all__ = [
     "StableBaselineToolError",
 ]
 
-__version__ = "0.1.0"
+# Resolved from installed package metadata so it always matches pyproject.toml
+# (the release bump script edits pyproject.toml only).
+try:
+    from importlib.metadata import PackageNotFoundError, version as _pkg_version
+
+    __version__ = _pkg_version("stablebaseline")
+except PackageNotFoundError:  # running from a source checkout, not installed
+    __version__ = "0.0.0"

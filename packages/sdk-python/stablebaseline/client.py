@@ -1,7 +1,7 @@
 """HTTP client for the Stable Baseline REST API.
 
 Sync and async variants share the same dispatch logic via a small base
-class. All 163 MCP tools are reachable as ``client.tools.<tool_name>(...)``.
+class. All 184 MCP tools are reachable as ``client.tools.<tool_name>(...)``.
 """
 
 from __future__ import annotations

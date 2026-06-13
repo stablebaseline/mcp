@@ -93,7 +93,7 @@ export class StableBaseline {
   private signal?: AbortSignal;
 
   /**
-   * Strongly-typed dispatch surface. Every entry is one of the 163 MCP tools.
+   * Strongly-typed dispatch surface. Every entry is one of the 184 MCP tools.
    *
    *   const orgs = await sb.tools.listOrganisations({});
    *   const doc = await sb.tools.createDocument({ folderId, title, cdmd });

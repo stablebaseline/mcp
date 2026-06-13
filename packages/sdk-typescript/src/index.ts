@@ -10,7 +10,7 @@
 //     cdmd: "# ...",
 //   });
 //
-// All 163 MCP tools are reachable from `sb.tools.<toolName>(input)`. Types
+// All 184 MCP tools are reachable from `sb.tools.<toolName>(input)`. Types
 // are generated from the live OpenAPI spec (`openapi.json` in this package).
 
 export { StableBaseline } from "./client.js";

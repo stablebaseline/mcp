@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import { makeSdkClient } from "../client.js";
 
 export function registerToolCommands(program: Command) {
-  const tool = program.command("tool").description("Direct tool dispatch — call any of the 163 MCP tools.");
+  const tool = program.command("tool").description("Direct tool dispatch — call any of the 184 MCP tools.");
 
   tool
     .command("list")
