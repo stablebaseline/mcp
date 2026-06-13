@@ -112,6 +112,12 @@ updates:
       - dependency-name: "*"
         update-types:
           - version-update:semver-major
+      # hatchling is capped <1.30 in pyproject.toml: 1.30+ emits
+      # Metadata-Version 2.5, which twine/PyPI still reject (verified
+      # 2026-06-13: twine 6.2.0, packaging 26.2 — unchanged). Stop the
+      # weekly minor-bump PR until the upload toolchain accepts 2.5.
+      - dependency-name: "hatchling"
+        versions: [">=1.30"]
     groups:
       all-non-major:
         patterns: ["*"]
