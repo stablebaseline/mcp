@@ -33,6 +33,7 @@
     "prettier": "^3.8.4"
   },
   "overrides": {
-    "esbuild": "^0.28.1"
+    "esbuild": "^0.28.1",
+    "js-yaml": "^4.2.0"
   }
 }
