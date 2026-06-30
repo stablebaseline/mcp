@@ -10,7 +10,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "stablebaseline"
-version = "0.4.3"
+version = "0.4.4"
 description = "Python SDK for the Stable Baseline REST API. End-to-end agent-managed company brain — docs, diagrams, plans, and a self-learning Knowledge Graph. 184 tools across 19 categories."
 readme = "README.md"
 license = "MIT"
