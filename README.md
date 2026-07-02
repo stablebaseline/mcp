@@ -10,7 +10,7 @@
 
 [![MCP Registry](https://img.shields.io/badge/MCP%20Registry-io.stablebaseline%2Fsb-orange)](https://registry.modelcontextprotocol.io/v0/servers?search=io.stablebaseline)
 [![Smithery](https://img.shields.io/badge/Smithery-stablebaseline%2Fsb--mcp-orange)](https://smithery.ai/servers/stablebaseline/sb-mcp)
-[![Tools](https://img.shields.io/badge/MCP%20tools-163-orange)](https://stablebaseline.io/docs/mcp/tools)
+[![Tools](https://img.shields.io/badge/MCP%20tools-193-orange)](https://stablebaseline.io/docs/mcp/tools)
 [![npm CLI](https://img.shields.io/npm/v/@stablebaseline/cli?label=%40stablebaseline%2Fcli&color=orange)](https://www.npmjs.com/package/@stablebaseline/cli)
 [![npm SDK](https://img.shields.io/npm/v/@stablebaseline/sdk?label=%40stablebaseline%2Fsdk&color=orange)](https://www.npmjs.com/package/@stablebaseline/sdk)
 [![PyPI](https://img.shields.io/pypi/v/stablebaseline?label=stablebaseline&color=orange)](https://pypi.org/project/stablebaseline/)
@@ -31,7 +31,7 @@ Pick the surface that matches how you work — every option talks to the same ha
 | **CLI (`sb`)** | Shells, scripts, CI/CD. `sb tool call <name> --json '{...}'`. | `npm i -g @stablebaseline/cli` — see [`packages/cli`](packages/cli/) |
 | **Python SDK** | Python apps, data work. Sync + async clients. | `pip install stablebaseline` — see [`packages/sdk-python`](packages/sdk-python/) |
 
-184 tools across 19 categories. Same brain, same Knowledge Graph, same RBAC — every surface.
+193 tools across 18 categories. Same brain, same Knowledge Graph, same RBAC — every surface.
 
 ---
 
@@ -39,7 +39,7 @@ One workspace where humans and any MCP-compatible AI agent — Claude Code, Curs
 
 **Lean, fast, secure, and affordable** — flexible enough for one person organising a personal mind, through to small businesses, growing businesses, and enterprise.
 
-184 MCP tools across 19 categories let an agent drive **end-to-end**: sign-up → billing → org/workspace/project → members → teams → permissions → brain scope → docs → diagrams → plans, all without a human touching the UI.
+193 MCP tools across 18 categories let an agent drive **end-to-end**: sign-up → billing → org/workspace/project → members → teams → permissions → brain scope → docs → diagrams → whiteboards → plans, all without a human touching the UI.
 
 ## Endpoint
 
@@ -153,6 +153,7 @@ Recipes for Warp, OpenCode, Antigravity, OpenAI Codex, ChatGPT Developer Mode, G
 | **folders** | `createFolder`, `listFolders`, `setPlanItemParent` | [→](https://stablebaseline.io/docs/mcp/tools/folders) |
 | **documents** | `createDocument`, `editDocument`, `findAndReplaceTextInDocument` | [→](https://stablebaseline.io/docs/mcp/tools/documents) |
 | **diagrams** | `insertDiagramInDocument`, `listDiagramTypes`, `getCdmdLanguageGuide` | [→](https://stablebaseline.io/docs/mcp/tools/diagrams) |
+| **whiteboards** | `createWhiteboard`, `addWhiteboardElements`, `designDeckInWhiteboard` | [→](https://stablebaseline.io/docs/mcp/tools/whiteboards) |
 | **images** | `createImageUploadSession`, `insertImageInDocument` | [→](https://stablebaseline.io/docs/mcp/tools/images) |
 | **data** | `createVegaDataUploadSession` (CSV/JSON/TSV → Vega charts) | [→](https://stablebaseline.io/docs/mcp/tools/data) |
 | **improvements** | `createImprovement`, `searchImprovements`, `addImprovementEvidence` | [→](https://stablebaseline.io/docs/mcp/tools/improvements) |
@@ -164,7 +165,8 @@ Recipes for Warp, OpenCode, Antigravity, OpenAI Codex, ChatGPT Developer Mode, G
 | **permissions** | `upsertResourcePermission`, `setResourcePermissionOverride` | [→](https://stablebaseline.io/docs/mcp/tools/permissions) |
 | **billing** | `previewSubscriptionChange`, `applySubscriptionChange`, `purchaseCreditPackage` | [→](https://stablebaseline.io/docs/mcp/tools/billing) |
 | **kg_admin** | `setKgWorkspaceScope`, `triggerKgRebuild`, `previewKgRebuild` | [→](https://stablebaseline.io/docs/mcp/tools/kg_admin) |
-| **settings** | `getOrgSettings`, `updateOrgFeatureFlags`, `updateUserPreferences` | [→](https://stablebaseline.io/docs/mcp/tools/settings) |
+| **settings** | `getOrgSettings`, `updateOrgFeatureFlags`, `createBrandKit` | [→](https://stablebaseline.io/docs/mcp/tools/settings) |
+| **signup** | `startSignup`, `pollSignupStatus` | [→](https://stablebaseline.io/docs/mcp/tools/signup) |
 
 Full live catalogue: [stablebaseline.io/docs/mcp/tools](https://stablebaseline.io/docs/mcp/tools)
 
