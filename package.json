@@ -30,7 +30,7 @@
     "node": ">=20"
   },
   "devDependencies": {
-    "prettier": "^3.9.1"
+    "prettier": "^3.9.4"
   },
   "overrides": {
     "esbuild": "^0.28.1",
