@@ -38,7 +38,7 @@ It should return the user's organisations. If it returns 401, auth isn't set up 
 
 ## Tool catalogue
 
-184 MCP tools across 19 categories. Live catalogue at https://stablebaseline.io/docs/mcp/tools — call `searchTools` from the connected client to fetch input schemas at runtime.
+196 MCP tools across 18 categories. Live catalogue at https://stablebaseline.io/docs/mcp/tools — call `searchTools` from the connected client to fetch input schemas at runtime.
 
 ## Reference docs
 

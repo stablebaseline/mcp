@@ -204,6 +204,75 @@ async function checkVersionsAgainstTags() {
 }
 
 // ─── Check 7: package-lock.json is committed ─────────────────────────────
+// Every public surface that states a tool count must state the SAME one, and it
+// must be the number the server actually advertises.
+//
+// This drifted to five different numbers in public at once: 196 in the README
+// and the discovery manifest, 184 in llms-install and all three package
+// READMEs, 163 in the GitHub repo description, and 161 in the MCP Registry.
+// Nothing caught it because this script only ever diffed OpenAPI PATH counts,
+// which is a different number that happens to look similar.
+//
+// The count is read from the live tools/list rather than from any file here, so
+// the server is the source of truth and a doc can only ever be wrong.
+async function checkToolCountsInDocs() {
+  let liveCount;
+  try {
+    const res = await fetch(PROD_MCP_URL, {
+      method: "POST",
+      headers: { "content-type": "application/json", accept: "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/list", params: {} }),
+    });
+    const text = await res.text();
+    // The endpoint answers SSE unless it honours our Accept header.
+    const line = text.startsWith("data:")
+      ? text.split("\n").find((l) => l.startsWith("data:"))?.slice(5).trim()
+      : text;
+    liveCount = JSON.parse(line).result.tools.length;
+  } catch (err) {
+    warn(`[tool-count] could not read live tools/list: ${err.message}`);
+    return;
+  }
+
+  const files = [
+    "README.md",
+    "llms-install.md",
+    "packages/cli/README.md",
+    "packages/cli/package.json",
+    "packages/sdk-python/README.md",
+    "packages/sdk-typescript/README.md",
+    "packages/sdk-typescript/package.json",
+  ];
+
+  // Only a number that PRECEDES the word "tools", plus the shields.io badge
+  // slug. Deliberately not the reverse direction: "196 tools across 18
+  // categories" and "196 tools / 11 prompts" both put an unrelated number just
+  // after the word, and matching those reports the category and prompt counts
+  // as wrong tool counts.
+  const patterns = [
+    /(\d{2,4})\s+(?:MCP\s+)?tools\b/gi,
+    /MCP%20tools-(\d{2,4})-/gi,
+  ];
+
+  for (const rel of files) {
+    let body;
+    try {
+      body = await readFile(join(repoRoot, rel), "utf8");
+    } catch {
+      continue; // file removed; not this check's business
+    }
+    const seen = new Set();
+    for (const re of patterns) {
+      for (const m of body.matchAll(re)) seen.add(Number(m[1]));
+    }
+    for (const n of seen) {
+      if (n !== liveCount) {
+        fail(`[tool-count] ${rel} says ${n} tools; the server advertises ${liveCount}`);
+      }
+    }
+  }
+}
+
 async function checkLockfileCommitted() {
   if (!git(["ls-files", "package-lock.json"])) {
     fail("[lockfile] package-lock.json not committed — CI `npm ci` will fail");
@@ -222,6 +291,7 @@ async function main() {
     checkRegistryServerJson(),
     checkVersionsAgainstTags(),
     checkLockfileCommitted(),
+    checkToolCountsInDocs(),
   ]);
 
   for (const w of warnings) console.warn("  ! " + w);

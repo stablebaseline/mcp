@@ -216,7 +216,7 @@ OAuth endpoints:
 ## Status
 
 - 🟢 **MCP Registry**: `io.stablebaseline/sb` — `active`, `isLatest`. Listed.
-- 🟢 **Smithery**: published with `configSchema` (Quick Setup). 184 tools / 8 prompts / 6 resources discovered.
+- 🟢 **Smithery**: published with `configSchema` (Quick Setup). 196 tools / 11 prompts / 8 resources discovered.
 - 🟢 **`.well-known/mcp.json`**: live, schema 2024-11-05.
 - 🟢 **Endpoint**: `api.stablebaseline.io/functions/v1/cloud-serve/mcp` — accepts POST with `mcp-protocol-version: 2025-06-18`.
 
