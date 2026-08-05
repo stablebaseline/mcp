@@ -22,7 +22,7 @@ Note: this offer type has **no listing description or screenshot fields**. The p
 
 | Field | Value |
 |---|---|
-| **SAS URI** | **Mint at submission time — never store a live SAS in this repo (it is public; a committed SAS triggered a GitGuardian leak alert on 2026-06-11 and was revoked).** Blob: `copilot-connector/StableBaselineConnector-submission-dcb5ce01.zip` on `clouddocskgstg779102`. Command: see "Regenerate the SAS" in `README.md`. Paste the freshly minted URL straight into Partner Center only. |
+| **SAS URI** | **Mint at submission time and never store a live SAS anywhere in this repo, which is public.** Upload the connector zip to the release storage account, mint a short-lived read-only SAS, and paste the freshly minted URL straight into Partner Center. The account name, container and command are in the internal runbook, not here. |
 | **Client ID** | `ee6bb6b0-05e1-484c-a922-c3499f473635` |
 | **Client Secret** | the secret for that OAuth client (created in Stable Baseline → Settings → MCP Setup → OAuth Clients; held in the password manager — never in this repo) |
 

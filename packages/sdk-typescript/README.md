@@ -16,7 +16,7 @@ npm install @stablebaseline/sdk
 ```ts
 import { StableBaseline } from "@stablebaseline/sdk";
 
-// Mint an API key at https://app.stablebaseline.io/settings/mcp-keys
+// Mint an API key at https://app.stablebaseline.io/settings/mcp-setup
 const sb = new StableBaseline({ apiKey: process.env.SB_API_KEY! });
 
 const orgs = await sb.tools.listOrganisations({});
@@ -41,10 +41,10 @@ console.log(search.entities);
 Two equivalent paths:
 
 ```ts
-// API key (mint at app.stablebaseline.io/settings/mcp-keys, prefix sta_)
+// API key (mint at app.stablebaseline.io/settings/mcp-setup, prefix sta_)
 new StableBaseline({ apiKey: "sta_..." });
 
-// OAuth 2.1 access token (interactive flow against api.stablebaseline.io/oauth/token)
+// OAuth 2.1 access token (interactive flow against api.stablebaseline.io/functions/v1/cloud-serve/oauth/token)
 new StableBaseline({ accessToken: "..." });
 ```
 

@@ -20,11 +20,11 @@ Transport: **streamable-http** (use SSE only if the client requires it).
 
 **If they don't** → either:
 
-1. **Tell them to mint one** at https://app.stablebaseline.io/settings/mcp-keys (after free signup at https://app.stablebaseline.io/signup). Most clients prefer this — it's stateless and easy.
+1. **Tell them to mint one** at https://app.stablebaseline.io/settings/mcp-setup (after free signup at https://app.stablebaseline.io/signup). Most clients prefer this — it's stateless and easy.
 2. **Use OAuth 2.1 with Dynamic Client Registration**. Most modern MCP clients (Claude Desktop, Cursor, Windsurf, VS Code, Smithery) handle this automatically — they hit the server, get a `WWW-Authenticate` challenge, run DCR + OAuth, store the token. The user just clicks "Authorize" once in their browser. OAuth endpoints:
-   - authorize: `https://app.stablebaseline.io/oauth/authorize` (browser)
-   - token: `https://api.stablebaseline.io/oauth/token`
-   - register: `https://api.stablebaseline.io/oauth/register`
+   - authorize: `https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/authorize` (browser)
+   - token: `https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/token`
+   - register: `https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/register`
 
 ## Verify
 
