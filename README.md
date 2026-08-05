@@ -186,13 +186,14 @@ Full live catalogue: [stablebaseline.io/docs/mcp/tools](https://stablebaseline.i
 | Method | When to use |
 |---|---|
 | **OAuth 2.1 + Dynamic Client Registration** | Default for desktop apps and IDE extensions. Smithery handles it automatically. |
-| **Bearer API key** (`sta_...`) | CI/CD, headless agents, server-to-server. Mint at [app.stablebaseline.io/settings/mcp-keys](https://app.stablebaseline.io/settings/mcp-keys). Project-scoped or global. |
+| **Bearer API key** (`sta_...`) | CI/CD, headless agents, server-to-server. Mint at [app.stablebaseline.io/settings/mcp-setup](https://app.stablebaseline.io/settings/mcp-setup). Project-scoped or global. |
 
 OAuth endpoints:
-- `authorize`: `https://app.stablebaseline.io/oauth/authorize`
-- `token`: `https://api.stablebaseline.io/oauth/token`
-- `register` (DCR): `https://api.stablebaseline.io/oauth/register`
-- Scopes: `org_admin`, `org_billing`, `org_members`, `org_teams`, `org_permissions`, `org_settings`, `kg_admin`, `lifecycle`
+- `authorize`: `https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/authorize`
+- `token`: `https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/token`
+- `register` (DCR): `https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/register`
+- Scopes: `openid`, `profile`, `email`, `phone`. These identify the signed-in user and do NOT decide what an agent may do: authorisation comes from the read/write/delete permissions per content type and the organisation capability toggles chosen on the consent screen.
+- Authoritative metadata (always prefer this over the list above): `https://api.stablebaseline.io/functions/v1/cloud-serve/.well-known/oauth-authorization-server`
 
 ## Discovery
 
@@ -217,7 +218,7 @@ OAuth endpoints:
 - 🟢 **MCP Registry**: `io.stablebaseline/sb` — `active`, `isLatest`. Listed.
 - 🟢 **Smithery**: published with `configSchema` (Quick Setup). 184 tools / 8 prompts / 6 resources discovered.
 - 🟢 **`.well-known/mcp.json`**: live, schema 2024-11-05.
-- 🟢 **Endpoint**: `api.stablebaseline.io/functions/v1/cloud-serve/mcp` — accepts POST with `mcp-protocol-version: 2025-03-26`.
+- 🟢 **Endpoint**: `api.stablebaseline.io/functions/v1/cloud-serve/mcp` — accepts POST with `mcp-protocol-version: 2025-06-18`.
 
 ## Issues & support
 
