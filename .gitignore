@@ -41,3 +41,7 @@ packages/cli/sb
 packages/cli/sb.exe
 packages/cli/sb-*.tar.gz
 packages/cli/sb-*.zip
+
+# Cowork plugin build outputs (regenerated from the live server)
+microsoft/cowork-plugin/tools/
+microsoft/cowork-plugin/*.zip

@@ -1,0 +1,87 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.28/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.28",
+  "version": "3.0.0",
+  "id": "980270a4-293e-4860-88e4-ec11c8f8b1a0",
+  "developer": {
+    "name": "Orixian Solutions Pty Ltd",
+    "websiteUrl": "https://stablebaseline.io",
+    "privacyUrl": "https://stablebaseline.io/privacy",
+    "termsOfUseUrl": "https://stablebaseline.io/terms"
+  },
+  "name": {
+    "short": "Stable Baseline",
+    "full": "Stable Baseline for Copilot Cowork"
+  },
+  "description": {
+    "short": "Search, write, plan, diagram and design in your Stable Baseline workspace.",
+    "full": "Connects Copilot Cowork to Stable Baseline, the agent-managed company brain from Orixian Solutions. Nine skills cover the content lifecycle: sb-find searches and reads across documents and the knowledge graph, sb-author writes and imports documents, sb-diagram generates flowcharts, sequence diagrams, ERDs, BPMN and infographics from diagram code, sb-whiteboard builds boards, sb-deck designs on-brand slide decks and illustrations and exports them to PowerPoint or PDF, sb-brand manages brand kits, sb-meeting runs the live meeting scribe, sb-plan builds plans, phases and tasks, and sb-improve tracks improvements and risks. Every call runs under the signed in user's own Stable Baseline identity and inherits their exact permissions, resolved at runtime. Organisation administration, member management, permissions and billing are deliberately excluded from every skill.",
+    "features": [
+      {
+        "title": "Ask your company brain",
+        "description": "Search documents by content and answer questions from the knowledge graph, with citations and direct links."
+      },
+      {
+        "title": "Write, diagram and design",
+        "description": "Author living documents, generate diagrams from code, build whiteboards, and design on-brand slide decks."
+      },
+      {
+        "title": "Plan the work and track the risks",
+        "description": "Build plans, phases, tasks and dependencies, and keep an evidence-backed improvements and risk backlog."
+      }
+    ]
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "accentColor": "#C2410C",
+  "agentConnectors": [
+    {
+      "id": "stable-baseline",
+      "displayName": "Stable Baseline",
+      "description": "The Stable Baseline company brain: living documents, diagrams, whiteboards, slide decks, plans and tasks, improvements, and the self-learning knowledge graph that connects them.",
+      "toolSource": {
+        "remoteMcpServer": {
+          "mcpServerUrl": "https://api.stablebaseline.io/functions/v1/cloud-serve/mcp",
+          "mcpToolDescription": {
+            "file": "tools/stable-baseline-tools.json"
+          },
+          "authorization": {
+            "type": "OAuthPluginVault",
+            "referenceId": "REPLACE_ME__MINT_IN_YOUR_OWN_TENANT"
+          }
+        }
+      }
+    }
+  ],
+  "agentSkills": [
+    {
+      "folder": "skills/sb-find"
+    },
+    {
+      "folder": "skills/sb-author"
+    },
+    {
+      "folder": "skills/sb-diagram"
+    },
+    {
+      "folder": "skills/sb-whiteboard"
+    },
+    {
+      "folder": "skills/sb-deck"
+    },
+    {
+      "folder": "skills/sb-brand"
+    },
+    {
+      "folder": "skills/sb-meeting"
+    },
+    {
+      "folder": "skills/sb-plan"
+    },
+    {
+      "folder": "skills/sb-improve"
+    }
+  ]
+}

@@ -1,8 +1,17 @@
 # Microsoft distribution
 
-This folder holds everything needed to get the Stable Baseline MCP server **certified and published** through Microsoft, so it appears as a connector and agent tool across Copilot Studio, Microsoft 365 Copilot, and Power Platform.
+This folder holds everything needed to get the Stable Baseline MCP server **certified and published** through Microsoft, so it appears as a connector and agent tool across Copilot Studio, Microsoft 365 Copilot, Copilot Cowork, and Power Platform.
 
-Microsoft certifies MCP servers through the **connector certification program**: an MCP server is packaged and submitted like a Power Platform connector, then reviewed for security, reliability, compliance, and responsible AI.
+There are **two independent distribution paths**, each with its own package, its own Partner Center offer, and its own review:
+
+| Path | Folder | Surfaces | Tool surface |
+|---|---|---|---|
+| Power Platform connector | [`copilot-connector/`](./copilot-connector/) | Copilot Studio, Power Platform | Curated (~70, a Copilot Studio limit) |
+| Copilot Cowork plugin | [`cowork-plugin/`](./cowork-plugin/) | Copilot Cowork | Full 196, plus 9 Agent Skills |
+
+Both point at the same production endpoint and the same OAuth server. Neither supersedes the other — a change to the tool registry means rebuilding **both**.
+
+The connector path is described below. Microsoft certifies MCP servers through the **connector certification program**: an MCP server is packaged and submitted like a Power Platform connector, then reviewed for security, reliability, compliance, and responsible AI.
 
 ## Status
 
