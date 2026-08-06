@@ -95,7 +95,19 @@ async function checkOpenapiInSync() {
   }
 }
 
-// ─── Check 3: MCP endpoint returns 401 (not 405/404) ─────────────────────
+// ─── Check 3: MCP endpoint is routed, and gates the methods that touch data ──
+//
+// This probes `tools/call`, NOT `tools/list`. `initialize` and `tools/list` are
+// unauthenticated ON PURPOSE: every MCP host (ChatGPT, Claude, Copilot Cowork)
+// discovers the server before it has a token, and cloud-serve's own per-client
+// detection runs on that pre-auth `tools/list`. Asserting 401 there made this
+// check warn on correct behaviour every run, which is how a real regression
+// would have been missed in the noise.
+//
+// `tools/call` is the boundary that matters — nothing reaches a document, a
+// board or the knowledge graph without a bearer token — so that is what gets
+// the 401 assertion. The 405/404 arm still catches the SPA-fallback routing
+// break and an undeployed function, which was always this check's other job.
 async function checkMcpEndpointAuthRequired() {
   try {
     const res = await fetch(PROD_MCP_URL, {
@@ -104,14 +116,19 @@ async function checkMcpEndpointAuthRequired() {
         "Content-Type": "application/json",
         "mcp-protocol-version": "2025-03-26",
       },
-      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/list" }),
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        id: 1,
+        method: "tools/call",
+        params: { name: "listOrganisations", arguments: {} },
+      }),
     });
     if (res.status === 405) {
       fail(`[mcp] endpoint returned 405 — likely SPA fallback again, check api. vs app. routing`);
     } else if (res.status === 404) {
       fail(`[mcp] endpoint returned 404 — function may not be deployed`);
     } else if (res.status !== 401) {
-      warn(`[mcp] endpoint returned ${res.status} — expected 401 (auth required)`);
+      fail(`[mcp] tools/call returned ${res.status} unauthenticated — expected 401. A data-touching method must never answer without a bearer token.`);
     }
   } catch (err) {
     warn(`[mcp] reachability check failed: ${err.message}`);
