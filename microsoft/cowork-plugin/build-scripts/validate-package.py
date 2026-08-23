@@ -291,13 +291,70 @@ d = manifest["description"]
 check(len(d["short"]) <= 80, f"description.short is {len(d['short'])}/80 chars")
 check(len(d["full"]) <= 4000, f"description.full is {len(d['full'])}/4000 chars")
 check(len(d["full"].split()) <= 500, f"description.full is {len(d['full'].split())} words (store cap 500)")
+# NEVER waive this cap. On 2026-08-14 the 30-char limit was deliberately
+# exceeded (name.short set to the 34-char "Stable Baseline for Copilot Cowork"
+# so it would match name.full and the Partner Center name exactly) on the
+# theory that Microsoft's validation would either accept it or bounce it
+# loudly. It does neither: the tenant ACCEPTS the upload, the agentSkills
+# still load and appear in the UI, and the agentConnectors tool source is
+# silently dropped. The symptom is "plugin installed, skills listed, zero
+# actions", with no error shown anywhere and no request ever reaching our
+# MCP endpoint. It was diagnosable only from the server side, by noticing
+# that Cowork's runtime (agent-tools.cloud) had probed us every ~2 hours for
+# days and stopped dead at 23:34 UTC, the moment the over-cap package was
+# installed. Cost: most of a day. name.short and name.full simply cannot be
+# identical here; that is a schema fact, not a preference.
 check(len(manifest["name"]["short"]) <= 30, f"name.short is {len(manifest['name']['short'])}/30 chars")
 for f in d.get("features", []):
     check(len(f["title"]) <= 45 and len(f["description"]) <= 120, f"feature '{f['title']}' within length caps")
 BANNED = re.compile(r"\b(if the user says|ignore (?:all |your )?(?:previous )?instructions|new instructions|do not print|answer in bold)\b", re.I)
-for label, text in (("description.short", d["short"]), ("description.full", d["full"])):
+# Bare imperatives the store names as examples. Legitimate inside a skill BODY
+# (the model needs to be told a tool deletes things), but risky in a description
+# a reviewer keyword-scans, so they warn rather than fail.
+BANNED_SOFT = re.compile(r"\b(ignore|reset|delete)\b", re.I)
+# Broader than https?:// on purpose: a bare "stablebaseline.io" or "www.x.com"
+# is still a URL to a reviewer, and the old pattern let both through.
+URLISH = re.compile(r"(https?://\S+|www\.\S+|\b[\w-]+\.(?:io|com|net|org|ai|dev)\b)", re.I)
+
+# S6 binds "Short description, parameter descriptions, command descriptions,
+# semantic descriptions and operation IDs", which reaches every field below.
+# Checking only description.short/full let a real violation through a clean
+# 369-check run: sb-author's front matter carried "delete this document".
+_desc_fields = [
+    ("description.short", d["short"]),
+    ("description.full", d["full"]),
+]
+for f in d.get("features", []):
+    _desc_fields.append((f"feature '{f['title']}' title", f["title"]))
+    _desc_fields.append((f"feature '{f['title']}' description", f["description"]))
+for c in manifest.get("agentConnectors", []):
+    _desc_fields.append((f"connector '{c.get('id')}' displayName", c.get("displayName", "")))
+    _desc_fields.append((f"connector '{c.get('id')}' description", c.get("description", "")))
+for _sk in sorted((PKG / "skills").glob("*/SKILL.md")):
+    _fm = _sk.read_text(encoding="utf-8").split("---")
+    if len(_fm) > 2:
+        _m = re.search(r"^description:\s*(.+?)(?=^\w+:|\Z)", _fm[1], re.S | re.M)
+        if _m:
+            _desc_fields.append((f"skills/{_sk.parent.name} description", " ".join(_m.group(1).split())))
+
+# The URL ban is SCOPED, and the scope is the whole point.
+#
+# "Guidelines to Validate Agents" bans URLs in the SHORT description, parameter,
+# command and semantic descriptions [Must fix] -- those are strings the model
+# reads, where a URL is a prompt-injection surface.
+#
+# description.FULL is the opposite case: the Teams Store guidelines tell you to
+# "Hyperlink contact details, get started, help, or sign up in app description",
+# and validation ticket #5679244 raised MF-2 against us precisely BECAUSE the
+# long description carried no sign-up / get-started / contact / help links.
+# Banning URLs there made this validator demand the thing Microsoft rejects.
+URL_EXEMPT = {"description.full"}
+for label, text in _desc_fields:
     check(not BANNED.search(text), f"{label} has no banned instructional phrase")
-    check(not re.search(r"https?://", text), f"{label} contains no URL")
+    if label not in URL_EXEMPT:
+        check(not URLISH.search(text), f"{label} contains no URL")
+    if BANNED_SOFT.search(text):
+        warn(f"{label} contains a bare imperative a reviewer may flag")
 check(not re.search(r"\b(#1|amazing|best-in-class|the best)\b", d["full"], re.I), "description.full has no superlative claim")
 
 # ── package layout ─────────────────────────────────────────────────────────

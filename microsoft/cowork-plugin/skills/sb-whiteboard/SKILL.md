@@ -76,20 +76,15 @@ Pass explicit coordinates only for a deliberate layout in space you have confirm
 
 Predictable, no premium charge, and right for small or precise boards.
 
-**By the premium designer.** `autoDesignWhiteboard` requires `goal`. It runs a multi-agent
-pipeline that browses the stencil and icon library, composes the whole board, renders it,
-critiques the rendered image and refines. It runs in the background and returns a
-`sessionId` immediately; the board fills in over one to three minutes.
+**By the design agent, for decks and illustrations.** One-shot whole-board generation is
+not offered here. For polished output use the conversational designers in **sb-deck**:
+`designDeckInWhiteboard` for a slide deck and `designIllustrationInWhiteboard` for an
+illustration, each polled with `getDeckReplyInWhiteboard` until it reports `ready`. They
+are the mature path: you can refine them turn by turn and you can always tell the user
+exactly where the work is up to.
 
-It costs 50 credits per board and **requires explicit user approval**. Call it first without
-`confirm` to get the exact cost and the workspace credit balance, show that to the user, and
-only call again with `confirm: true` once they agree. If they decline or lack credits, build
-the board by hand with the standard tools at no extra charge. The 50 credits are refunded
-automatically if the design fails on the server side.
-
-`designProfile` changes what it builds: `branded-executive` produces an on-brand editable
-slide deck themed by the org's brand kit, `illustrated` produces an illustrated board.
-`brandKitId` selects a specific brand kit; see **sb-brand**.
+For anything else, author the board directly with the tools above. That is synchronous,
+free, and you see the result immediately.
 
 ## Editing
 
@@ -106,7 +101,7 @@ to part of it.
 ## Rendering and export
 
 `getWhiteboardImage` renders a board to an image so you and the user can see it. Exporting a
-**deck** that lives on a board to PowerPoint, PDF, PNG or HTML is `exportFromWhiteboard`,
+**deck** that lives on a board to PowerPoint, PDF or PNG is `exportFromWhiteboard`,
 which belongs to **sb-deck**.
 
 Look at the render before you tell the user the board is finished.
@@ -121,7 +116,7 @@ boards in one action without listing every title first.
 
 ## Credits
 
-`autoDesignWhiteboard` is the premium generator in this skill.
+The premium generators reachable from here are the **sb-deck** designers.
 
 - **Tell the user before running it and get explicit approval.** Use the two-call
   confirmation flow above rather than bypassing it with `confirm: true` on the first call.
@@ -133,10 +128,12 @@ boards in one action without listing every title first.
 ## Guardrails
 
 - **Never call organisation administration tools.** Nothing in the `organization`,
-  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. That
-  includes `inviteMember`, `updateMemberRole`, `removeMember`, `createTeam`,
-  `upsertResourcePermission`, `purchaseCreditPackage` and `updateOrgSettings`. If asked,
-  point to the Stable Baseline web app.
+  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. The
+  connector does not advertise those tools to Cowork, so they cannot be called. If asked,
+  say the plugin does not manage organisation settings, membership or billing, and point to
+  the Stable Baseline web app. Read only navigation and `kg_scope_status` remain available,
+  because they resolve scope.
+
 - **Stay in your lane.** Documents belong to sb-author, in-document diagrams to sb-diagram,
   decks and illustrations to sb-deck, live meeting capture to sb-meeting, plans to sb-plan,
   improvements to sb-improve.

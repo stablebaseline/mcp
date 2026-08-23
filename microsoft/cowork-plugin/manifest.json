@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.28/MicrosoftTeams.schema.json",
   "manifestVersion": "1.28",
-  "version": "3.0.0",
+  "version": "3.1.5",
   "id": "980270a4-293e-4860-88e4-ec11c8f8b1a0",
   "developer": {
     "name": "Orixian Solutions Pty Ltd",
@@ -10,24 +10,24 @@
     "termsOfUseUrl": "https://stablebaseline.io/terms"
   },
   "name": {
-    "short": "Stable Baseline",
-    "full": "Stable Baseline for Copilot Cowork"
+    "short": "Stable Baseline Workbench",
+    "full": "Stable Baseline Workbench"
   },
   "description": {
-    "short": "Search, write, plan, diagram and design in your Stable Baseline workspace.",
-    "full": "Connects Copilot Cowork to Stable Baseline, the agent-managed company brain from Orixian Solutions. Nine skills cover the content lifecycle: sb-find searches and reads across documents and the knowledge graph, sb-author writes and imports documents, sb-diagram generates flowcharts, sequence diagrams, ERDs, BPMN and infographics from diagram code, sb-whiteboard builds boards, sb-deck designs on-brand slide decks and illustrations and exports them to PowerPoint or PDF, sb-brand manages brand kits, sb-meeting runs the live meeting scribe, sb-plan builds plans, phases and tasks, and sb-improve tracks improvements and risks. Every call runs under the signed in user's own Stable Baseline identity and inherits their exact permissions, resolved at runtime. Organisation administration, member management, permissions and billing are deliberately excluded from every skill.",
+    "short": "Company knowledge graph, whiteboards, on-brand decks and a live meeting scribe.",
+    "full": "Stable Baseline gives agents for Microsoft 365 Copilot a company brain: an organisation's knowledge held as structured, persistent records rather than loose files. It is built for teams who research, document, plan and design together, across engineering, product, operations and consulting.\n\nWHAT IT ADDS\n\nA self-learning knowledge graph. Every document, board, plan and diagram is indexed into a graph of entities, relationships and community summaries, rebuilt as the corpus grows. Questions are answered from specific passages with citations, from thematic summaries across a project, or by tracing what connects two entities. Every answer carries the source title and a direct link back to the record.\n\nEditable diagrams and whiteboards. Diagrams are produced as real diagram code across families including flowcharts, sequence diagrams, ERDs, state machines, BPMN, Gantt charts and cloud architecture. The source is stored beside the render, so a diagram can be corrected later rather than redrawn. Whiteboards are infinite canvases with a stencil library, architecture icons, sticky notes and embedded diagrams that stay editable.\n\nOn-brand decks. A brand kit holds an organisation's palette, fonts and logo, taken from a logo file or mined from an existing PowerPoint or Word template, and is applied to generated decks and to PDF, Word and PowerPoint exports. Decks export to natively editable PowerPoint with real shapes and text.\n\nA live meeting scribe. A bot joins a Zoom, Google Meet, Microsoft Teams or Webex call and paints a shared whiteboard while the call runs: topic clusters, an agenda that ticks itself off, and decisions and actions pinned to rails. It transcribes only and keeps no recording.\n\nWork held as data. Plans, phases, tasks and dependencies are structured records rather than prose, and the improvements and risk register links evidence to the exact passage in a source document.\n\nSUPPORTED PRODUCTS\n\nMicrosoft 365 Copilot, including Copilot Cowork. The same workspace is reachable from the Stable Baseline web app and from any Model Context Protocol client.\n\nREQUIREMENTS AND LIMITATIONS\n\nThis app requires an active Stable Baseline account, and each user signs in with their own. Without one, no features are available. Some capabilities depend on your plan: AI chat, PDF export and advanced knowledge graph features require a Pro or Enterprise subscription, and audit logs require Enterprise. Generated design work, including decks, illustrations and the meeting scribe, consumes plan credits. The meeting scribe supports Zoom, Google Meet, Microsoft Teams and Webex only. Brand kit management requires an organisation owner or administrator role. Organisation administration, member management, permissions and billing are excluded from this app.\n\nGET STARTED AND SUPPORT\n\n[Sign up](https://app.stablebaseline.io/signup) | [Get started guide](https://stablebaseline.io/docs) | [Contact us](https://stablebaseline.io/contact) | [Plans and pricing](https://stablebaseline.io/pricing)\n\nEvery call runs under the signed in user's own identity. There is no shared key or service account in this package, and permissions are resolved at runtime, so a person sees exactly what they would see in the Stable Baseline web app.",
     "features": [
       {
-        "title": "Ask your company brain",
-        "description": "Search documents by content and answer questions from the knowledge graph, with citations and direct links."
+        "title": "Ask the knowledge graph, get cited answers",
+        "description": "Entity and community summaries across the whole workspace answer questions with source titles and direct links."
       },
       {
-        "title": "Write, diagram and design",
-        "description": "Author living documents, generate diagrams from code, build whiteboards, and design on-brand slide decks."
+        "title": "Diagrams, whiteboards and on-brand decks",
+        "description": "Editable diagram code, infinite canvases, and decks themed from your brand kit and exported to real PowerPoint."
       },
       {
-        "title": "Plan the work and track the risks",
-        "description": "Build plans, phases, tasks and dependencies, and keep an evidence-backed improvements and risk backlog."
+        "title": "Capture a live meeting on a shared board",
+        "description": "A scribe bot joins the call and paints topic clusters, agenda progress, decisions and actions onto a whiteboard."
       }
     ]
   },
@@ -40,7 +40,7 @@
     {
       "id": "stable-baseline",
       "displayName": "Stable Baseline",
-      "description": "The Stable Baseline company brain: living documents, diagrams, whiteboards, slide decks, plans and tasks, improvements, and the self-learning knowledge graph that connects them.",
+      "description": "The Stable Baseline company brain: a self-learning knowledge graph over the organisation's documents, boards, plans and diagrams, plus editable diagrams, whiteboards, on-brand decks and a live meeting scribe. Answers cite the source record.",
       "toolSource": {
         "remoteMcpServer": {
           "mcpServerUrl": "https://api.stablebaseline.io/functions/v1/cloud-serve/mcp",
@@ -49,7 +49,7 @@
           },
           "authorization": {
             "type": "OAuthPluginVault",
-            "referenceId": "REPLACE_ME__MINT_IN_YOUR_OWN_TENANT"
+            "referenceId": "ZTk1YzFkMjEtNDM1MC00OGJjLWE3ZTItNzZkODVjOWY1MWE4IyNiNGMyYzUwNy1iM2MzLTRjYWMtYTYxYS1iNWFkZWM2ZTY1NTg="
           }
         }
       }

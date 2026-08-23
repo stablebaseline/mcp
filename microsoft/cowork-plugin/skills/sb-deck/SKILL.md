@@ -3,7 +3,7 @@ name: sb-deck
 description: >-
   Builds and refines on-brand slide decks and illustrations inside a Stable Baseline
   whiteboard by conversing with the design agent, then exports them to editable PowerPoint,
-  PDF, PNG or HTML. Triggers on make a deck, build a presentation, slide deck, pitch deck,
+  PDF or PNG. Triggers on make a deck, build a presentation, slide deck, pitch deck,
   board deck, add a slide, restyle the deck, export to PowerPoint, export to PDF, draw an
   illustration, and on requests to refine a generated deck or picture. Boards themselves are
   sb-whiteboard, brand kits sb-brand, diagrams sb-diagram, documents sb-author.
@@ -120,12 +120,23 @@ Both designers return immediately. Poll `getDeckReplyInWhiteboard` with the whit
 |---|---|
 | `pptx` (default) | Native, fully editable PowerPoint with real shapes and text, not screenshots |
 | `pdf` | Vector, one page per slide |
-| `png` | One image per slide, returned as an array of base64 strings |
-| `html` | The self-contained deck HTML |
+| `png` | One image per slide, delivered as a download link per slide |
 
-The file comes back as base64 in `data`, or per-slide base64 in `slides` for png. The design
-must be finished; one that is still generating, failed or archived returns a clear message
-rather than a file.
+HTML is not an available format. The deck HTML is the design's source and the tool refuses
+it; do not ask for it or promise it.
+
+A small pptx or pdf comes back as base64 in `data`. Anything larger, and every png export,
+comes back as download links: `url` for the file, or one link per slide in `slideUrls`.
+The links stay available for one hour, so hand them to the user as returned.
+
+**Large decks finish in the background.** If the export cannot complete inside one call, the
+tool returns `status: 'exporting'` with a `jobId` instead of the file. That is progress, not
+failure: wait about 30 seconds and call `exportFromWhiteboard` again with the same
+arguments to collect it, repeating until `status` is `completed`. Nothing is re-exported
+while a job is running, so polling is safe and free.
+
+The design must be finished; one that is still generating, failed or archived returns a
+clear message rather than a file.
 
 Say which format you produced. Do not switch format silently if one fails.
 
@@ -149,8 +160,12 @@ occasional act. Do not create components as a side effect of building a deck.
   marked placeholders. Do not fabricate revenue figures, customer names, dates or quotes on
   a slide, where they look authoritative and get forwarded.
 - **Never call organisation administration tools.** Nothing in the `organization`,
-  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. Checking
-  a credit balance is fine. Buying credits is not.
+  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. The
+  connector does not advertise those tools to Cowork, so they cannot be called. If asked,
+  say the plugin does not manage organisation settings, membership or billing, and point to
+  the Stable Baseline web app. Read only navigation and `kg_scope_status` remain available,
+  because they resolve scope.
+
 - **Stay in your lane.** Board layout belongs to sb-whiteboard, brand kits to sb-brand,
   diagrams to sb-diagram, documents to sb-author.
 - **On `accessDenied`**, report plainly:

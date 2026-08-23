@@ -121,21 +121,21 @@ Creating twenty tasks unprompted from a rambling transcript is the failure mode 
 
 ## Credits
 
-Some operations spend credits, including deep research, uploads and parsing.
-
-- Tell the user before running one.
-- For any `preview` then `apply` pair, run the preview, show the previewed cost, wait for
-  explicit approval.
-- Never call a spending tool speculatively or in a loop.
+Nothing in this skill spends credits, and the cascade preview shows date movement, not a
+cost. The paid operations elsewhere in the plugin are the sb-deck designers and the
+sb-meeting scribe, each with its own quote-and-confirm flow. The approval rule for
+`previewTaskDependencyCascade` then `applyTaskDependencyCascade` stands on impact: show
+what moves, then wait for a yes.
 
 ## Guardrails
 
 - **Never call organisation administration tools.** Nothing in the `organization`,
-  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. That
-  includes `inviteMember`, `updateMemberRole`, `removeMember`, `createTeam`,
-  `upsertResourcePermission`, `purchaseCreditPackage` and `updateOrgSettings`. Assigning a
-  task to an existing member is fine. Inviting a new member is not. If asked, point to the
-  Stable Baseline web app.
+  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. The
+  connector does not advertise those tools to Cowork, so they cannot be called. If asked,
+  say the plugin does not manage organisation settings, membership or billing, and point to
+  the Stable Baseline web app. Read only navigation and `kg_scope_status` remain available,
+  because they resolve scope.
+
 - **Stay in your lane.** Documents belong to sb-author, diagrams to sb-diagram, improvements
   to sb-improve, whiteboards to sb-whiteboard, decks to sb-deck. Hand off rather than
   reaching for their tools.

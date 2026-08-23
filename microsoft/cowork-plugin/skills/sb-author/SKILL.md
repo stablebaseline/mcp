@@ -3,7 +3,7 @@ name: sb-author
 description: >-
   Creates and edits documents in Stable Baseline, and turns uploaded PDF, Word, text or
   Markdown files into documents. Triggers on write, draft, create a doc, add a section,
-  update the doc, fix the wording, rename, delete this document, move it to a folder, insert
+  update the doc, fix the wording, requests to rename, remove or move a document, insert
   an image, and on requests to import or convert a file into Stable Baseline. Diagrams are
   sb-diagram. Finding or reading without changing anything is sb-find. Plans and tasks are
   sb-plan, improvements sb-improve, whiteboards sb-whiteboard, decks sb-deck.
@@ -85,31 +85,25 @@ made. For a single targeted change, prefer `editDocument`.
 
 ## Bringing files in
 
-Three steps, in order:
+Converting an existing PDF or DOCX into a document is not available here. That path needs a
+direct HTTP upload, which this host cannot perform, so the tools for it are deliberately not
+offered. If a user asks, say so plainly and offer the alternatives: paste or summarise the
+content and author it with `createDocument`, or do the file conversion in the Stable
+Baseline web app, which accepts PDF, DOCX, plain text and Markdown up to 150 MB.
 
-1. `createDocumentIngestSession` with `projectId`, `fileName` and `mimeType`. It mints a
-   single-use PUT upload URL and returns `{sessionId, uploadUrl, expiresAt, maxBytes}`.
-   Accepts PDF, DOCX, plain text and Markdown up to 150 MB.
-2. PUT the raw bytes to `uploadUrl`.
-3. `createDocumentFromUpload` with `sessionId` and `projectId`. It returns `{jobId,
-   documentId}` immediately and populates the document asynchronously. Poll
-   `getDocumentIngestJob` with the `jobId` until it finishes.
-
-It is idempotent on `sessionId`, so a repeated call returns the same job rather than a
-duplicate document. Tell the user the document is being populated in the background and
-report when the job completes.
+Never invent an upload link, and never ask the user to open one.
 
 ## Images
 
-`createImageUploadSession` then `insertImageInDocument`. `getImageInDocument`,
+Use `insertImageInDocument` directly. Pass the user's attached file to its `imageBase64`
+parameter: this host resolves a workspace file into the bytes for you, so never paste base64
+into the conversation and never ask the user for an upload link. `imageBase64`,
+`imageBinary` and `imageUrl` are mutually exclusive. `getImageInDocument`,
 `updateImageInDocument` and `deleteImageInDocument` manage images already in place.
-`insertImageInDocument` takes `imageBase64`, `imageBinary` or `imageUrl`, and they are
-mutually exclusive. When the user attaches a file in Cowork, pass the workspace file rather
-than pasting base64 into the conversation.
 
-For data-driven charts, `createVegaDataUploadSession` turns CSV, JSON or TSV into a data
-file a Vega diagram can reference, and `deleteVegaDataFile` removes one. The diagram itself
-belongs to **sb-diagram**.
+Attaching a separate CSV, JSON or TSV data file to a chart is not available here, for the
+same reason as file conversion above. Put the series inline in the diagram code, or prepare
+the data file in the Stable Baseline web app. The diagram itself belongs to **sb-diagram**.
 
 ## Deleting
 
@@ -124,24 +118,20 @@ another edit, or tell the user and let them decide.
 
 ## Credits
 
-Some operations spend credits: file uploads and parsing, image and data ingestion, deep
-research, and web fetches.
-
-- Tell the user before running one, and say roughly what it will cost if a preview is
-  available.
-- For any `preview` then `apply` pair, always run the preview, show the previewed cost, and
-  wait for explicit approval before calling `apply`.
-- Never call a spending tool speculatively or in a loop.
+Nothing in this skill spends credits. The paid operations elsewhere in the plugin are the
+sb-deck designers and the sb-meeting scribe, and each carries its own quote-and-confirm
+flow. Never tell a user an authoring edit cost credits, and never call a spending tool from
+here.
 
 ## Guardrails
 
 - **Never call organisation administration tools.** Nothing in the `organization`,
-  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. That
-  includes `createOrganisation`, `createWorkspace`, `createProject`, `inviteMember`,
-  `updateMemberRole`, `removeMember`, `createTeam`, `upsertResourcePermission`,
-  `purchaseCreditPackage`, `setKgWorkspaceScope`, `triggerKgRebuild` and `updateOrgSettings`.
-  If asked, say the plugin does not manage organisation settings and point to the Stable
-  Baseline web app.
+  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. The
+  connector does not advertise those tools to Cowork, so they cannot be called. If asked,
+  say the plugin does not manage organisation settings, membership or billing, and point to
+  the Stable Baseline web app. Read only navigation and `kg_scope_status` remain available,
+  because they resolve scope.
+
 - **Stay in your lane.** Diagrams belong to sb-diagram, plans and tasks to sb-plan,
   improvements to sb-improve, whiteboards to sb-whiteboard, decks and illustrations to
   sb-deck. Hand off rather than reaching for their tools.

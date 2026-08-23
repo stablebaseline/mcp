@@ -144,13 +144,12 @@ Read before you answer. Do not summarise a document from its title.
   do not refuse. If the user asks to find something and then change it, complete the find,
   then continue into the authoring skill.
 - **Never call organisation administration tools.** Nothing in the `organization`,
-  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. That
-  includes `createOrganisation`, `createWorkspace`, `createProject`, `inviteMember`,
-  `updateMemberRole`, `removeMember`, `createTeam`, `upsertResourcePermission`,
-  `purchaseCreditPackage`, `setKgWorkspaceScope`, `triggerKgRebuild` and `updateOrgSettings`.
-  If asked, say the plugin does not manage organisation settings and point to the Stable
-  Baseline web app. Read only navigation and `kg_scope_status` are the exception, because
-  they resolve scope.
+  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. The
+  connector does not advertise those tools to Cowork, so they cannot be called. If asked,
+  say the plugin does not manage organisation settings, membership or billing, and point to
+  the Stable Baseline web app. Read only navigation and `kg_scope_status` remain available,
+  because they resolve scope.
+
 - **A confirmation prompt is a real signal.** Every read tool this skill uses, including all
   nine `kg_*` tools, is annotated read-only, so a search should not raise one. If Cowork does
   ask the user to approve something, a tool that writes or deletes has been reached, which

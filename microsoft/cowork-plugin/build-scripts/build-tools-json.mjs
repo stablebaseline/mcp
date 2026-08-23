@@ -158,15 +158,25 @@ async function main() {
 
   let tools = await fetchLiveTools();
   const liveCount = tools.length;
-  const report = { phraseFixes: [], punct: 0, contentEncoding: [], dropped: 0 };
+  const report = { phraseFixes: [], punct: 0, contentEncoding: [], dropped: 0, openaiKeysStripped: 0, widgetTools: new Set() };
 
-  if (curated) {
-    // Node 24 strips TypeScript types natively, so the policy module imports as-is.
-    const { COPILOT_TOOL_ALLOWLIST } = await import(pathToFileURL(CLIENT_POLICY).href);
+  // Node 24 strips TypeScript types natively, so the policy module imports as-is.
+  // Reading the allowlist straight out of the server's own source is the point:
+  // this script fetches tools/list WITHOUT a bearer token, so the server cannot
+  // know the caller is Cowork and always returns the full surface. Applying the
+  // same set the server applies is what keeps the packaged file equal to what a
+  // real Cowork client receives, which is what S3 requires.
+  const { COPILOT_TOOL_ALLOWLIST, COWORK_TOOL_ALLOWLIST } =
+    await import(pathToFileURL(CLIENT_POLICY).href);
+
+  // `--curated` reproduces the POWER PLATFORM connector's file. It is not for
+  // Cowork: that allowlist has no deck, brand-kit or meeting-scribe tools.
+  const allowlist = curated ? COPILOT_TOOL_ALLOWLIST : COWORK_TOOL_ALLOWLIST;
+  {
     const before = tools.length;
-    tools = tools.filter((t) => COPILOT_TOOL_ALLOWLIST.has(t.name));
+    tools = tools.filter((t) => allowlist.has(t.name));
     report.dropped = before - tools.length;
-    const missing = [...COPILOT_TOOL_ALLOWLIST].filter((n) => !tools.some((t) => t.name === n));
+    const missing = [...allowlist].filter((n) => !tools.some((t) => t.name === n));
     if (missing.length) {
       throw new Error(`allowlist names ${missing.join(", ")} are not in the live tools/list`);
     }
@@ -223,6 +233,45 @@ async function main() {
     report.contentEncoding.push(`${toolName}.${param}`);
   }
 
+  // ── 3. Cowork widget dialect ────────────────────────────────────────────
+  // S3 requires this file to "match the schema returned by your MCP server's
+  // tools/list response". It cannot be taken verbatim: this script fetches
+  // tools/list with no bearer token, so the server has no way to know the
+  // caller is Cowork and returns the GENERIC dual-dialect `_meta`. A real
+  // Cowork client presents a token carrying the `hc` claim and gets the
+  // SEP-1865 dialect, with every `openai/*` key stripped.
+  //
+  // So the packaged file has to be transformed to match what Cowork actually
+  // receives, not what an anonymous fetch receives. Mirrors
+  // toCoworkResourceMeta() in cloud-serve/resources/widgetMeta.ts — that
+  // function is the source of truth and this is a deliberate duplicate,
+  // because it lives in Deno TS and this is a Node script. The assertion below
+  // fails the build if the two ever drift apart in the direction that matters.
+  for (const t of tools) {
+    if (!t._meta || typeof t._meta !== "object") continue;
+    for (const k of Object.keys(t._meta)) {
+      if (k.startsWith("openai/")) {
+        delete t._meta[k];
+        report.openaiKeysStripped += 1;
+      }
+    }
+    if (t._meta.ui && typeof t._meta.ui === "object") {
+      delete t._meta.ui.domain;        // documented as having no effect in Cowork
+      delete t._meta.ui.prefersBorder; // OpenAI-only hint
+    }
+    report.widgetTools.add(t.name);
+  }
+
+  // Guard: nothing OpenAI-shaped may reach the package. A leak here is the
+  // exact ambiguity that made Cowork render "uses a format that isn't
+  // supported here yet" — a resource carrying BOTH dialects at once.
+  const leaked = tools
+    .filter((t) => t._meta && Object.keys(t._meta).some((k) => k.startsWith("openai/")))
+    .map((t) => t.name);
+  if (leaked.length) {
+    throw new Error(`openai/* keys survived the Cowork strip: ${leaked.join(", ")}`);
+  }
+
   // Guard: the package must be pure ASCII.
   const stray = nonAscii(tools);
   if (stray.size > 0) {
@@ -250,10 +299,11 @@ async function main() {
   fs.writeFileSync(outFile, body);
   console.log(`wrote ${outFile}`);
   console.log(`  tools from live tools/list : ${liveCount}`);
-  console.log(`  surface                    : ${curated ? `curated (${report.dropped} dropped, ${names.length} kept)` : `full (${names.length})`}`);
+  console.log(`  surface                    : ${curated ? `Power Platform (${report.dropped} dropped, ${names.length} kept)` : `Cowork (${report.dropped} dropped, ${names.length} kept)`}`);
   console.log(`  emoji phrase fixes         : ${report.phraseFixes.join(", ")}`);
   console.log(`  punctuation substitutions  : ${report.punct}`);
   console.log(`  contentEncoding added to   : ${report.contentEncoding.join(", ")}`);
+  console.log(`  cowork dialect             : ${report.openaiKeysStripped} openai/* keys stripped from ${report.widgetTools.size} widget tools`);
   console.log(`  bytes                      : ${Buffer.byteLength(body)}`);
 }
 

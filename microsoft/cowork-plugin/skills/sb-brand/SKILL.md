@@ -63,13 +63,13 @@ worse than having none.
 
 ## Choosing where a kit applies
 
-`setDefaultBrandKit` requires `scope` and `scopeId`. Scope is `organization`, `workspace` or
-`project`.
+`setDefaultBrandKit` requires `scope` and `scopeId`. Scope is `organization`, `workspace`,
+`project`, `folder` or `document`.
 
-Defaults cascade most-specific-first: a per-board or per-document override beats project,
-which beats workspace, which beats organisation. Set the broadest scope that is actually
-true. An organisation default is usually right; a project-level default is for a genuinely
-separate sub-brand.
+Defaults cascade most-specific-first: document beats the nearest folder up the folder chain,
+which beats project, which beats workspace, which beats organisation. Set the broadest scope
+that is actually true. An organisation default is usually right; a narrower default is for a
+genuinely separate sub-brand.
 
 Pass `brandKitId: null` to clear a default at a scope.
 
@@ -80,18 +80,18 @@ user to agree.
 ## Using a kit
 
 Every design call takes an optional `brandKitId`: `designDeckInWhiteboard`,
-`designIllustrationInWhiteboard`, `autoDesignWhiteboard` (particularly with
-`designProfile: 'branded-executive'`), `designComponent` and `exportFromWhiteboard`.
+`designIllustrationInWhiteboard`, `designComponent` and `exportFromWhiteboard`.
 
 Pass it explicitly when the user names a specific brand. Otherwise let the default cascade
 do its job rather than pinning a kit on every call.
 
 ## Guardrails
 
-- **Brand kits are the only settings-category tools this package uses.** Do not call
-  `updateOrgSettings`, `updateOrgFeatureFlags`, `updateUserPreferences` or anything in the
-  `organization`, `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup`
-  categories. If the user wants those, point them to the Stable Baseline web app.
+- **Brand kits are the only settings-category tools this package uses.** Organisation
+  settings, feature flags and user preferences are not part of this connector, nor is
+  anything in the `organization`, `members`, `teams`, `permissions`, `billing`, `kg_admin`
+  or `signup` categories. The connector does not advertise those tools to Cowork, so they
+  cannot be called. If the user wants those, point them to the Stable Baseline web app.
 - **Never invent brand values.** No guessed hex codes, no assumed font names, no logo URL
   you have not been given. Ask.
 - **Do not fetch a logo from an arbitrary URL the user has not supplied.** Use what they

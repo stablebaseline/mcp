@@ -8,7 +8,7 @@ different distribution path from [`../copilot-connector/`](../copilot-connector/
 | Packaged as | Power Platform connector solution | Unified M365 app package (zip) |
 | Submitted through | Partner Center → Connectors & Agents in Copilot Studio | Partner Center → Microsoft 365 and Copilot |
 | Surfaces | Copilot Studio, Power Platform | Copilot Cowork |
-| Tool surface | Curated (~70, a Copilot Studio connector limit) | **Full 196** |
+| Tool surface | Curated (~70, a Copilot Studio connector limit) | **119** (everything except org administration, billing and upload-session tools, which the connector does not advertise to Cowork) |
 | Adds | — | 9 **Agent Skills** that teach the model our workflows |
 
 Both point at the same production MCP server:
@@ -21,8 +21,9 @@ Both point at the same production MCP server:
 | `manifest.json` | Unified M365 app manifest (schema **v1.28**). Declares `agentConnectors` (the MCP server + OAuth) and `agentSkills` (the nine skills below). |
 | `skills/` | Nine Agent Skills, one `SKILL.md` each. These are instructions, not code — they tell the model which tools to reach for and in what order. |
 | `color.png`, `outline.png` | Store icons (full-colour and monochrome outline). |
-| `build-scripts/build-tools-json.mjs` | Generates `tools/stable-baseline-tools.json` from the **live** `tools/list`. |
-| `build-scripts/validate-package.py` | 367 pre-submission checks: manifest schema, icon geometry, ASCII-only descriptions, skill/tool cross-references, package layout. |
+| `build-scripts/build-tools-json.mjs` | Generates `tools/stable-baseline-tools.json` from the **live** `tools/list`. Run it plain for the Cowork surface; `--curated` reproduces the smaller Copilot Studio connector surface and is NOT what this package ships. |
+| `build-scripts/make-icons.py` | Renders `color.png` and `outline.png` from the brand geometry. Needs `cairosvg` and `Pillow`. |
+| `build-scripts/validate-package.py` | 325 pre-submission checks: manifest schema, icon geometry, ASCII-only descriptions, skill/tool cross-references, package layout. |
 
 ### The skills
 
