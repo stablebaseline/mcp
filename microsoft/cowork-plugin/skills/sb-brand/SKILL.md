@@ -87,11 +87,13 @@ do its job rather than pinning a kit on every call.
 
 ## Guardrails
 
-- **Brand kits are the only settings-category tools this package uses.** Organisation
-  settings, feature flags and user preferences are not part of this connector, nor is
-  anything in the `organization`, `members`, `teams`, `permissions`, `billing`, `kg_admin`
-  or `signup` categories. The connector does not advertise those tools to Cowork, so they
-  cannot be called. If the user wants those, point them to the Stable Baseline web app.
+- **Brand kits are the only settings-category tools this skill uses.** One other
+  settings tool exists on this connector, `updateOrgFeatureFlags`, for org admins
+  toggling feature modules, but it is outside this skill's scope. General organisation
+  settings and user preferences are not part of this connector, nor is anything in the
+  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories; the
+  connector does not advertise those tools to Cowork, so they cannot be called. If the
+  user wants those, point them to the Stable Baseline web app.
 - **Never invent brand values.** No guessed hex codes, no assumed font names, no logo URL
   you have not been given. Ask.
 - **Do not fetch a logo from an arbitrary URL the user has not supplied.** Use what they
