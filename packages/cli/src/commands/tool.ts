@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import { makeSdkClient } from "../client.js";
 
 export function registerToolCommands(program: Command) {
-  const tool = program.command("tool").description("Direct tool dispatch — call any of the 184 MCP tools.");
+  const tool = program.command("tool").description("Direct tool dispatch: call any Stable Baseline MCP tool.");
 
   tool
     .command("list")
@@ -35,7 +35,7 @@ export function registerToolCommands(program: Command) {
         console.log(kleur.bold(kleur.cyan(cat)) + kleur.dim(` (${byCategory.get(cat)!.length})`));
         for (const t of byCategory.get(cat)!) {
           const desc = t.description.slice(0, 80) + (t.description.length > 80 ? "…" : "");
-          console.log(`  ${kleur.green(t.name)} ${kleur.dim("— " + desc)}`);
+          console.log(`  ${kleur.green(t.name)}  ${kleur.dim(desc)}`);
         }
         console.log("");
       }

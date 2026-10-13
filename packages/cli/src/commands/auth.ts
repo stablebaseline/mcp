@@ -10,7 +10,7 @@ import {
 import { makeSdkClient } from "../client.js";
 
 const OAUTH_AUTHORIZE_URL = "https://app.stablebaseline.io/oauth/authorize";
-const KEYS_PAGE = "https://app.stablebaseline.io/settings/mcp-keys";
+const KEYS_PAGE = "https://app.stablebaseline.io/settings/developers";
 
 export function registerAuthCommands(program: Command) {
   const auth = program.command("auth").description("Sign in / out and inspect the active credential.");

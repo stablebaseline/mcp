@@ -1,8 +1,8 @@
-# @stablebaseline/cli — `sb`
+# @stablebaseline/cli: `sb`
 
 [![npm](https://img.shields.io/npm/v/@stablebaseline/cli?color=orange)](https://www.npmjs.com/package/@stablebaseline/cli)
 
-Command-line client for **[Stable Baseline](https://stablebaseline.io)** — the simplest, most complete, end-to-end agent-managed company brain. Drive 196 MCP tools (docs, diagrams, plans, Knowledge Graph, members, billing, settings) from your terminal.
+Command-line client for **[Stable Baseline](https://stablebaseline.io)**: the simplest, most complete, end-to-end agent-managed company brain. Drive 219 MCP tools (docs, diagrams, plans, databases, agents, Knowledge Graph, members, billing, settings) from your terminal.
 
 ## Install
 
@@ -19,7 +19,7 @@ npx @stablebaseline/cli auth login --api-key sta_...
 ## First-time setup
 
 ```bash
-# Mint a key at app.stablebaseline.io/settings/mcp-keys, then:
+# Create a key at app.stablebaseline.io/settings/developers, then:
 sb auth login --api-key sta_xxx
 
 sb auth whoami
@@ -39,12 +39,13 @@ sb tool list                          # all categories grouped
 sb tool list --category=documents     # filter by category
 sb tool search "schedule a task"      # natural-language search
 
-# Call any tool (196 of them)
+# Call any tool (219 of them)
 sb tool call listOrganisations
 sb tool call createDocument --json '{"folderId":"<uuid>","title":"X","cdmd":"# Hi"}'
 sb tool call kg_search --json '{"query":"compliance posture","mode":"global"}' --pretty
+sb tool call queryDatabaseRows --json '{"databaseId":"DB-12","table":"Deals","summaries":[{"fn":"count"}],"groupBy":["Stage"]}' --pretty
 
-# JSON output is the default — pipe into jq for filtering
+# JSON output is the default: pipe into jq for filtering
 sb tool call listProjects --json '{"workspaceId":"<uuid>"}' | jq '.[].name'
 
 # Use a JSON file for big inputs
@@ -56,7 +57,7 @@ sb tool call insertDiagramInDocument --json-file diagram.json
 | Source | How |
 |---|---|
 | **API key** (recommended for scripts/CI) | `sb auth login --api-key sta_...` writes to `~/.config/stablebaseline/auth.json` (0600 perms). |
-| **Env override** | `SB_API_KEY=sta_...` or `SB_ACCESS_TOKEN=...` — wins over the on-disk credential. Useful for CI. |
+| **Env override** | `SB_API_KEY=sta_...` or `SB_ACCESS_TOKEN=...` wins over the on-disk credential. Useful for CI. |
 | **OAuth (browser)** | `sb auth login` opens the browser. Full PKCE-loopback in CLI v0.2; for now, paste the access token via `SB_ACCESS_TOKEN`. |
 
 Forget the credential:
@@ -73,7 +74,7 @@ By default `sb tool call` prints compact JSON to stdout (machine-friendly). Use 
 
 ## What this CLI is (and isn't)
 
-It's a **thin formatter on top of the [Stable Baseline REST API](https://api.stablebaseline.io/functions/v1/cloud-serve/api/v1/docs)** — every command maps to a single REST call against the same handlers the MCP server uses. There is no business logic in this package; if a feature works on the MCP server, it works here on the same day, no CLI release needed.
+It's a **thin formatter on top of the [Stable Baseline REST API](https://api.stablebaseline.io/functions/v1/cloud-serve/api/v1/docs)**: every command maps to a single REST call against the same handlers the MCP server uses. There is no business logic in this package; if a feature works on the MCP server, it works here on the same day, no CLI release needed.
 
 ## Companion packages
 
@@ -86,4 +87,4 @@ It's a **thin formatter on top of the [Stable Baseline REST API](https://api.sta
 
 ## License
 
-MIT — see [LICENSE](../../LICENSE) at the repo root. The Stable Baseline product itself is proprietary SaaS at [stablebaseline.io](https://stablebaseline.io).
+MIT, see [LICENSE](../../LICENSE) at the repo root. The Stable Baseline product itself is proprietary SaaS at [stablebaseline.io](https://stablebaseline.io).
