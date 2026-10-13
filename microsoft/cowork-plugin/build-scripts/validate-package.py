@@ -367,11 +367,14 @@ check((PKG / "skills").is_dir(), "skills/ is at the package root")
 # ── skills reference only real tools ───────────────────────────────────────
 print("\n[9] Skill tool references")
 # Tokens shaped like a tool name: a verb prefix followed by CamelCase, or kg_*.
+# ask, delegate, approve, save, write, import and query cover the agent and database tools
+# (askAgent, saveDatabaseDashboard, writeDatabaseRows and the rest); without them a misspelt
+# one of those names in a skill would pass this check unseen.
 TOOLISH = re.compile(
     r"^(?:kg_[a-z_]+|(?:get|list|create|update|delete|search|add|remove|insert|render|export|"
     r"start|stop|poll|preview|apply|design|auto|trace|data|duplicate|find|reorder|set|cancel|"
     r"accept|dismiss|invite|resend|grant|revoke|upsert|reactivate|purchase|quote|rebuild|reset|"
-    r"trigger|edit)[A-Z]\w*)$"
+    r"trigger|edit|ask|delegate|approve|save|write|import|query)[A-Z]\w*)$"
 )
 tool_names: set[str] = set()
 # Parameter names and annotation categories are legitimate backticked tokens that

@@ -8,8 +8,8 @@ different distribution path from [`../copilot-connector/`](../copilot-connector/
 | Packaged as | Power Platform connector solution | Unified M365 app package (zip) |
 | Submitted through | Partner Center → Connectors & Agents in Copilot Studio | Partner Center → Microsoft 365 and Copilot |
 | Surfaces | Copilot Studio, Power Platform | Copilot Cowork |
-| Tool surface | Curated (~70, a Copilot Studio connector limit) | **119** (everything except org administration, billing and upload-session tools, which the connector does not advertise to Cowork) |
-| Adds | — | 9 **Agent Skills** that teach the model our workflows |
+| Tool surface | Curated (~70, a Copilot Studio connector limit) | Curated to the tools its skills use: **140** with the database and agent tools (everything except organisation administration, billing and upload-session tools, which the connector does not advertise to Cowork) |
+| Adds | Nothing | 13 **Agent Skills** that teach the model our workflows |
 
 Both point at the same production MCP server:
 `https://api.stablebaseline.io/functions/v1/cloud-serve/mcp`.
@@ -18,12 +18,12 @@ Both point at the same production MCP server:
 
 | Path | Purpose |
 |---|---|
-| `manifest.json` | Unified M365 app manifest (schema **v1.28**). Declares `agentConnectors` (the MCP server + OAuth) and `agentSkills` (the nine skills below). |
-| `skills/` | Nine Agent Skills, one `SKILL.md` each. These are instructions, not code — they tell the model which tools to reach for and in what order. |
+| `manifest.json` | Unified M365 app manifest (schema **v1.28**). Declares `agentConnectors` (the MCP server + OAuth) and `agentSkills` (the thirteen skills below). |
+| `skills/` | Thirteen Agent Skills, one `SKILL.md` each. These are instructions, not code: they tell the model which tools to reach for and in what order. |
 | `color.png`, `outline.png` | Store icons (full-colour and monochrome outline). |
 | `build-scripts/build-tools-json.mjs` | Generates `tools/stable-baseline-tools.json` from the **live** `tools/list`. Run it plain for the Cowork surface; `--curated` reproduces the smaller Copilot Studio connector surface and is NOT what this package ships. |
 | `build-scripts/make-icons.py` | Renders `color.png` and `outline.png` from the brand geometry. Needs `cairosvg` and `Pillow`. |
-| `build-scripts/validate-package.py` | 325 pre-submission checks: manifest schema, icon geometry, ASCII-only descriptions, skill/tool cross-references, package layout. |
+| `build-scripts/validate-package.py` | Over 400 pre-submission checks: manifest schema, icon geometry, ASCII-only descriptions, skill/tool cross-references, package layout. |
 
 ### The skills
 
@@ -32,12 +32,21 @@ Both point at the same production MCP server:
 | `sb-find` | Locating artefacts and answering questions from content |
 | `sb-author` | Writing and editing documents in CDMD |
 | `sb-diagram` | Generating diagrams across 40+ DSL families |
-| `sb-whiteboard` | Authoring Excalidraw boards |
+| `sb-whiteboard` | Authoring whiteboards |
 | `sb-deck` | Branded deck generation |
 | `sb-brand` | Brand kits |
 | `sb-plan` | Plans, phases, tasks, dependencies |
 | `sb-improve` | Improvements, risks and follow-ups |
 | `sb-meeting` | The meeting scribe |
+| `sb-database` | Databases: tables, fields, views, forms, rows, CSV import and export |
+| `sb-dashboard` | Live dashboards over database tables |
+| `sb-agent` | The organisation's agents: ask, delegate, follow a job, decide its proposals, undo |
+| `sb-connect` | Connecting a Microsoft 365 mailbox and using it in an agent's duty |
+
+The four skills from `sb-database` down use the database and agent tools. They need
+the server to advertise those tools to Cowork; until it does, the generated tool file
+does not hold them and the validator fails those four skills for naming tools it cannot
+find.
 
 ## `tools/stable-baseline-tools.json` is generated, not committed
 
@@ -61,13 +70,16 @@ the build report so the divergence is never silent:
 ## Build
 
 ```bash
-# 1. Generate the tool file from the live server (no auth needed for tools/list)
-node build-scripts/build-tools-json.mjs
+# Run from this folder.
+# 1. Generate the tool file from the live server (no auth needed for tools/list).
+#    SB_REPO points at the server source that holds the Cowork tool list.
+node build-scripts/build-tools-json.mjs tools/stable-baseline-tools.json
 
-# 2. Validate before zipping
-python build-scripts/validate-package.py
+# 2. Validate before zipping. The second argument is a folder holding the
+#    downloaded schema-1.28.json and schema-1.29.json (MicrosoftTeams.schema.json).
+python build-scripts/validate-package.py . <schema-folder>
 
-# 3. Zip — everything must sit at the archive ROOT, not inside a folder
+# 3. Zip. Everything must sit at the archive ROOT, not inside a folder
 #    PowerShell:
 Compress-Archive -Path manifest.json, color.png, outline.png, tools, skills `
   -DestinationPath stable-baseline-cowork.zip
@@ -75,13 +87,13 @@ Compress-Archive -Path manifest.json, color.png, outline.png, tools, skills `
 zip -r stable-baseline-cowork.zip manifest.json color.png outline.png tools/ skills/
 ```
 
-The zip is gitignored — it is a build output, rebuilt from these sources.
+The zip is gitignored: it is a build output, rebuilt from these sources.
 
 ## Widget rendering
 
 Cowork renders interactive UI widgets from the MCP server following the
 [MCP Apps Extension (SEP-1865)](https://github.com/modelcontextprotocol/ext-apps).
-**Nothing in this package configures that** — the unified manifest has no UI or
+**Nothing in this package configures that**: the unified manifest has no UI or
 widget surface at any schema version. Widget behaviour is entirely server-side,
 so a widget problem is never fixed by rebuilding this zip.
 

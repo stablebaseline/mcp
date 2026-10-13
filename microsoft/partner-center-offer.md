@@ -24,7 +24,7 @@ Note: this offer type has **no listing description or screenshot fields**. The p
 |---|---|
 | **SAS URI** | **Mint at submission time and never store a live SAS anywhere in this repo, which is public.** Upload the connector zip to the release storage account, mint a short-lived read-only SAS, and paste the freshly minted URL straight into Partner Center. The account name, container and command are in the internal runbook, not here. |
 | **Client ID** | `ee6bb6b0-05e1-484c-a922-c3499f473635` |
-| **Client Secret** | the secret for that OAuth client (created in Stable Baseline → Settings → MCP Setup → OAuth Clients; held in the password manager — never in this repo) |
+| **Client Secret** | the secret for that OAuth client (created in Stable Baseline under Organisation settings, Connected apps, Developers, OAuth apps; held in the password manager, never in this repo) |
 
 Then **Save draft**.
 

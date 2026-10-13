@@ -3,7 +3,7 @@ name: sb-diagram
 description: >-
   Generates and edits diagrams in Stable Baseline from diagram code: flowcharts, sequence
   diagrams, ERDs, state machines, BPMN, Gantt charts, cloud architecture, mind maps, Vega
-  charts and AntV infographics. Triggers on draw a diagram, make a flowchart, sequence
+  charts and infographics. Triggers on draw a diagram, make a flowchart, sequence
   diagram, ERD, state machine, BPMN, org chart, architecture diagram, chart this data,
   render this Mermaid, infographic, and on requests to fix or restyle an existing diagram.
   Documents themselves are sb-author, whiteboards sb-whiteboard, slide decks sb-deck,
@@ -11,7 +11,7 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Stable Baseline: diagrams
@@ -43,7 +43,7 @@ render error the user sees.
 
 For an **infographic**, call `searchInfographicTemplates` first with a description of the
 intent, for example "compare two options", "process timeline", "pyramid of priorities". It
-ranks 276 AntV templates and returns a `key` that becomes line 1 of the DSL as
+ranks the 276 infographic templates and returns a `key` that becomes line 1 of the DSL as
 `infographic <key>`, plus a `usage` note explaining how that family maps to data fields.
 
 For **software and cloud architecture**, `listArchitectureIcons` returns an `iconPath` such

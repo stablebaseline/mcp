@@ -10,7 +10,7 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Stable Baseline: brand kits
@@ -28,11 +28,12 @@ runtime from `listOrganisations`, `listWorkspaces` and `listProjects` in this co
 
 - All three brand kit tools require organisation admin rights. A user without them gets an
   access error, and that is a correct answer, not a fault to work around.
-- Kits are tiered: **free 0, pro 1, enterprise unlimited.** On the free tier there is no
-  brand kit at all, and on pro there is exactly one, so "create another kit" on pro means
+- **The plan sets how many kits an organisation can have.** At that limit `createBrandKit`
+  is refused and says so. On a plan that allows one kit, "create another kit" means
   replacing the thinking behind the existing one, not adding a second.
 
-Say which of these applies before starting, rather than after a failure.
+Say which of these applies before starting, rather than after a failure. `listBrandKits`
+shows how many kits already exist.
 
 ## Seeing what exists
 
@@ -129,10 +130,10 @@ do its job rather than pinning a kit on every call.
 
 - **User is not an organisation admin.** Say so plainly and stop. Do not attempt a different
   route.
-- **Free tier.** There are no brand kits on free. Say so and describe what a kit would do,
-  rather than failing at the call.
-- **Pro tier with a kit already present.** Pro allows one. Ask whether to update the existing
-  kit rather than creating a second.
+- **The plan allows no brand kit.** The call is refused and says so. Say so plainly and
+  describe what a kit would do.
+- **The plan's limit is reached.** Ask whether to rework the existing kit rather than
+  creating another.
 - **No logo, no template, no explicit colours.** Ask for one of the three. Do not proceed on
   a guess.
 - **Extraction produced odd colours.** Show what was extracted, say where it came from, and

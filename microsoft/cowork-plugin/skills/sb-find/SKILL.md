@@ -8,11 +8,12 @@ description: >-
   our knowledge graph or the workspace, including questions about what changed in a
   document, what relates to it, or who edited it. This skill reads and answers. Creating or
   editing documents is sb-author, diagrams sb-diagram, plans and tasks sb-plan, improvements
-  sb-improve, whiteboards sb-whiteboard, decks sb-deck.
+  sb-improve, whiteboards sb-whiteboard, decks sb-deck. Counts, totals and rows of a
+  database table are sb-database, and asking one of the organisation's agents is sb-agent.
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "3.0"
+  version: "3.1"
 ---
 
 # Stable Baseline: find and read
@@ -117,6 +118,9 @@ that to search everything by default. Scope to what the user asked about.
 - **Is the brain covering this scope**: `kg_scope_status`.
 - **See a diagram or a board**: `getDiagramImage` for a diagram already in a document,
   `getWhiteboardImage` for a board.
+- **Rows in a database table**: counts, totals and the rows that match belong to
+  **sb-database**. To find a database or a row by its name here, add `database` or `row` to
+  `artefactTypes`.
 
 Read before you answer. Do not summarise a document from its title.
 
@@ -138,7 +142,8 @@ Read before you answer. Do not summarise a document from its title.
 - **This skill reads. It does not write.** Do not call create, edit, delete, reorder, assign
   or reschedule tools here. When the user wants a change, hand off: documents to
   **sb-author**, diagrams to **sb-diagram**, plans and tasks to **sb-plan**, improvements to
-  **sb-improve**, whiteboards to **sb-whiteboard**, decks and illustrations to **sb-deck**.
+  **sb-improve**, whiteboards to **sb-whiteboard**, decks and illustrations to **sb-deck**,
+  database tables and rows to **sb-database**, agent jobs to **sb-agent**.
 
   Hand off silently by loading the right skill. Do not announce skill names to the user and
   do not refuse. If the user asks to find something and then change it, complete the find,
