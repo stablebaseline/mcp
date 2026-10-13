@@ -1,9 +1,9 @@
 # @stablebaseline/sdk
 
 [![npm](https://img.shields.io/npm/v/@stablebaseline/sdk?color=orange)](https://www.npmjs.com/package/@stablebaseline/sdk)
-[![Tools](https://img.shields.io/badge/MCP%20tools-196-orange)](https://stablebaseline.io/docs/mcp/tools)
+[![Tools](https://img.shields.io/badge/MCP%20tools-219-orange)](https://stablebaseline.io/docs/mcp/tools)
 
-TypeScript SDK for the **[Stable Baseline](https://stablebaseline.io) REST API** — the simplest, most complete, end-to-end agent-managed company brain. Living docs, 40+ visual diagrams, plans, and a self-learning Knowledge Graph. 196 tools across 18 categories.
+TypeScript SDK for the **[Stable Baseline](https://stablebaseline.io) REST API**: the simplest, most complete, end-to-end agent-managed company brain. Living docs, 40+ visual diagrams, plans, databases with live dashboards, the organisation's agents, and a self-learning Knowledge Graph. 219 tools across 20 categories.
 
 ## Install
 
@@ -16,7 +16,7 @@ npm install @stablebaseline/sdk
 ```ts
 import { StableBaseline } from "@stablebaseline/sdk";
 
-// Mint an API key at https://app.stablebaseline.io/settings/mcp-setup
+// Create an API key at https://app.stablebaseline.io/settings/developers
 const sb = new StableBaseline({ apiKey: process.env.SB_API_KEY! });
 
 const orgs = await sb.tools.listOrganisations({});
@@ -34,6 +34,14 @@ const search = await sb.tools.kg_search({
   mode: "global",
 });
 console.log(search.entities);
+
+const openDeals = await sb.tools.queryDatabaseRows({
+  databaseId: "DB-12",
+  table: "Deals",
+  where: { field: "Stage", is: "Open" },
+  summaries: [{ fn: "count" }],
+});
+console.log(openDeals);
 ```
 
 ## Auth
@@ -41,26 +49,28 @@ console.log(search.entities);
 Two equivalent paths:
 
 ```ts
-// API key (mint at app.stablebaseline.io/settings/mcp-setup, prefix sta_)
+// API key (create one under Organisation settings, Connected apps, Developers; prefix sta_)
 new StableBaseline({ apiKey: "sta_..." });
 
 // OAuth 2.1 access token (interactive flow against api.stablebaseline.io/functions/v1/cloud-serve/oauth/token)
 new StableBaseline({ accessToken: "..." });
 ```
 
-Both go in the `Authorization: Bearer <...>` header.
+Both go in the `Authorization: Bearer <...>` header. Databases start unticked on a new API key: tick them if the key should reach databases.
 
 ## Tool catalogue
 
-196 tools across 18 categories. The full list lives at [stablebaseline.io/docs/mcp/tools](https://stablebaseline.io/docs/mcp/tools). Highlights:
+219 tools across 20 categories. The full list lives at [stablebaseline.io/docs/mcp/tools](https://stablebaseline.io/docs/mcp/tools). Highlights:
 
 | Category | Sample tools |
 |---|---|
 | `navigation` | `listOrganisations`, `listWorkspaces`, `listProjects`, `getProjectHierarchy`, `searchTools` |
-| `documents` | `createDocument`, `getDocument`, `editDocument`, `findAndReplaceTextInDocument`, `deleteDocument` |
+| `documents` | `createDocument`, `getDocument`, `editDocument`, `exportDocument`, `deleteDocument` |
 | `diagrams` | `insertDiagramInDocument`, `listDiagramTypes`, `getCdmdLanguageGuide` |
 | `plans` | `createPlan`, `createTask`, `getPlanHierarchy`, `previewTaskDependencyCascade` |
 | `improvements` | `createImprovement`, `searchImprovements`, `addImprovementEvidence` |
+| `databases` | `createDatabase`, `queryDatabaseRows`, `writeDatabaseRows`, `importDatabaseRows`, `saveDatabaseDashboard` |
+| `agents` | `listAgents`, `askAgent`, `delegateToAgent`, `getAgentRun`, `approveAgentAction` |
 | `knowledge_graph` | `kg_search`, `kg_get_entity`, `kg_related_documents` |
 | `members` / `teams` / `permissions` | full org control plane |
 | `billing` | `previewSubscriptionChange`, `applySubscriptionChange`, `purchaseCreditPackage` |
@@ -112,8 +122,8 @@ This SDK is one of three first-party clients:
 | **CLI** | `@stablebaseline/cli` (binary `sb`) | Shells, scripts, CI/CD |
 | **Python SDK** | `stablebaseline` (PyPI) | Python apps, data work |
 
-All three share the same auth, same tool surface, same handlers. The MCP server itself is the source of truth — see the [public-facing repo](https://github.com/stablebaseline/mcp).
+All three share the same auth, same tool surface, same handlers. The MCP server itself is the source of truth: see the [public-facing repo](https://github.com/stablebaseline/mcp).
 
 ## License
 
-MIT — see [LICENSE](../../LICENSE) at the repo root. The Stable Baseline product itself is proprietary SaaS at [stablebaseline.io](https://stablebaseline.io).
+MIT, see [LICENSE](../../LICENSE) at the repo root. The Stable Baseline product itself is proprietary SaaS at [stablebaseline.io](https://stablebaseline.io).

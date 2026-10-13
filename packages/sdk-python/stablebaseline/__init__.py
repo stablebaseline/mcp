@@ -1,13 +1,13 @@
-"""Stable Baseline — Python SDK for the REST API.
+"""Stable Baseline: Python SDK for the REST API.
 
     from stablebaseline import StableBaseline
 
     sb = StableBaseline(api_key="sta_xxx")
     orgs = sb.tools.listOrganisations()
-    doc = sb.tools.createDocument(folder_id="...", title="X", cdmd="# Hi")
+    doc = sb.tools.createDocument(folderId="...", title="X", cdmd="# Hi")
 
 The same surface is available asynchronously via :class:`AsyncStableBaseline`.
-184 MCP tools across 19 categories — see https://stablebaseline.io/docs/mcp/tools.
+Every MCP tool is reachable; the live catalogue is at https://stablebaseline.io/docs/mcp/tools.
 """
 
 from .client import (

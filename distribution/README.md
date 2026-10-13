@@ -8,8 +8,8 @@ Tags drive everything. Push a tag with the right prefix and the matching workflo
 
 | Tag pattern | Workflow | What ships |
 |---|---|---|
-| `cli-vX.Y.Z` | `release-cli.yml` | `sb` binaries (linux-x64, macos-x64, macos-arm64, windows-x64) → GitHub Release. `@stablebaseline/cli` → npm. Then auto-update Homebrew tap + winget manifest. |
-| `sdk-ts-vX.Y.Z` | `release-sdk-ts.yml` | `@stablebaseline/sdk` → npm (with provenance). Refreshes OpenAPI types from production. |
+| `cli-vX.Y.Z` | `release-cli.yml` | `sb` binaries (linux-x64, macos-x64, macos-arm64, windows-x64) and `checksums.txt` → GitHub Release. `@stablebaseline/cli` → npm (Trusted Publishing via OIDC, with provenance). |
+| `sdk-ts-vX.Y.Z` | `release-sdk-ts.yml` | `@stablebaseline/sdk` → npm (Trusted Publishing via OIDC, with provenance). Refreshes OpenAPI types from production. |
 | `sdk-py-vX.Y.Z` | `release-sdk-python.yml` | `stablebaseline` → PyPI (Trusted Publishing via OIDC; no token secret). |
 
 ```bash
@@ -23,7 +23,7 @@ git tag sdk-py-v0.1.0   && git push origin sdk-py-v0.1.0
 
 | Secret | Where | Used by |
 |---|---|---|
-| `NPM_TOKEN` | Repo → Settings → Secrets → Actions | `release-cli.yml`, `release-sdk-ts.yml`. Use an automation-scoped token from npmjs.com. |
+| npm Trusted Publisher | npmjs.com → each package → Access → Trusted Publishers, bound to `stablebaseline/mcp` and the workflow file | `release-cli.yml`, `release-sdk-ts.yml`. No token secret: each publish uses a short-lived OIDC token. |
 | `pypi` environment + Trusted Publisher | Repo → Settings → Environments → `pypi`, plus pypi.org → Manage → Publishing | `release-sdk-python.yml`. No long-lived token needed. |
 | Homebrew tap PAT (optional) | Repo → Settings → Secrets → Actions → `HOMEBREW_TAP_TOKEN` | Future workflow that pushes the rendered formula to `stablebaseline/homebrew-tap`. |
 
@@ -31,7 +31,7 @@ git tag sdk-py-v0.1.0   && git push origin sdk-py-v0.1.0
 
 ### Homebrew
 
-The formula lives in this repo as a template at [`distribution/homebrew/sb.rb.template`](./homebrew/sb.rb.template). The CLI release workflow renders the SHA256 + version placeholders from the freshly built artefacts and commits the rendered `Formula/sb.rb` to a separate tap repo at `github.com/stablebaseline/homebrew-tap`. Users install with:
+The formula lives in this repo as a template at [`distribution/homebrew/sb.rb.template`](./homebrew/sb.rb.template). Not live yet: the tap repo `github.com/stablebaseline/homebrew-tap` does not exist, and no workflow renders the template. The plan is for the CLI release workflow to fill the SHA256 + version placeholders from the release's `checksums.txt` and commit the rendered `Formula/sb.rb` to that tap, after which users install with:
 
 ```bash
 brew install stablebaseline/tap/sb
@@ -39,7 +39,7 @@ brew install stablebaseline/tap/sb
 
 ### winget
 
-The manifest set lives in this repo as a template at [`distribution/winget/stablebaseline.sb.yaml.template`](./winget/stablebaseline.sb.yaml.template). The CLI release workflow renders the placeholders and submits a PR to [`microsoft/winget-pkgs`](https://github.com/microsoft/winget-pkgs). Users install with:
+The manifest set lives in this repo as a template at [`distribution/winget/stablebaseline.sb.yaml.template`](./winget/stablebaseline.sb.yaml.template). Not live yet: the package is not in [`microsoft/winget-pkgs`](https://github.com/microsoft/winget-pkgs), and no workflow renders the template. The plan is for the CLI release workflow to fill the placeholders and open a PR there, after which users install with:
 
 ```cmd
 winget install Stablebaseline.Sb

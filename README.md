@@ -2,7 +2,7 @@
 
 <img src="./assets/logo.png" alt="Stable Baseline" width="120" />
 
-# Stable Baseline — MCP Server
+# Stable Baseline MCP Server
 
 **The simplest, most complete, end-to-end agent-managed company brain.**
 
@@ -10,7 +10,7 @@
 
 [![MCP Registry](https://img.shields.io/badge/MCP%20Registry-io.stablebaseline%2Fsb-orange)](https://registry.modelcontextprotocol.io/v0/servers?search=io.stablebaseline)
 [![Smithery](https://img.shields.io/badge/Smithery-stablebaseline%2Fsb--mcp-orange)](https://smithery.ai/servers/stablebaseline/sb-mcp)
-[![Tools](https://img.shields.io/badge/MCP%20tools-196-orange)](https://stablebaseline.io/docs/mcp/tools)
+[![Tools](https://img.shields.io/badge/MCP%20tools-219-orange)](https://stablebaseline.io/docs/mcp/tools)
 [![npm CLI](https://img.shields.io/npm/v/@stablebaseline/cli?label=%40stablebaseline%2Fcli&color=orange)](https://www.npmjs.com/package/@stablebaseline/cli)
 [![npm SDK](https://img.shields.io/npm/v/@stablebaseline/sdk?label=%40stablebaseline%2Fsdk&color=orange)](https://www.npmjs.com/package/@stablebaseline/sdk)
 [![PyPI](https://img.shields.io/pypi/v/stablebaseline?label=stablebaseline&color=orange)](https://pypi.org/project/stablebaseline/)
@@ -21,25 +21,25 @@
 
 ## How to use Stable Baseline
 
-Pick the surface that matches how you work — every option talks to the same handlers, the same auth, the same data:
+Pick the surface that matches how you work. Every option talks to the same handlers, the same auth and the same data:
 
 | Surface | What it's for | Install |
 |---|---|---|
 | **MCP server** | AI agents (Claude Code, Cursor, Windsurf, ChatGPT, Gemini, Smithery, …). Native protocol with prompts and resources. | Endpoint: [`api.stablebaseline.io/functions/v1/cloud-serve/mcp`](https://api.stablebaseline.io/functions/v1/cloud-serve/mcp). See [Quick start](#quick-start) below. |
 | **REST API** | Any HTTP client, Postman, OpenAPI codegen, Zapier-style integrators. Tool-RPC + idiomatic resource routes. | Live spec: [`/api/v1/openapi.json`](https://api.stablebaseline.io/functions/v1/cloud-serve/api/v1/openapi.json) · Interactive docs: [`/api/v1/docs`](https://api.stablebaseline.io/functions/v1/cloud-serve/api/v1/docs) |
-| **TypeScript SDK** | Node, browsers, Deno, Bun. Typed `client.tools.<toolName>(...)` surface. | `npm i @stablebaseline/sdk` — see [`packages/sdk-typescript`](packages/sdk-typescript/) |
-| **CLI (`sb`)** | Shells, scripts, CI/CD. `sb tool call <name> --json '{...}'`. | `npm i -g @stablebaseline/cli` — see [`packages/cli`](packages/cli/) |
-| **Python SDK** | Python apps, data work. Sync + async clients. | `pip install stablebaseline` — see [`packages/sdk-python`](packages/sdk-python/) |
+| **TypeScript SDK** | Node, browsers, Deno, Bun. Typed `client.tools.<toolName>(...)` surface. | `npm i @stablebaseline/sdk`, see [`packages/sdk-typescript`](packages/sdk-typescript/) |
+| **CLI (`sb`)** | Shells, scripts, CI/CD. `sb tool call <name> --json '{...}'`. | `npm i -g @stablebaseline/cli`, see [`packages/cli`](packages/cli/) |
+| **Python SDK** | Python apps, data work. Sync + async clients. | `pip install stablebaseline`, see [`packages/sdk-python`](packages/sdk-python/) |
 
-196 tools across 18 categories. Same brain, same Knowledge Graph, same RBAC — every surface.
+219 tools across 20 categories. Same brain, same Knowledge Graph, same RBAC on every surface.
 
 ---
 
-One workspace where humans and any MCP-compatible AI agent — Claude Code, Cursor, Windsurf, VS Code, Warp, OpenCode, Antigravity, OpenAI Codex, ChatGPT Developer Mode, Gemini CLI/Extensions, and more — co-author **living documents** (Markdown-native with a rich superset on top), **40+ visual diagrams** (Mermaid, BPMN 2.0, D2, PlantUML, GraphViz, ELK architecture, sequence, state, ERD, Gantt, Excalidraw freehand), plans, timelines, tasks, improvements, and a self-learning **Knowledge Graph that IS the company brain**.
+One workspace where humans and any MCP-compatible AI agent (Claude Code, Cursor, Windsurf, VS Code, Warp, OpenCode, Antigravity, OpenAI Codex, ChatGPT Developer Mode, Gemini CLI/Extensions and more) co-author **living documents** (Markdown-native with a rich superset on top), **40+ visual diagrams** (Mermaid, BPMN 2.0, D2, PlantUML, GraphViz, cloud architecture, sequence, state, ERD, Gantt, freehand sketches), **databases** with views, forms and live dashboards, plans, timelines, tasks, improvements, the organisation's own **agents**, and a self-learning **Knowledge Graph that IS the company brain**.
 
-**Lean, fast, secure, and affordable** — flexible enough for one person organising a personal mind, through to small businesses, growing businesses, and enterprise.
+**Lean, fast, secure and affordable**: flexible enough for one person organising a personal mind, through to small businesses, growing businesses and enterprise.
 
-196 MCP tools across 18 categories let an agent drive **end-to-end**: sign-up → billing → org/workspace/project → members → teams → permissions → brain scope → docs → diagrams → whiteboards → plans, all without a human touching the UI.
+219 MCP tools across 20 categories let an agent drive **end-to-end**: sign-up → billing → org/workspace/project → members → teams → permissions → brain scope → docs → diagrams → whiteboards → plans → databases → agents, all without a human touching the UI.
 
 ## Endpoint
 
@@ -53,13 +53,13 @@ https://api.stablebaseline.io/functions/v1/cloud-serve/mcp
 
 ## Quick start
 
-### Mint an API key (skip OAuth)
+### Create an API key (skip OAuth)
 
-1. [Sign up free](https://app.stablebaseline.io/signup) — no credit card
-2. Go to **Settings → MCP keys** and click **Generate**
+1. [Sign up free](https://app.stablebaseline.io/signup), no credit card
+2. Open **Organisation settings**, **Connected apps**, **Developers**, then the **API keys** tab, and press **Create Key**. Choose what it may reach; databases start unticked, so tick them if your agent should use databases
 3. Copy the `sta_...` key
 
-(Or skip this — every client below also supports interactive OAuth on first call.)
+(Or skip this: every client below also supports interactive OAuth on first call.)
 
 ### Claude Desktop
 
@@ -78,7 +78,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
 }
 ```
 
-Or use the Claude Desktop OAuth flow — set just `url` and Claude will prompt you to authorize on first call.
+Or use the Claude Desktop OAuth flow: set just `url` and Claude will prompt you to authorise on first call.
 
 ### Claude Code
 
@@ -94,6 +94,8 @@ Or via OAuth:
 claude mcp add --transport http stable-baseline \
   https://api.stablebaseline.io/functions/v1/cloud-serve/mcp
 ```
+
+For skills that teach Claude Code the workflows (documents, diagrams, whiteboards, databases, dashboards and agents), install the [Stable Baseline plugin for Claude Code](https://github.com/stablebaseline/claude-code).
 
 ### Cursor
 
@@ -151,13 +153,15 @@ Recipes for Warp, OpenCode, Antigravity, OpenAI Codex, ChatGPT Developer Mode, G
 |---|---|---|
 | **navigation** | `listOrganisations`, `getProjectHierarchy`, `searchTools` | [→](https://stablebaseline.io/docs/mcp/tools/navigation) |
 | **folders** | `createFolder`, `listFolders`, `setPlanItemParent` | [→](https://stablebaseline.io/docs/mcp/tools/folders) |
-| **documents** | `createDocument`, `editDocument`, `findAndReplaceTextInDocument` | [→](https://stablebaseline.io/docs/mcp/tools/documents) |
+| **documents** | `createDocument`, `editDocument`, `exportDocument` | [→](https://stablebaseline.io/docs/mcp/tools/documents) |
 | **diagrams** | `insertDiagramInDocument`, `listDiagramTypes`, `getCdmdLanguageGuide` | [→](https://stablebaseline.io/docs/mcp/tools/diagrams) |
 | **whiteboards** | `createWhiteboard`, `addWhiteboardElements`, `designDeckInWhiteboard` | [→](https://stablebaseline.io/docs/mcp/tools/whiteboards) |
 | **images** | `createImageUploadSession`, `insertImageInDocument` | [→](https://stablebaseline.io/docs/mcp/tools/images) |
 | **data** | `createVegaDataUploadSession` (CSV/JSON/TSV → Vega charts) | [→](https://stablebaseline.io/docs/mcp/tools/data) |
 | **improvements** | `createImprovement`, `searchImprovements`, `addImprovementEvidence` | [→](https://stablebaseline.io/docs/mcp/tools/improvements) |
 | **plans** | `createPlan`, `createPlanPhase`, `previewTaskDependencyCascade` | [→](https://stablebaseline.io/docs/mcp/tools/plans) |
+| **databases** | `createDatabase`, `queryDatabaseRows`, `saveDatabaseDashboard` | [→](https://stablebaseline.io/docs/mcp/tools/databases) |
+| **agents** | `listAgents`, `delegateToAgent`, `approveAgentAction` | [→](https://stablebaseline.io/docs/mcp/tools/agents) |
 | **knowledge_graph** | `kg_search`, `kg_get_entity`, `kg_related_documents` | [→](https://stablebaseline.io/docs/mcp/tools/knowledge_graph) |
 | **organization** | `createOrganisation`, `createWorkspace`, `createProject` | [→](https://stablebaseline.io/docs/mcp/tools/organization) |
 | **members** | `inviteMember`, `updateMemberRole`, `setMemberActive` | [→](https://stablebaseline.io/docs/mcp/tools/members) |
@@ -173,12 +177,14 @@ Full live catalogue: [stablebaseline.io/docs/mcp/tools](https://stablebaseline.i
 ## Highlights
 
 - **End-to-end agent-managed**: agents drive sign-up → billing → org/workspace/project lifecycle → members → teams → permissions → Knowledge Graph scope. No human touching the UI.
-- **Living documents**: AI-native rich-text editor (CDMD = Markdown + inline diagrams, data tables, media, version history, real-time multi-author edits).
-- **Visual diagram creation & editing**: 40+ types — AI-generated, diagram-as-code, or freehand.
+- **Living documents**: AI-native rich-text editor (CDMD = Markdown + inline diagrams, data tables, media, version history, real-time multi-author edits), with PDF and Word export.
+- **Visual diagram creation & editing**: 40+ types, AI-generated, diagram-as-code, or freehand.
+- **Databases**: tables of typed fields with views, row rules, forms and live dashboards. Import CSV or Excel, and get counts, totals and groups in one call.
+- **Agents**: the organisation's own AI workers, each with a mandate, scoped access and approvals. Ask one or delegate a job from any MCP client, follow the run, decide its proposals, and undo a whole job.
 - **Plans, timelines, tasks, improvements & bugs**: Day/Week/Month/Quarter/Year zoom Gantt, drag-to-reschedule, dependency cascades.
-- **Self-learning Knowledge Graph (Enterprise)**: auto-built from every doc/plan/improvement; read by every connected agent. Stops hallucinations around gaps. Run one brain workspace-wide, one per department, or one per project — RBAC end-to-end.
-- **Compliance Readiness (Enterprise)**: scans against OWASP ASVS, NIST SSDF, CIS Controls, ISO 27001, SOC 2, TISAX. *Readiness only — not legal advice, not an attestation.*
-- **Bring-your-own-agent — no lock-in**: any MCP-compatible client.
+- **Self-learning Knowledge Graph (Enterprise)**: auto-built from every doc, plan, improvement and database record; read by every connected agent. Stops hallucinations around gaps. Run one brain workspace-wide, one per department, or one per project, with RBAC end to end.
+- **Compliance Readiness (Enterprise)**: scans against OWASP ASVS, NIST SSDF, CIS Controls, ISO 27001, SOC 2, TISAX. *Readiness only: not legal advice, not an attestation.*
+- **Bring your own agent, no lock-in**: any MCP-compatible client.
 - **Credit-cost preview ritual** for every spending operation: `previewX` → confirm token → `applyX`.
 
 ## Auth
@@ -186,7 +192,7 @@ Full live catalogue: [stablebaseline.io/docs/mcp/tools](https://stablebaseline.i
 | Method | When to use |
 |---|---|
 | **OAuth 2.1 + Dynamic Client Registration** | Default for desktop apps and IDE extensions. Smithery handles it automatically. |
-| **Bearer API key** (`sta_...`) | CI/CD, headless agents, server-to-server. Mint at [app.stablebaseline.io/settings/mcp-setup](https://app.stablebaseline.io/settings/mcp-setup). Project-scoped or global. |
+| **Bearer API key** (`sta_...`) | CI/CD, headless agents, server-to-server. Create one under Organisation settings, Connected apps, Developers ([app.stablebaseline.io/settings/developers](https://app.stablebaseline.io/settings/developers)). Scope it to a workspace, project or folder, or let it reach the whole organisation. |
 
 OAuth endpoints:
 - `authorize`: `https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/authorize`
@@ -209,28 +215,31 @@ OAuth endpoints:
 
 ## Pricing
 
-- **Free**: 100 one-off credits, no credit card.
-- **Pro**: A$79 / user / month, 500 credits / user / month.
-- **Enterprise**: custom — Knowledge Graph, Compliance Readiness, audit logs, SSO. [Contact](https://stablebaseline.io/contact).
+- **Free**: A$0, no credit card. AI runs through your organisation's own AI provider account.
+- **Plus**: A$39 a month (excl. GST), with 300 credits a month.
+- **Pro**: A$79 per user a month (excl. GST), with 500 credits per user a month.
+- **Enterprise**: custom. Adds the Knowledge Graph, Compliance Readiness and audit logs. [Contact](https://stablebaseline.io/contact).
+
+Every limit, plan by plan: [stablebaseline.io/pricing](https://stablebaseline.io/pricing).
 
 ## Status
 
-- 🟢 **MCP Registry**: `io.stablebaseline/sb` — `active`, `isLatest`. Listed.
-- 🟢 **Smithery**: published with `configSchema` (Quick Setup). 196 tools / 11 prompts / 8 resources discovered.
-- 🟢 **`.well-known/mcp.json`**: live, schema 2024-11-05.
-- 🟢 **Endpoint**: `api.stablebaseline.io/functions/v1/cloud-serve/mcp` — accepts POST with `mcp-protocol-version: 2025-06-18`.
+- 🟢 **MCP Registry**: `io.stablebaseline/sb`, `active`, `isLatest`. Listed.
+- 🟢 **Smithery**: published with `configSchema` (Quick Setup). The live server lists 219 tools, 11 prompts and 8 resources.
+- 🟢 **`.well-known/mcp.json`**: live, schema 2025-06-18.
+- 🟢 **Endpoint**: `api.stablebaseline.io/functions/v1/cloud-serve/mcp` accepts POST with `mcp-protocol-version: 2025-06-18`.
 
 ## Issues & support
 
 - **Bug or feature request**: open an issue here.
-- **Security report**: see [`.well-known/security.txt`](https://stablebaseline.io/.well-known/security.txt) — RFC 9116 contact.
+- **Security report**: see [`.well-known/security.txt`](https://stablebaseline.io/.well-known/security.txt) (the RFC 9116 contact).
 - **General support**: https://stablebaseline.io/contact
 
 ## License
 
-This repository (README, `llms-install.md`, brand assets, and any documentation) is licensed under the **MIT License** — see [LICENSE](./LICENSE). You can copy, fork, and adapt these docs freely.
+This repository (README, `llms-install.md`, brand assets, and any documentation) is licensed under the **MIT License**, see [LICENSE](./LICENSE). You can copy, fork, and adapt these docs freely.
 
-The Stable Baseline product itself — the SaaS application, the MCP server implementation, and the company brain Knowledge Graph — is proprietary, closed-source, and provided as a service at https://stablebaseline.io under the Stable Baseline [Terms of Service](https://stablebaseline.io/terms).
+The Stable Baseline product itself (the SaaS application, the MCP server implementation and the company brain Knowledge Graph) is proprietary, closed-source and provided as a service at https://stablebaseline.io under the Stable Baseline [Terms of Service](https://stablebaseline.io/terms).
 
 ---
 

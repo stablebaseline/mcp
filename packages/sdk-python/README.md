@@ -1,9 +1,9 @@
 # stablebaseline
 
 [![PyPI](https://img.shields.io/pypi/v/stablebaseline?color=orange)](https://pypi.org/project/stablebaseline/)
-[![Tools](https://img.shields.io/badge/MCP%20tools-196-orange)](https://stablebaseline.io/docs/mcp/tools)
+[![Tools](https://img.shields.io/badge/MCP%20tools-219-orange)](https://stablebaseline.io/docs/mcp/tools)
 
-Python SDK for the **[Stable Baseline](https://stablebaseline.io) REST API** — the simplest, most complete, end-to-end agent-managed company brain. Living docs, 40+ visual diagrams, plans, and a self-learning Knowledge Graph. 196 tools across 18 categories.
+Python SDK for the **[Stable Baseline](https://stablebaseline.io) REST API**: the simplest, most complete, end-to-end agent-managed company brain. Living docs, 40+ visual diagrams, plans, databases with live dashboards, the organisation's agents, and a self-learning Knowledge Graph. 219 tools across 20 categories.
 
 ## Install
 
@@ -16,7 +16,7 @@ pip install stablebaseline
 ```python
 from stablebaseline import StableBaseline
 
-# Mint a key at app.stablebaseline.io/settings/mcp-keys
+# Create a key at app.stablebaseline.io/settings/developers
 with StableBaseline(api_key="sta_xxx") as sb:
     orgs = sb.tools.listOrganisations()
     print(orgs)
@@ -30,6 +30,14 @@ with StableBaseline(api_key="sta_xxx") as sb:
 
     search = sb.tools.kg_search(query="compliance posture", mode="global")
     print(search["entities"])
+
+    deals = sb.tools.queryDatabaseRows(
+        databaseId="DB-12",
+        table="Deals",
+        summaries=[{"fn": "count"}],
+        groupBy=["Stage"],
+    )
+    print(deals)
 ```
 
 Or asynchronously:
@@ -49,14 +57,16 @@ asyncio.run(main())
 ## Auth
 
 ```python
-StableBaseline(api_key="sta_...")              # API key (mint at app.stablebaseline.io/settings/mcp-keys)
+StableBaseline(api_key="sta_...")              # API key (create one at app.stablebaseline.io/settings/developers)
 StableBaseline(access_token="...")             # OAuth 2.1 access token
 StableBaseline()                               # picks up SB_API_KEY / SB_ACCESS_TOKEN from env
 ```
 
+Databases start unticked on a new API key: tick them if the key should reach databases.
+
 ## Tool dispatch
 
-Each method on `client.tools` corresponds to one of the [196 MCP tools](https://stablebaseline.io/docs/mcp/tools):
+Each method on `client.tools` corresponds to one of the [219 MCP tools](https://stablebaseline.io/docs/mcp/tools):
 
 ```python
 sb.tools.listOrganisations()
@@ -64,6 +74,8 @@ sb.tools.getProjectHierarchy(projectId="...")
 sb.tools.createDocument(folderId="...", title="X", cdmd="# ...")
 sb.tools.editDocument(documentId="...", versionTimestamp=..., patches=[...])
 sb.tools.kg_search(query="...", mode="global")
+sb.tools.queryDatabaseRows(databaseId="...", table="...", summaries=[{"fn": "count"}])
+sb.tools.delegateToAgent(agentId="...", brief="...", idempotencyKey="...")
 sb.tools.previewSubscriptionChange(...)
 sb.tools.applySubscriptionChange(...)
 ```
@@ -117,8 +129,8 @@ with StableBaseline(api_key="sta_xxx") as sb:
 | **CLI** | `@stablebaseline/cli` (binary `sb`) | Shells, scripts, CI/CD |
 | **MCP server** | `https://api.stablebaseline.io/functions/v1/cloud-serve/mcp` | AI agents (Claude Code, Cursor, Windsurf, ChatGPT, Gemini, …) |
 
-All four share the same auth, same handlers, same data — see [github.com/stablebaseline/mcp](https://github.com/stablebaseline/mcp).
+All four share the same auth, same handlers, same data: see [github.com/stablebaseline/mcp](https://github.com/stablebaseline/mcp).
 
 ## License
 
-MIT — see [LICENSE](../../LICENSE) at the repo root. The Stable Baseline product itself is proprietary SaaS at [stablebaseline.io](https://stablebaseline.io).
+MIT, see [LICENSE](../../LICENSE) at the repo root. The Stable Baseline product itself is proprietary SaaS at [stablebaseline.io](https://stablebaseline.io).

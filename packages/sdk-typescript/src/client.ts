@@ -6,8 +6,8 @@ const DEFAULT_BASE_URL =
 
 export interface StableBaselineClientOptions {
   /**
-   * MCP API key with the `sta_` prefix. Mint at
-   * https://app.stablebaseline.io/settings/mcp-keys.
+   * MCP API key with the `sta_` prefix. Create one at
+   * https://app.stablebaseline.io/settings/developers.
    *
    * Either `apiKey` or `accessToken` is required (mutually exclusive).
    */
@@ -93,7 +93,7 @@ export class StableBaseline {
   private signal?: AbortSignal;
 
   /**
-   * Strongly-typed dispatch surface. Every entry is one of the 184 MCP tools.
+   * Strongly-typed dispatch surface. Every entry is one of the MCP tools.
    *
    *   const orgs = await sb.tools.listOrganisations({});
    *   const doc = await sb.tools.createDocument({ folderId, title, cdmd });
@@ -113,7 +113,7 @@ export class StableBaseline {
 
     // Build the tool-dispatch surface as a Proxy. Each property access
     // returns a function that POSTs to `/tools/<name>`. This avoids hand-
-    // listing 163 methods while keeping full type safety on usage thanks
+    // listing every method while keeping full type safety on usage thanks
     // to the generated `paths` type above.
     const self = this;
     this.tools = new Proxy({} as ToolDispatchMap, {

@@ -1,6 +1,6 @@
-# Installing Stable Baseline (MCP) — for AI agents
+# Installing Stable Baseline (MCP), for AI agents
 
-You are setting up the Stable Baseline MCP server for a user. Stable Baseline is a remote SaaS — there is no binary to install, no docker container to run, no environment variables to set. The setup is one URL plus auth.
+You are setting up the Stable Baseline MCP server for a user. Stable Baseline is a remote SaaS: there is no binary to install, no docker container to run, no environment variables to set. The setup is one URL plus auth.
 
 ## What to write
 
@@ -14,14 +14,14 @@ https://api.stablebaseline.io/functions/v1/cloud-serve/mcp
 
 Transport: **streamable-http** (use SSE only if the client requires it).
 
-## Auth — pick the simpler path
+## Auth: pick the simpler path
 
-**If the user already has an `sta_...` API key** → set the `Authorization: Bearer <key>` header and you're done.
+**If the user already has an `sta_...` API key**, set the `Authorization: Bearer <key>` header and you're done.
 
-**If they don't** → either:
+**If they don't**, either:
 
-1. **Tell them to mint one** at https://app.stablebaseline.io/settings/mcp-setup (after free signup at https://app.stablebaseline.io/signup). Most clients prefer this — it's stateless and easy.
-2. **Use OAuth 2.1 with Dynamic Client Registration**. Most modern MCP clients (Claude Desktop, Cursor, Windsurf, VS Code, Smithery) handle this automatically — they hit the server, get a `WWW-Authenticate` challenge, run DCR + OAuth, store the token. The user just clicks "Authorize" once in their browser. OAuth endpoints:
+1. **Tell them to create one** under Organisation settings, Connected apps, Developers, API keys at https://app.stablebaseline.io/settings/developers (after free signup at https://app.stablebaseline.io/signup). Databases start unticked on a new key: tell them to tick them if they want you to work with databases. Most clients prefer a key: it's stateless and easy.
+2. **Use OAuth 2.1 with Dynamic Client Registration**. Most modern MCP clients (Claude Desktop, Cursor, Windsurf, VS Code, Smithery) handle this automatically: they hit the server, get a `WWW-Authenticate` challenge, run DCR + OAuth, store the token. The user just clicks "Authorize" once in their browser. OAuth endpoints:
    - authorize: `https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/authorize` (browser)
    - token: `https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/token`
    - register: `https://api.stablebaseline.io/functions/v1/cloud-serve/oauth/register`
@@ -34,11 +34,11 @@ After installing, run a single tool call from the MCP client to confirm the conn
 listOrganisations()
 ```
 
-It should return the user's organisations. If it returns 401, auth isn't set up — re-check the Bearer header or OAuth state.
+It should return the user's organisations. If it returns 401, auth isn't set up: re-check the Bearer header or OAuth state.
 
 ## Tool catalogue
 
-196 MCP tools across 18 categories. Live catalogue at https://stablebaseline.io/docs/mcp/tools — call `searchTools` from the connected client to fetch input schemas at runtime.
+219 MCP tools across 20 categories, including databases (tables, views, forms and dashboards) and the organisation's agents. Live catalogue at https://stablebaseline.io/docs/mcp/tools. Call `searchTools` from the connected client to fetch input schemas at runtime.
 
 ## Reference docs
 
