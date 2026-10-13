@@ -11,14 +11,14 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "3.0"
+  version: "3.1"
 ---
 
 # Stable Baseline: whiteboards
 
 ## What this skill does
 
-Builds freeform Excalidraw boards: shapes, sticky notes, connectors, frames, stencils,
+Builds freeform boards: shapes, sticky notes, connectors, frames, stencils,
 architecture icons, embedded source-backed diagrams and images. Every change runs under the
 signed in user's own Stable Baseline identity.
 

@@ -147,7 +147,7 @@ This supports the auditing and traceability Microsoft's manual review requires.
 For hands-on review, provide Microsoft a dedicated, throwaway test account (MCP keys are **org-scoped**, so never hand over a key to a production org):
 
 1. Create a separate organisation, for example "SB MCP Reviewer Sandbox".
-2. Mint an `sta_` MCP key in that org (app.stablebaseline.io → Settings → MCP keys).
+2. Create an `sta_` API key in that org (Organisation settings, Connected apps, Developers, API keys).
 3. Seed it with the same demo set using the recipe below.
 4. Share with reviewers: the key (as `Bearer sta_...`), the project, and the friendly IDs.
 5. Rotate or revoke the key after certification.

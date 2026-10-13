@@ -10,7 +10,7 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "3.0"
+  version: "3.1"
 ---
 
 # Stable Baseline: improvements and risks
@@ -44,7 +44,10 @@ runtime from listing calls made in this conversation.
   A title alone is rarely actionable later.
 - Set `type` accurately: an improvement, a risk and a bug are not the same thing and get
   triaged differently.
-- Set `source` so the origin is traceable, for example a ticket, a meeting, a document.
+- Set `source` to where the work came from, so the origin is traceable: `feedback`,
+  `incident`, `postmortem`, `code_review`, `doc_comment` or `imported`. Leave it out for
+  something the user raises themselves. Use `agent_review` only for a compliance finding: it
+  files the item under Compliance.
 - **Never invent a severity or priority.** If the user has not said, either ask or leave it
   at the default and say what you did.
 

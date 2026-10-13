@@ -11,7 +11,7 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Stable Baseline: meeting scribe
@@ -53,9 +53,9 @@ automatically.**
 
 ## Cost and approval
 
-It bills **2 credits per minute in 5-minute blocks** while it runs. A 60-minute meeting is
-about 120 credits. There is a hard cap of 180 minutes. It is available on the Pro and
-Enterprise plans.
+It bills **7 credits for every 5 minutes** while it runs. A 60-minute meeting is about 84
+credits. There is a hard cap of 180 minutes. It is available on the Plus, Pro and Enterprise
+plans. These are the prices at the time of writing; the quote is always the exact figure.
 
 Call `startMeetingScribe` first **without** `confirm` to get the exact quote plus the
 workspace balance. Show both to the user. Only call again with `confirm: true` once they
@@ -149,7 +149,8 @@ get approval first.
 - **User mentioned a meeting but did not ask for a scribe.** Do nothing. Ask, or say nothing
   at all if it was incidental.
 - **No board named.** Ask which board. Do not create one.
-- **Plan does not include the scribe.** It needs Pro or Enterprise. Say so plainly and stop.
+- **Plan does not include the scribe.** It needs Plus, Pro or Enterprise. Say so plainly and
+  stop.
 - **Bot stuck in the waiting room.** Say so and ask the user to admit it. Do not retry the
   join in a loop; it keeps billing.
 - **Session already running.** Check the status before starting another. Never run two.
