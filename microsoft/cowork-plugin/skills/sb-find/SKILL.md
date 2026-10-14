@@ -106,9 +106,15 @@ that to search everything by default. Scope to what the user asked about.
 - **Relationships, dependencies, what else touches this**: `kg_related_documents`,
   `kg_backlinks`, `kg_get_entity`, `kg_get_wiki_page`, `kg_list_communities`.
 - **Suggested starting questions for a scope**: `kg_suggest_sample_questions`.
-- **What changed, or who edited something**: `listDocumentVersions`, requires `documentId`.
+- **What changed in a place, since a time** ("what changed this week"): `listDocuments`,
+  `listWhiteboards`, `listImprovements` and `listPlans`, called together, each with `changedSince`
+  (a period such as `this_week` or `last_7_days`, or a date) and the user's `timeZone`. Scope each
+  with `projectId` or `workspaceId`, or neither for the whole organisation. Each lists only what
+  changed, newest first, with who changed it and when, and only what the user can open.
+- **How a document changed, or who edited it**: `listDocumentVersions` with `documentId`, the same
+  `changedSince` and `compare: true` for the lines added and removed under their headings.
 - **Plans, tasks, whiteboards**: `listPlans` needs `projectId`, `listTasks` needs `planId`,
-  `listWhiteboards` needs `projectId`. Resolve the parent first. All three accept `query`
+  `listWhiteboards` needs `projectId` (except with `changedSince`). Resolve the parent first. All three accept `query`
   (plus `isRegex` and `caseSensitive`) to search by name or friendly ID within that scope.
 - **Issues, risks, follow ups**: `searchImprovements` requires `query`. It covers
   improvements AND tasks, which are one record type; pass `types: ["task"]` or
