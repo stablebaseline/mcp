@@ -5,15 +5,16 @@ description: >-
   diagrams, whiteboards, plans, tasks, improvements and the knowledge graph. Triggers on
   find, search, look up, show me, what does, who wrote, summarise, what is the status of,
   check the docs, and on mentions of Stable Baseline, the company brain, our documentation,
-  our knowledge graph or the workspace, including questions about what changed in a
-  document, what relates to it, or who edited it. This skill reads and answers. Creating or
-  editing documents is sb-author, diagrams sb-diagram, plans and tasks sb-plan, improvements
-  sb-improve, whiteboards sb-whiteboard, decks sb-deck. Counts, totals and rows of a
-  database table are sb-database, and asking one of the organisation's agents is sb-agent.
+  our knowledge graph or the workspace, including questions about what changed this week,
+  what changed in a document, what relates to it, or who edited it. This skill reads and
+  answers. Creating or editing documents is sb-author, diagrams sb-diagram, plans and tasks
+  sb-plan, improvements sb-improve, whiteboards sb-whiteboard, decks sb-deck. Counts, totals
+  and rows of a database table are sb-database, dashboards sb-dashboard, forms sb-form, and
+  asking one of the organisation's agents is sb-agent.
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "3.1"
+  version: "3.2"
 ---
 
 # Stable Baseline: find and read
@@ -106,10 +107,17 @@ that to search everything by default. Scope to what the user asked about.
 - **Relationships, dependencies, what else touches this**: `kg_related_documents`,
   `kg_backlinks`, `kg_get_entity`, `kg_get_wiki_page`, `kg_list_communities`.
 - **Suggested starting questions for a scope**: `kg_suggest_sample_questions`.
-- **What changed, or who edited something**: `listDocumentVersions`, requires `documentId`.
-- **Plans, tasks, whiteboards**: `listPlans` needs `projectId`, `listTasks` needs `planId`,
-  `listWhiteboards` needs `projectId`. Resolve the parent first. All three accept `query`
-  (plus `isRegex` and `caseSensitive`) to search by name or friendly ID within that scope.
+- **What changed in a place, since a time** ("what changed this week"): `listDocuments`,
+  `listWhiteboards`, `listImprovements` and `listPlans`, called together, each with `changedSince`
+  (a period such as `this_week` or `last_7_days`, or a date) and the user's `timeZone`. Scope each
+  with `projectId` or `workspaceId`, or neither for the whole organisation. Each lists only what
+  changed, newest first, with who changed it and when, and only what the user can open.
+- **How a document changed, or who edited it**: `listDocumentVersions` with `documentId`, the same
+  `changedSince` and `compare: true` for the lines added and removed under their headings.
+- **Plans, tasks, whiteboards**: `listPlans` and `listWhiteboards` need `projectId` (except
+  with `changedSince`), and `listTasks` needs `planId`. Resolve the parent first. All three
+  accept `query` (plus `isRegex` and `caseSensitive`) to search by name or friendly ID
+  within that scope.
 - **Issues, risks, follow ups**: `searchImprovements` requires `query`. It covers
   improvements AND tasks, which are one record type; pass `types: ["task"]` or
   `types: ["improvement"]` to narrow. It searches nothing else - for other artefact kinds use
@@ -118,8 +126,14 @@ that to search everything by default. Scope to what the user asked about.
 - **Is the brain covering this scope**: `kg_scope_status`.
 - **See a diagram or a board**: `getDiagramImage` for a diagram already in a document,
   `getWhiteboardImage` for a board.
-- **Rows in a database table**: counts, totals and the rows that match belong to
-  **sb-database**. To find a database or a row by its name here, add `database` or `row` to
+- **Show where a plan stands, or one item**: `getPlanHierarchy` (or `getPlan`) for a plan's
+  phases, tasks, owners and what is blocked, `getTask` or `getImprovement` for one item.
+  Where the host shows them, the person sees the plan as a list or a timeline and the item
+  as a card, as they see a document from `getDocument` and a board from
+  `getWhiteboardImage`. Keep your own words to what was asked.
+- **Rows in a database table**: counts, totals, the rows that match and how a database's
+  tables link belong to **sb-database**, a dashboard to **sb-dashboard** and a form to
+  **sb-form**. To find a database or a row by its name here, add `database` or `row` to
   `artefactTypes`.
 
 Read before you answer. Do not summarise a document from its title.
@@ -143,7 +157,8 @@ Read before you answer. Do not summarise a document from its title.
   or reschedule tools here. When the user wants a change, hand off: documents to
   **sb-author**, diagrams to **sb-diagram**, plans and tasks to **sb-plan**, improvements to
   **sb-improve**, whiteboards to **sb-whiteboard**, decks and illustrations to **sb-deck**,
-  database tables and rows to **sb-database**, agent jobs to **sb-agent**.
+  database tables and rows to **sb-database**, dashboards to **sb-dashboard**, forms to
+  **sb-form**, agent jobs to **sb-agent**.
 
   Hand off silently by loading the right skill. Do not announce skill names to the user and
   do not refuse. If the user asks to find something and then change it, complete the find,
@@ -161,7 +176,7 @@ Read before you answer. Do not summarise a document from its title.
   means the request has left this skill. Say in one line what is about to happen and let the
   user decide. Never tell the user a confirmation is safe to wave through, and never treat a
   refusal as an obstacle to route around.
-- **On `accessDenied`**, report plainly:
+- **When access is refused**, report plainly:
 
   > You do not have access to that in Stable Baseline.
 

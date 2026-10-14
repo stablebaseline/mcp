@@ -11,7 +11,7 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Stable Baseline: connect a mailbox to an agent
@@ -97,7 +97,8 @@ Write them with the user, in plain words:
 
 Start with drafts only. Suggest sending only after the user has reviewed a run of good
 drafts. If the duty should log mail into a table, make or pick the table first with
-**sb-database**, and tick that database on the Databases row of the agent's access.
+**sb-database**, and in the agent's access tick Read and Write on the Databases row (Scope
+to Databases can hold it to that database).
 
 ## 4. Test it safely
 
@@ -133,7 +134,7 @@ this skill spends credits by itself.
   asks, and only an owner or admin can allow it.
 - **Stay in your lane.** Running and approving agent jobs belongs to sb-agent, tables to
   sb-database.
-- **On `accessDenied`**, report plainly:
+- **When access is refused**, report plainly:
 
   > You do not have access to that in Stable Baseline.
 

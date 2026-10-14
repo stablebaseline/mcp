@@ -11,7 +11,7 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "3.1"
+  version: "3.2"
 ---
 
 # Stable Baseline: whiteboards
@@ -70,7 +70,8 @@ Pass explicit coordinates only for a deliberate layout in space you have confirm
   shape. `kind: 'symbol'` is one atomic labelled node to place, label and connect;
   `kind: 'template'` is a ready-made composition.
 - `listArchitectureIcons` for software and cloud logos. Drop one with
-  `{type: 'image', iconPath: 'dev/docker.svg', width: 96, height: 96, text: 'Docker'}`.
+  `{type: 'image', iconPath: 'dev/docker.svg', width: 96, height: 96, text: 'Docker'}`. An
+  icon with no `iconPath` goes in by its `iconUrl`, as `imageUrl`.
 - `insertWhiteboardDiagram` embeds a real source-backed diagram that stays editable.
 - `insertWhiteboardImage` for images. `dataToTable` turns data into a table on the board.
 
@@ -100,9 +101,15 @@ to part of it.
 
 ## Rendering and export
 
-`getWhiteboardImage` renders a board to an image so you and the user can see it. Exporting a
-**deck** that lives on a board to PowerPoint, PDF or PNG is `exportFromWhiteboard`,
-which belongs to **sb-deck**.
+`getWhiteboardImage` renders a board to an image so you and the user can see it. Where the
+host shows it, the person can zoom, look around and open the board.
+
+**The board itself as slides**: `exportFromWhiteboard` with `documentId` and
+`kind: "canvas"` makes an editable PowerPoint in which each frame on the board is a slide,
+in the board's slide order; a board with no frames becomes one slide. A large board
+finishes in the background: call again with the same arguments until `status` is
+`completed`. Download links last an hour. Exporting a **deck** that lives on a board, to
+PowerPoint, PDF or PNG, belongs to **sb-deck**.
 
 Look at the render before you tell the user the board is finished.
 
@@ -118,8 +125,9 @@ boards in one action without listing every title first.
 
 The premium generators reachable from here are the **sb-deck** designers.
 
-- **Tell the user before running it and get explicit approval.** Use the two-call
-  confirmation flow above rather than bypassing it with `confirm: true` on the first call.
+- **Tell the user before running it and get explicit approval.** Use sb-deck's quote: the
+  first call returns the price and a `quoteToken`, and only the user's yes sends
+  `confirm: true` with that token. Never send `confirm: true` on the first call.
 - Never call a premium designer speculatively, and never call one a second time because you
   did not like the first result without asking the user first.
 - `getCreditBalance` if the user wants to know where they stand before a large job. Checking
@@ -137,7 +145,7 @@ The premium generators reachable from here are the **sb-deck** designers.
 - **Stay in your lane.** Documents belong to sb-author, in-document diagrams to sb-diagram,
   decks and illustrations to sb-deck, live meeting capture to sb-meeting, plans to sb-plan,
   improvements to sb-improve.
-- **On `accessDenied`**, report plainly:
+- **When access is refused**, report plainly:
 
   > You do not have access to that in Stable Baseline.
 
@@ -172,13 +180,14 @@ The premium generators reachable from here are the **sb-deck** designers.
 - **New elements landed on top of old ones.** You passed coordinates. Omit x and y, or read
   the board first, and tidy up rather than leaving the pile.
 - **Premium designer requested with no brief.** Ask for the goal before spending credits. A
-  vague goal produces a board that has to be regenerated, which spends twice.
-- **User dislikes the generated board.** Ask before regenerating. Say it will spend credits
-  again. Offer hand editing as the cheaper alternative.
+  vague goal produces a design that has to be redone, which spends twice.
+- **User dislikes a generated deck or illustration.** Ask before another turn. Say it will
+  spend credits again. Offer hand editing as the cheaper alternative.
 - **Stencil not found.** Say so and use the next best representation from the priority
   order. Do not silently fall back to plain rectangles without mentioning it.
-- **Design still generating.** It runs in the background over one to three minutes. Say so
-  rather than reporting failure early.
+- **A deck or illustration still generating.** It runs in the background for about 2 to 8
+  minutes (15 to 20 with advanced deck building). Keep polling `getDeckReplyInWhiteboard`
+  as sb-deck says, rather than reporting failure early.
 - **Access denied.** Use the exact sentence above and stop.
 - **Delete requested for several boards.** List every title, get one explicit approval for
   the set, then proceed. If the user hesitates, stop.

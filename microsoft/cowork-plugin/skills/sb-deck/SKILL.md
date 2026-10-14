@@ -10,7 +10,7 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Stable Baseline: decks and illustrations
@@ -119,7 +119,8 @@ Both designers return immediately. Poll `getDeckReplyInWhiteboard` with the whit
 
 ## Exporting
 
-`exportFromWhiteboard` requires `documentId` and `designId`.
+`exportFromWhiteboard` with `documentId` and `designId` (the deck). A whole board as slides,
+with `kind: "canvas"`, belongs to **sb-whiteboard**.
 
 | `format` | Result |
 |---|---|
@@ -173,7 +174,7 @@ occasional act. Do not create components as a side effect of building a deck.
 
 - **Stay in your lane.** Board layout belongs to sb-whiteboard, brand kits to sb-brand,
   diagrams to sb-diagram, documents to sb-author.
-- **On `accessDenied`**, report plainly:
+- **When access is refused**, report plainly:
 
   > You do not have access to that in Stable Baseline.
 

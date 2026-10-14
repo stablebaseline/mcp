@@ -10,7 +10,7 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "3.0"
+  version: "3.1"
 ---
 
 # Stable Baseline: author documents
@@ -98,8 +98,10 @@ Never invent an upload link, and never ask the user to open one.
 Use `insertImageInDocument` directly. Pass the user's attached file to its `imageBase64`
 parameter: this host resolves a workspace file into the bytes for you, so never paste base64
 into the conversation and never ask the user for an upload link. `imageBase64`,
-`imageBinary` and `imageUrl` are mutually exclusive. `getImageInDocument`,
-`updateImageInDocument` and `deleteImageInDocument` manage images already in place.
+`imageBinary` and `imageUrl` are mutually exclusive. `nlDescription` and `caption` are both
+required: write them about what the image shows, since they are how it is found and chosen
+later. `getImageInDocument`, `updateImageInDocument` and `deleteImageInDocument` manage
+images already in place.
 
 Attaching a separate CSV, JSON or TSV data file to a chart is not available here, for the
 same reason as file conversion above. Put the series inline in the diagram code, or prepare
@@ -135,7 +137,7 @@ here.
 - **Stay in your lane.** Diagrams belong to sb-diagram, plans and tasks to sb-plan,
   improvements to sb-improve, whiteboards to sb-whiteboard, decks and illustrations to
   sb-deck. Hand off rather than reaching for their tools.
-- **On `accessDenied`**, report plainly:
+- **When access is refused**, report plainly:
 
   > You do not have access to that in Stable Baseline.
 
@@ -174,10 +176,8 @@ here.
   `before` and `after`. Do not fall back to line patches without saying so.
 - **Version conflict.** Someone edited it first. Re-read, show what changed, confirm before
   reapplying. Never force.
-- **Ingest job stuck or failed.** Report the job status and the file name. Do not re-upload
-  without asking; a repeat call on the same `sessionId` returns the same job anyway.
-- **File larger than 150 MB or an unsupported type.** Say so and name the supported set:
-  PDF, DOCX, plain text, Markdown.
+- **File larger than 150 MB or an unsupported type** for the web app's import. Say so and
+  name the supported set: PDF, DOCX, plain text, Markdown.
 - **Ambiguous target.** Two documents with similar titles. List both with links and ask.
 - **Access denied.** Use the exact sentence above and stop.
 - **Delete requested for several items.** List every title, get one explicit approval for
