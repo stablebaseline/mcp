@@ -10,7 +10,7 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "3.1"
+  version: "3.2"
 ---
 
 # Stable Baseline: improvements and risks
@@ -38,7 +38,7 @@ runtime from listing calls made in this conversation.
 
 `createImprovement` requires `projectId` and `title`. It also takes `type`, `priority`,
 `status`, `source`, `urgency`, `category_id`, `problem_statement`, `desired_outcome`,
-`acceptance_criteria` and `checklist`.
+`acceptance_criteria`, `checklist`, `parentItemId` (its epic or story) and `linkedRecords`.
 
 - Write a real `problem_statement` and `desired_outcome` when the user has given you enough.
   A title alone is rarely actionable later.
@@ -50,6 +50,9 @@ runtime from listing calls made in this conversation.
   files the item under Compliance.
 - **Never invent a severity or priority.** If the user has not said, either ask or leave it
   at the default and say what you did.
+- Link the database rows an item is about, such as a customer, an asset or a request, with
+  `linkedRecords`: each a row's id, found with **sb-database**. On `updateImprovement` a
+  list replaces the links, and `{"add": [...], "remove": [...]}` changes some.
 
 `acceptance_criteria` and `checklist` **replace the whole array** on update, and array order
 is display order. Fetch with `getImprovement`, modify, send the whole list back, and echo
@@ -122,7 +125,7 @@ flow. Never tell a user that logging or triaging an improvement cost credits.
 - **No performance judgements.** Log what happened and what needs to change. Do not record
   or imply an assessment of a named individual's competence. Describe the issue, not the
   person.
-- **On `accessDenied`**, report plainly:
+- **When access is refused**, report plainly:
 
   > You do not have access to that in Stable Baseline.
 

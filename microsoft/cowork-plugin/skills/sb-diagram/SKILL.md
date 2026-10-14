@@ -11,7 +11,7 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Stable Baseline: diagrams
@@ -34,9 +34,13 @@ write any diagram code:
 
 1. `listDiagramTypes`. Pass `query` and it searches by name and by intent, semantically, so
    "wiring harness", "timing waveform", "network topology" or "database schema" all resolve
-   to a real type. Use the returned `type` value verbatim.
-2. `getDiagramTypeGuide` with that `type`. It returns the DSL writing instructions and an
-   example for exactly that renderer.
+   to a real type. Each type lists the diagram families it draws, each with its default
+   renderer: use a family's default renderer as the type unless the user asked for a
+   particular language. `default` is the platform default renderer, for architecture,
+   process, org chart and other box-and-line diagrams. Use the returned `type` value
+   verbatim.
+2. `getDiagramTypeGuide` with that `type` (or a family's name). It returns the DSL writing
+   instructions and an example for exactly that renderer.
 
 Skipping step 2 because a type looks familiar is how a Mermaid dialect mismatch turns into a
 render error the user sees.
@@ -46,9 +50,11 @@ intent, for example "compare two options", "process timeline", "pyramid of prior
 ranks the 276 infographic templates and returns a `key` that becomes line 1 of the DSL as
 `infographic <key>`, plus a `usage` note explaining how that family maps to data fields.
 
-For **software and cloud architecture**, `listArchitectureIcons` returns an `iconPath` such
-as `dev/docker.svg` that can be used directly in D2 code. The catalogue is software and
-cloud only. It deliberately returns nothing for non-technical subjects, so do not force an
+For **software and cloud architecture**, `listArchitectureIcons` searches an icon library of
+the cloud vendors, development tools, Kubernetes, networking and general technical subjects.
+Use the field its answer's `usage` names: `iconKey` as the icon in a platform default
+diagram (`default`), and `d2IconPath` in D2 code. A result without an `iconKey` cannot go in
+a platform default diagram. When nothing fits, use labelled shapes: do not force an
 unrelated tech logo onto a general concept.
 
 ## Choosing where the diagram goes
@@ -126,7 +132,7 @@ keep it small, or prepare the data file in the Stable Baseline web app.
 
 - **Stay in your lane.** Document prose belongs to sb-author, board composition to
   sb-whiteboard, slide decks to sb-deck, plans to sb-plan.
-- **On `accessDenied`**, report plainly:
+- **When access is refused**, report plainly:
 
   > You do not have access to that in Stable Baseline.
 
@@ -165,8 +171,8 @@ keep it small, or prepare the data file in the Stable Baseline web app.
   twice. If it still fails, hand the user the error rather than degrading the diagram.
 - **Diagram is too dense to read.** Say so and offer to split it, rather than shipping an
   unreadable render.
-- **Architecture icons return nothing.** The subject is outside the software and cloud
-  catalogue. Use labelled shapes instead and say why.
+- **Architecture icons return nothing.** The subject is outside the icon library. Use
+  labelled shapes instead and say why.
 - **Version conflict on update.** Someone edited first. Re-read with
   `getDiagramInDocument`, show what changed, confirm before reapplying.
 - **User asks for a diagram on a whiteboard.** Use `insertWhiteboardDiagram`, and hand board

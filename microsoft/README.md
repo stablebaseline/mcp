@@ -7,7 +7,7 @@ There are **two independent distribution paths**, each with its own package, its
 | Path | Folder | Surfaces | Tool surface |
 |---|---|---|---|
 | Power Platform connector | [`copilot-connector/`](./copilot-connector/) | Copilot Studio, Power Platform | Curated (~70, a Copilot Studio limit) |
-| Copilot Cowork plugin | [`cowork-plugin/`](./cowork-plugin/) | Copilot Cowork | Curated to the tools its skills use, plus 13 Agent Skills |
+| Copilot Cowork plugin | [`cowork-plugin/`](./cowork-plugin/) | Copilot Cowork | Curated to the tools its skills use, plus 14 Agent Skills |
 
 Both point at the same production endpoint and the same OAuth server. Neither supersedes the other — a change to the tool registry means rebuilding **both**.
 

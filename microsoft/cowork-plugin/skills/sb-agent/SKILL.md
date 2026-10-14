@@ -11,7 +11,7 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Stable Baseline: agents
@@ -113,8 +113,9 @@ first, then walk the user through it.
 - **A new agent**: Agents in the sidebar, then New agent, or a template. Its name, avatar
   and description; its mandate (instructions in plain words, up to 8,000 characters, and its
   tools: all of them or the ones picked, with Read only, Editor and Full access presets);
-  its access (workspaces, projects or folders, and what it may read, change or delete; the
-  Databases row is separate, and with nothing ticked the agent reaches no database); and who
+  its access (workspaces, projects or folders, and what it may read, change or delete;
+  databases have a row of their own, and with nothing ticked there the agent reaches no
+  database, while Scope to Databases can hold it to chosen databases and tables); and who
   may use it, who may manage it, and when it asks first.
 - **A duty**: the agent's Duties tab, then Add a duty. How it starts (on a schedule, when
   something changes in Stable Baseline such as a row added to a table or a task becoming
@@ -145,7 +146,7 @@ match its filters or the work runs on the organisation's own AI.
   sb-database, documents to sb-author, plans to sb-plan.
 - **Never approve, decline, continue or undo without the user's decision in this
   conversation.** Approval for one job is never approval for the next.
-- **On `accessDenied`**, report plainly:
+- **When access is refused**, report plainly:
 
   > You do not have access to that in Stable Baseline.
 

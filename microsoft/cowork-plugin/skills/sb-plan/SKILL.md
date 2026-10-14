@@ -10,7 +10,7 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "3.0"
+  version: "3.1"
 ---
 
 # Stable Baseline: plans and tasks
@@ -32,6 +32,9 @@ guess a level.
 - `listPlanPhases` and `getPlanHierarchy` for the structure
 - `listTasks` requires `planId`
 
+`getPlanHierarchy` is also how to show a plan: where the host shows it, the person sees its
+phases, tasks, owners and what is blocked, as a list or a timeline.
+
 ## Before you change anything
 
 1. **Resolve scope.** `listOrganisations`, `listWorkspaces`, `listProjects`. Ask if several
@@ -49,7 +52,13 @@ guess a level.
   there is one; it is what makes the plan traceable.
 - `createPlanPhase` for a phase.
 - `createTask` requires `planId` and `title`. It also takes `phaseId`, `description`, `type`,
-  `status`, `priority`, `acceptance_criteria` and `checklist`.
+  `status`, `priority`, `acceptance_criteria`, `checklist`, `parentItemId` and
+  `linkedRecords`. `type` is task by default; user_story, test_case, epic, feature, bug and
+  the other kinds put another kind of work item in the plan, each with its own ID prefix.
+- **Database rows.** `linkedRecords` links rows of a database table to a task, such as the
+  customer or the asset it is about: each a row's id, found with **sb-database**. On
+  `updateTask` a list replaces the links, and `{"add": [...], "remove": [...]}` changes
+  some.
 
 `acceptance_criteria` and `checklist` both **replace the whole array** on update, and array
 order is display order. To change one row, fetch the item with `getTask`, modify the array,
@@ -65,7 +74,8 @@ titled "fix auth" with no criteria helps nobody.
   assume a name maps to an account.
 - If a named person is not assignable, say so and leave the task unassigned rather than
   picking someone similar.
-- Tasks can be assigned to agents as well as people.
+- A task is owned by one person (`owner_id`) or one team (`owner_team_id`), never both. To
+  have one of the organisation's agents do the work, hand it over with **sb-agent**.
 
 ## Dependencies and rescheduling
 
@@ -90,7 +100,11 @@ server raises. Show the user what is being accepted or dismissed first.
 ## Updating and reordering
 
 - `updatePlan`, `updatePlanPhase`, `updateTask` for changes.
-- `reorderPlanPhases` and `setPlanItemParent` for structure.
+- `reorderPlanPhases` reorders phases. `setPlanItemParent` indents an item under another in
+  the plan's outline, in the same plan and phase.
+- **The work hierarchy is not the outline.** An epic's stories, or a story's tasks and test
+  cases, are set with `parentItemId` on `createTask` or `updateTask`: any plan or phase of
+  the project, at most five levels.
 - `addPlanActivity`, `updatePlanComment`, `deletePlanComment` for the activity trail.
 
 State what you changed, from what, to what. "Moved the migration task from 12 to 19 August"
@@ -139,7 +153,7 @@ what moves, then wait for a yes.
 - **Stay in your lane.** Documents belong to sb-author, diagrams to sb-diagram, improvements
   to sb-improve, whiteboards to sb-whiteboard, decks to sb-deck. Hand off rather than
   reaching for their tools.
-- **On `accessDenied`**, report plainly:
+- **When access is refused**, report plainly:
 
   > You do not have access to that in Stable Baseline.
 

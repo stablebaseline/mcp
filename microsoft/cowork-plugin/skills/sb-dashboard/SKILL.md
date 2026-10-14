@@ -1,16 +1,17 @@
 ---
 name: sb-dashboard
 description: >-
-  Builds and refines live dashboards on Stable Baseline database tables: cards, KPIs,
+  Builds, refines and shows live dashboards on Stable Baseline database tables: cards, KPIs,
   gauges, bar, line and pie charts, tables, matrices and slicers, laid out on pages that
   update as the rows change. Triggers on make a dashboard, build a report for this table,
-  show our KPIs, chart the deals by stage, add a visual, tidy the dashboard, and download
-  the dashboard as a PDF. The tables and rows themselves are sb-database, charts inside a
-  document sb-diagram, slide decks sb-deck.
+  show our KPIs, show me the sales dashboard, open the next page of the dashboard, chart the
+  deals by stage, add a visual, tidy the dashboard, and download the dashboard as a PDF. The
+  tables and rows themselves are sb-database, forms sb-form, charts inside a document
+  sb-diagram, slide decks sb-deck.
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Stable Baseline: dashboards
@@ -18,12 +19,26 @@ metadata:
 ## What this skill does
 
 Builds dashboards over the tables of a Stable Baseline database, looks at every page it
-changes, and adjusts until the page reads well. A dashboard is live: its numbers update as
-the rows change. Every call runs under the signed in user's own Stable Baseline identity,
-and visuals count only rows that person may see.
+changes, adjusts until the page reads well, and shows a dashboard in the chat. A dashboard
+is live: its numbers update as the rows change. Every call runs under the signed in user's
+own Stable Baseline identity, and visuals count only rows that person may see.
 
 **IDs are never hardcoded.** Resolve `projectId` and `databaseId` at runtime from listing
 calls made in this conversation.
+
+## Showing a dashboard
+
+When the person wants to see a dashboard rather than change it, find it (`listDatabases`,
+then `getDatabase`, which lists the database's dashboards) and call `getDashboardImage` with
+`databaseId`, `dashboard` and optionally `page` (1 is the first). It draws the page with its
+real numbers. Where the host shows it, the page appears in the chat with a tab for each of
+the other pages, a closer look, and downloads of the picture or a PDF; a tab draws its page
+only when it is pressed. A request that comes from it, such as another page as a picture or
+a PDF of every page, is the person's own: answer it with `getDashboardImage`, and
+`format: "pdf"` (with `pages: "all"` for every page) for a PDF.
+
+Say what the page shows in a line or two: the main numbers, and any visual with nothing to
+show.
 
 ## Before you build
 
@@ -64,6 +79,8 @@ detail. Keep each page to one purpose.
   who can open the database, and needs write access to it.
 - To change a dashboard, pass `dashboard` and the `version` you read. A visual with an `id`
   is changed, or taken out with `remove`; one without an `id` is added.
+- The host may ask the person to confirm a save, since a save can overwrite what is there;
+  that is expected, so say in one line what the save will do.
 
 A dashboard holds at most 20 pages (fewer on smaller plans) and 30 visuals (8 on Free), with
 24 on one page. One call takes 20 pages, so build a bigger dashboard over several calls.
@@ -106,11 +123,13 @@ flow.
 
 - **Stay in your lane.** Tables, fields and rows belong to sb-database, charts inside a
   document to sb-diagram, decks to sb-deck, boards to sb-whiteboard.
-- **On `accessDenied`**, report plainly:
+- **When access is refused**, report plainly:
 
   > You do not have access to that in Stable Baseline.
 
-  Never retry, never try an alternative path, never suggest a workaround credential.
+  Never retry, never try an alternative path, never suggest a workaround credential. A
+  refusal about this connection's databases is the exception: pass on what it says (Edge
+  cases).
 - **Never print, echo, log or store any token, key or secret.**
 - **Never invent numbers or labels.** Visuals work their numbers out from the rows. Titles
   say what is shown, nothing more.
@@ -145,4 +164,8 @@ flow.
 - **Plan limit on visuals or pages.** Say which limit was reached and offer a second page or
   a second dashboard.
 - **The user can only view the database.** Offer a personal dashboard instead.
+- **This connection is not allowed to read or change databases.** Databases have their own
+  Read, Write and Delete on a connection, and they start unticked. Say so: the person can
+  connect Stable Baseline again, choose Reconfigure on Stable Baseline's screen, and tick
+  the Databases row (Write to save a dashboard, Delete to remove one).
 - **Access denied.** Use the exact sentence above and stop.

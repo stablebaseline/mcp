@@ -10,7 +10,7 @@ description: >-
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Stable Baseline: brand kits
@@ -99,7 +99,7 @@ do its job rather than pinning a kit on every call.
   you have not been given. Ask.
 - **Do not fetch a logo from an arbitrary URL the user has not supplied.** Use what they
   give you.
-- **On `accessDenied`**, report plainly:
+- **When access is refused**, report plainly:
 
   > You do not have access to that in Stable Baseline.
 
