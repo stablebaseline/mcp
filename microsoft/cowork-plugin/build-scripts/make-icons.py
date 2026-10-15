@@ -112,7 +112,10 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     build_color().save(out / "color.png", "PNG", optimize=True)
     build_outline().save(out / "outline.png", "PNG", optimize=True)
-    print(f"wrote {out/'color.png'} and {out/'outline.png'}")
+    # Partner Center's listing logo must be exactly 300 x 300 (it refuses the package's 192 x 192 colour icon):
+    # the same design at that size, not part of the package zip.
+    build_color(300).save(out / "store-logo-300.png", "PNG", optimize=True)
+    print(f"wrote {out/'color.png'}, {out/'outline.png'} and {out/'store-logo-300.png'}")
 
 
 if __name__ == "__main__":
