@@ -61,10 +61,14 @@ def build_color(size: int = 192) -> Image.Image:
     fully transparent square), brand mark in white, baseline rule in the
     accentColor orange declared in the manifest.
 
-    The mark is set at 80% of the canvas width, which is the standard breathing
-    room for a solid-background app icon while leaving no dead border.
+    The mark is set at 60% of the canvas width, centred, as in the brand's own
+    icon (sb_icon_dark_rounded). That keeps it inside the central 120 x 120
+    safe area Microsoft asks for: Microsoft 365 rounds the square itself, and a
+    mark past the safe area ends up with uneven padding after that masking
+    (Microsoft Learn, "Design App Icon for Teams Store"). At 80% (before 15
+    October 2026) it sat against the edge.
     """
-    mark_w = size * 0.80
+    mark_w = size * 0.60
     mark_h = mark_w * (MARK_H / MARK_W)
     x = (size - mark_w) / 2.0
     y = (size - mark_h) / 2.0
