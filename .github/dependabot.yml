@@ -1,6 +1,11 @@
 # Dependabot config.
 #
-# Policy:
+# From 15 October 2026 Dependabot opens NO pull requests: every entry sets
+# open-pull-requests-limit: 0 (version updates off) and automatic security-update PRs are
+# off in the repository settings. Alerts stay on; dependencies are updated deliberately,
+# tested locally and pushed to main. Raise a limit to bring an entry back.
+#
+# Policy when on:
 # - Auto-PR only for minor + patch bumps. Major bumps require manual
 #   review and are filtered out entirely (the `ignore` block below).
 # - Group all minor + patch bumps in each ecosystem into a single PR
@@ -24,7 +29,7 @@ updates:
       day: monday
       time: "07:00"
       timezone: "Australia/Sydney"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 0
     reviewers:
       - vineetnair
     labels:
@@ -49,7 +54,7 @@ updates:
       day: monday
       time: "07:00"
       timezone: "Australia/Sydney"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 0
     reviewers:
       - vineetnair
     labels:
@@ -75,7 +80,7 @@ updates:
       day: monday
       time: "07:00"
       timezone: "Australia/Sydney"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 0
     reviewers:
       - vineetnair
     labels:
@@ -101,7 +106,7 @@ updates:
       day: monday
       time: "07:00"
       timezone: "Australia/Sydney"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 0
     reviewers:
       - vineetnair
     labels:
@@ -138,7 +143,7 @@ updates:
       day: monday
       time: "07:00"
       timezone: "Australia/Sydney"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 0
     reviewers:
       - vineetnair
     labels:
