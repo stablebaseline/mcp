@@ -1,9 +1,9 @@
 # @stablebaseline/sdk
 
 [![npm](https://img.shields.io/npm/v/@stablebaseline/sdk?color=orange)](https://www.npmjs.com/package/@stablebaseline/sdk)
-[![Tools](https://img.shields.io/badge/MCP%20tools-219-orange)](https://stablebaseline.io/docs/mcp/tools)
+[![Tools](https://img.shields.io/badge/MCP%20tools-222-orange)](https://stablebaseline.io/docs/mcp/tools)
 
-TypeScript SDK for the **[Stable Baseline](https://stablebaseline.io) REST API**: the simplest, most complete, end-to-end agent-managed company brain. Living docs, 40+ visual diagrams, plans, databases with live dashboards, the organisation's agents, and a self-learning Knowledge Graph. 219 tools across 20 categories.
+TypeScript SDK for the **[Stable Baseline](https://stablebaseline.io) REST API**: the simplest, most complete, end-to-end agent-managed company brain. Living docs, 40+ visual diagrams, plans, databases with live dashboards, the organisation's agents, and a self-learning Knowledge Graph. 222 tools across 20 categories.
 
 ## Install
 
@@ -60,7 +60,7 @@ Both go in the `Authorization: Bearer <...>` header. Databases start unticked on
 
 ## Tool catalogue
 
-219 tools across 20 categories. The full list lives at [stablebaseline.io/docs/mcp/tools](https://stablebaseline.io/docs/mcp/tools). Highlights:
+222 tools across 20 categories. The full list lives at [stablebaseline.io/docs/mcp/tools](https://stablebaseline.io/docs/mcp/tools). Highlights:
 
 | Category | Sample tools |
 |---|---|

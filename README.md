@@ -10,7 +10,7 @@
 
 [![MCP Registry](https://img.shields.io/badge/MCP%20Registry-io.stablebaseline%2Fsb-orange)](https://registry.modelcontextprotocol.io/v0/servers?search=io.stablebaseline)
 [![Smithery](https://img.shields.io/badge/Smithery-stablebaseline%2Fsb--mcp-orange)](https://smithery.ai/servers/stablebaseline/sb-mcp)
-[![Tools](https://img.shields.io/badge/MCP%20tools-219-orange)](https://stablebaseline.io/docs/mcp/tools)
+[![Tools](https://img.shields.io/badge/MCP%20tools-222-orange)](https://stablebaseline.io/docs/mcp/tools)
 [![npm CLI](https://img.shields.io/npm/v/@stablebaseline/cli?label=%40stablebaseline%2Fcli&color=orange)](https://www.npmjs.com/package/@stablebaseline/cli)
 [![npm SDK](https://img.shields.io/npm/v/@stablebaseline/sdk?label=%40stablebaseline%2Fsdk&color=orange)](https://www.npmjs.com/package/@stablebaseline/sdk)
 [![PyPI](https://img.shields.io/pypi/v/stablebaseline?label=stablebaseline&color=orange)](https://pypi.org/project/stablebaseline/)
@@ -31,7 +31,7 @@ Pick the surface that matches how you work. Every option talks to the same handl
 | **CLI (`sb`)** | Shells, scripts, CI/CD. `sb tool call <name> --json '{...}'`. | `npm i -g @stablebaseline/cli`, see [`packages/cli`](packages/cli/) |
 | **Python SDK** | Python apps, data work. Sync + async clients. | `pip install stablebaseline`, see [`packages/sdk-python`](packages/sdk-python/) |
 
-219 tools across 20 categories. Same brain, same Knowledge Graph, same RBAC on every surface.
+222 tools across 20 categories. Same brain, same Knowledge Graph, same RBAC on every surface.
 
 ---
 
@@ -39,7 +39,7 @@ One workspace where humans and any MCP-compatible AI agent (Claude Code, Cursor,
 
 **Lean, fast, secure and affordable**: flexible enough for one person organising a personal mind, through to small businesses, growing businesses and enterprise.
 
-219 MCP tools across 20 categories let an agent drive **end-to-end**: sign-up → billing → org/workspace/project → members → teams → permissions → brain scope → docs → diagrams → whiteboards → plans → databases → agents, all without a human touching the UI.
+222 MCP tools across 20 categories let an agent drive **end-to-end**: sign-up → billing → org/workspace/project → members → teams → permissions → brain scope → docs → diagrams → whiteboards → plans → databases → agents, all without a human touching the UI.
 
 ## Endpoint
 
@@ -225,7 +225,7 @@ Every limit, plan by plan: [stablebaseline.io/pricing](https://stablebaseline.io
 ## Status
 
 - 🟢 **MCP Registry**: `io.stablebaseline/sb`, `active`, `isLatest`. Listed.
-- 🟢 **Smithery**: published with `configSchema` (Quick Setup). The live server lists 219 tools, 11 prompts and 8 resources.
+- 🟢 **Smithery**: published with `configSchema` (Quick Setup). The live server lists 222 tools, 11 prompts and 8 resources.
 - 🟢 **`.well-known/mcp.json`**: live, schema 2025-06-18.
 - 🟢 **Endpoint**: `api.stablebaseline.io/functions/v1/cloud-serve/mcp` accepts POST with `mcp-protocol-version: 2025-06-18`.
 
