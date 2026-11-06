@@ -56,9 +56,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_OUT = path.join(HERE, "..", "build", "tools", "stable-baseline-tools.json");
 // Repo path to the server's own per-client policy, the single source of truth
 // for the curated Copilot and Cowork surfaces. It is read from the SAME checkout
-// as this script (20 October 2026: a fixed path pointed at a months-old checkout,
-// whose Cowork allowlist lacked the 22 agent and database tools, so a rebuild
-// would have dropped them silently). SB_REPO still overrides it.
+// as this script, so a rebuild cannot pick up an older list. SB_REPO still overrides it.
 const REPO = process.env.SB_REPO || path.resolve(HERE, "..", "..", "..");
 const CLIENT_POLICY = path.join(REPO, "supabase/functions/cloud-serve/core/clientPolicy.ts");
 

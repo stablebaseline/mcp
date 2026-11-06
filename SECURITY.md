@@ -8,9 +8,9 @@ The latest published `0.x.y` of each package is supported. Older versions are no
 
 | Package | Latest | Supported |
 |---|---|---|
-| `@stablebaseline/sdk` | 0.1.x | Yes |
-| `@stablebaseline/cli` | 0.1.x | Yes |
-| `stablebaseline` (PyPI) | 0.1.x | Yes |
+| `@stablebaseline/sdk` | 0.x | Yes |
+| `@stablebaseline/cli` | 0.x | Yes |
+| `stablebaseline` (PyPI) | 0.x | Yes |
 
 ## Reporting a vulnerability
 
