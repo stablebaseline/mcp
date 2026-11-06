@@ -107,6 +107,14 @@ Attaching a separate CSV, JSON or TSV data file to a chart is not available here
 same reason as file conversion above. Put the series inline in the diagram code, or prepare
 the data file in the Stable Baseline web app. The diagram itself belongs to **sb-diagram**.
 
+## Comments
+
+When someone asks for a review, a question or a note, not a change, leave it as a comment: the
+document's words stay as they are. `commentOnDocument` starts a thread on some of its words, on a
+table, a diagram or an image, or on the whole page, and also replies, resolves, reopens, reacts and
+assigns. `getDocument` can include the document's comments. `deleteDocumentComment` removes a
+comment, and only when the user asks for that.
+
 ## Deleting
 
 `deleteDocument` requires `documentId`. It is a soft delete.
@@ -127,12 +135,14 @@ here.
 
 ## Guardrails
 
-- **Never call organisation administration tools.** Nothing in the `organization`,
-  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. The
-  connector does not advertise those tools to Cowork, so they cannot be called. If asked,
+- **Never change the organisation's settings, brand kits, members or billing.** That means
+  no tools that edit the organisation or its settings, make or change a brand kit, invite,
+  change or remove people, or touch billing (listing and applying brand kits is fine). The
+  connector does not list those tools to Cowork, but a call to one by name can still run if
+  the connection's own permissions allow it, so do not make one. If asked,
   say the plugin does not manage organisation settings, membership or billing, and point to
-  the Stable Baseline web app. Read only navigation and `kg_scope_status` remain available,
-  because they resolve scope.
+  the Stable Baseline web app. Workspaces and projects, teams, sharing and what the Brain
+  reads belong to **sb-organise**: hand those over by loading it, without announcing it.
 
 - **Stay in your lane.** Diagrams belong to sb-diagram, plans and tasks to sb-plan,
   improvements to sb-improve, whiteboards to sb-whiteboard, decks and illustrations to

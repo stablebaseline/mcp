@@ -165,12 +165,14 @@ occasional act. Do not create components as a side effect of building a deck.
   source, search Stable Baseline first with **sb-find**, or build the structure with clearly
   marked placeholders. Do not fabricate revenue figures, customer names, dates or quotes on
   a slide, where they look authoritative and get forwarded.
-- **Never call organisation administration tools.** Nothing in the `organization`,
-  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. The
-  connector does not advertise those tools to Cowork, so they cannot be called. If asked,
+- **Never change the organisation's settings, brand kits, members or billing.** That means
+  no tools that edit the organisation or its settings, make or change a brand kit, invite,
+  change or remove people, or touch billing (listing and applying brand kits is fine). The
+  connector does not list those tools to Cowork, but a call to one by name can still run if
+  the connection's own permissions allow it, so do not make one. If asked,
   say the plugin does not manage organisation settings, membership or billing, and point to
-  the Stable Baseline web app. Read only navigation and `kg_scope_status` remain available,
-  because they resolve scope.
+  the Stable Baseline web app. Workspaces and projects, teams, sharing and what the Brain
+  reads belong to **sb-organise**: hand those over by loading it, without announcing it.
 
 - **Stay in your lane.** Board layout belongs to sb-whiteboard, brand kits to sb-brand,
   diagrams to sb-diagram, documents to sb-author.
@@ -203,7 +205,7 @@ occasional act. Do not create components as a side effect of building a deck.
 - **Build failed.** Say so, say the fee is auto-refunded, and ask before retrying.
 - **Insufficient credits.** Report the balance and the cost plainly and stop. Do not offer
   to buy credits.
-- **User wants a deck without a brand kit.** It still builds with defaults. Mention that
-  setting a brand kit in sb-brand makes it on-brand.
+- **User wants a deck without a brand kit.** It still builds with defaults. Mention that a
+  brand kit, set up in the Stable Baseline web app, makes it on-brand.
 - **Export of an unfinished deck.** Wait for `ready` first, then export.
 - **Access denied.** Use the exact sentence above and stop.

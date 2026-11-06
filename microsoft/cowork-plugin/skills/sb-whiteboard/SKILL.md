@@ -59,6 +59,14 @@ of existing shapes and produce an unreadable pile. Two safe options:
 
 Pass explicit coordinates only for a deliberate layout in space you have confirmed is empty.
 
+**A connected drawing** (a flowchart, an org chart, a process, a decision tree, a web of
+relationships): omit x and y on every shape, join the shapes with elbow arrows by `start` and
+`end` id, and pass `arrange: {}` in the same `addWhiteboardElements` call. The server sets out
+what the call adds the way the board's Arrange does and routes every arrow round the shapes.
+`arrange.direction` is the way it flows (RIGHT, DOWN, LEFT or UP), shapes whose arrows make a
+tree come out as a tree, and `arrange.arrangement: 'network'` sets out peers with no flow. The
+answer's `arranged` says what moved.
+
 ## Two ways to build
 
 **By hand.** `createWhiteboard` requires `projectId` and `title`. Then
@@ -135,12 +143,14 @@ The premium generators reachable from here are the **sb-deck** designers.
 
 ## Guardrails
 
-- **Never call organisation administration tools.** Nothing in the `organization`,
-  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. The
-  connector does not advertise those tools to Cowork, so they cannot be called. If asked,
+- **Never change the organisation's settings, brand kits, members or billing.** That means
+  no tools that edit the organisation or its settings, make or change a brand kit, invite,
+  change or remove people, or touch billing (listing and applying brand kits is fine). The
+  connector does not list those tools to Cowork, but a call to one by name can still run if
+  the connection's own permissions allow it, so do not make one. If asked,
   say the plugin does not manage organisation settings, membership or billing, and point to
-  the Stable Baseline web app. Read only navigation and `kg_scope_status` remain available,
-  because they resolve scope.
+  the Stable Baseline web app. Workspaces and projects, teams, sharing and what the Brain
+  reads belong to **sb-organise**: hand those over by loading it, without announcing it.
 
 - **Stay in your lane.** Documents belong to sb-author, in-document diagrams to sb-diagram,
   decks and illustrations to sb-deck, live meeting capture to sb-meeting, plans to sb-plan,

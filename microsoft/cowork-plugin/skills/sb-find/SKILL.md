@@ -158,17 +158,20 @@ Read before you answer. Do not summarise a document from its title.
   **sb-author**, diagrams to **sb-diagram**, plans and tasks to **sb-plan**, improvements to
   **sb-improve**, whiteboards to **sb-whiteboard**, decks and illustrations to **sb-deck**,
   database tables and rows to **sb-database**, dashboards to **sb-dashboard**, forms to
-  **sb-form**, agent jobs to **sb-agent**.
+  **sb-form**, agent jobs to **sb-agent**, workspaces, projects, teams, sharing and what the
+  Brain reads to **sb-organise**.
 
   Hand off silently by loading the right skill. Do not announce skill names to the user and
   do not refuse. If the user asks to find something and then change it, complete the find,
   then continue into the authoring skill.
-- **Never call organisation administration tools.** Nothing in the `organization`,
-  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. The
-  connector does not advertise those tools to Cowork, so they cannot be called. If asked,
+- **Never change the organisation's settings, brand kits, members or billing.** That means
+  no tools that edit the organisation or its settings, make or change a brand kit, invite,
+  change or remove people, or touch billing (listing and applying brand kits is fine). The
+  connector does not list those tools to Cowork, but a call to one by name can still run if
+  the connection's own permissions allow it, so do not make one. If asked,
   say the plugin does not manage organisation settings, membership or billing, and point to
-  the Stable Baseline web app. Read only navigation and `kg_scope_status` remain available,
-  because they resolve scope.
+  the Stable Baseline web app. Workspaces and projects, teams, sharing and what the Brain
+  reads belong to **sb-organise**: hand those over by loading it, without announcing it.
 
 - **A confirmation prompt is a real signal.** Every read tool this skill uses, including all
   nine `kg_*` tools, is annotated read-only, so a search should not raise one. If Cowork does

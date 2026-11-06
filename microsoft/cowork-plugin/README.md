@@ -8,8 +8,8 @@ different distribution path from [`../copilot-connector/`](../copilot-connector/
 | Packaged as | Power Platform connector solution | Unified M365 app package (zip) |
 | Submitted through | Partner Center → Connectors & Agents in Copilot Studio | Partner Center → Microsoft 365 and Copilot |
 | Surfaces | Copilot Studio, Power Platform | Copilot Cowork |
-| Tool surface | Curated (~70, a Copilot Studio connector limit) | Curated to the tools its skills use: **140** with the database and agent tools (everything except organisation administration, billing and upload-session tools, which the connector does not advertise to Cowork) |
-| Adds | Nothing | 14 **Agent Skills** that teach the model our workflows |
+| Tool surface | Curated (~70, a Copilot Studio connector limit) | Curated to the tools its skills use: **175** with the database and agent tools (the organisation's own settings, member management, subscriptions and purchases, and the upload-session tools are not advertised to Cowork) |
+| Adds | Nothing | 15 **Agent Skills** that teach the model our workflows |
 
 Both point at the same production MCP server:
 `https://api.stablebaseline.io/functions/v1/cloud-serve/mcp`.
@@ -18,8 +18,8 @@ Both point at the same production MCP server:
 
 | Path | Purpose |
 |---|---|
-| `manifest.json` | Unified M365 app manifest (schema **v1.28**). Declares `agentConnectors` (the MCP server + OAuth) and `agentSkills` (the fourteen skills below). |
-| `skills/` | Fourteen Agent Skills, one `SKILL.md` each. These are instructions, not code: they tell the model which tools to reach for and in what order. |
+| `manifest.json` | Unified M365 app manifest (schema **v1.28**). Declares `agentConnectors` (the MCP server + OAuth) and `agentSkills` (the fifteen skills below). |
+| `skills/` | Fifteen Agent Skills, one `SKILL.md` each. These are instructions, not code: they tell the model which tools to reach for and in what order. |
 | `color.png`, `outline.png` | Store icons (full-colour and monochrome outline). |
 | `build-scripts/build-tools-json.mjs` | Generates `tools/stable-baseline-tools.json` from the **live** `tools/list`. Run it plain for the Cowork surface; `--curated` reproduces the smaller Copilot Studio connector surface and is NOT what this package ships. |
 | `build-scripts/make-icons.py` | Renders `color.png` and `outline.png` from the brand geometry. Needs `cairosvg` and `Pillow`. |
@@ -43,11 +43,7 @@ Both point at the same production MCP server:
 | `sb-dashboard` | Live dashboards over database tables, built and shown in the chat |
 | `sb-agent` | The organisation's agents: ask, delegate, follow a job, decide its proposals, undo |
 | `sb-connect` | Connecting a Microsoft 365 mailbox and using it in an agent's duty |
-
-The five skills from `sb-database` down use the database and agent tools. They need
-the server to advertise those tools to Cowork; until it does, the generated tool file
-does not hold them and the validator fails those five skills for naming tools it cannot
-find.
+| `sb-organise` | Workspaces and projects, teams, sharing, and what the Brain reads |
 
 ## `tools/stable-baseline-tools.json` is generated, not committed
 

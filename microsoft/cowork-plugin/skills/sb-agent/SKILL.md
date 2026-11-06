@@ -2,33 +2,37 @@
 name: sb-agent
 description: >-
   Works with the organisation's Stable Baseline agents, the AI workers it set up with a
-  mandate, scoped access and approvals. Triggers on ask the agent, have the agent do this,
-  hand this to our documenter agent, what is the agent working on, approve the agent's
-  proposal, decline that change, continue the job, undo what the agent did, set up an
-  agent, give the agent a duty, and on mentions of an agent by name. Connecting a mailbox
-  for a duty is sb-connect, database tables sb-database, reading content without an agent
-  sb-find.
+  mandate, scoped access and approvals. Triggers on ask the agent, talk to the agent,
+  follow up with the agent, what did the agent say, have the agent do this, hand this to
+  our documenter agent, what is the agent working on, how is the agent set up, approve the
+  agent's proposal, decline that change, continue the job, undo what the agent did, set up
+  an agent, give the agent a duty, and on mentions of an agent by name. Connecting a
+  mailbox for a duty is sb-connect, database tables sb-database, reading content without
+  an agent sb-find.
 license: MIT
 metadata:
   author: Orixian Solutions Pty Ltd
-  version: "1.1"
+  version: "1.3"
 ---
 
 # Stable Baseline: agents
 
 ## What this skill does
 
-Finds the organisation's agents, asks them questions, hands them work, follows each job,
-and puts their proposals to the user to decide. An agent is an AI worker the organisation
-set up once: a mandate (its instructions and tools), the places it may reach, and when it
-must ask a person first. Making an agent and giving it duties happens in the Stable
-Baseline web app; this skill helps the user prepare both.
+Finds the organisation's agents and reads how each is set up, talks to them in
+conversations (asks, follows up, reads earlier conversations), hands them work, follows
+each job, and puts their proposals to the user to decide. An agent is an AI worker the
+organisation set up once: a mandate (its instructions and tools), the places it may reach,
+and when it must ask a person first. When the user allowed "Set up agents" for this
+connection, this skill also makes agents and changes them and their duties; otherwise that
+happens in the Stable Baseline web app, and this skill helps the user prepare it.
 
 Every call runs under the signed in user's own identity. A job acts within the agent's
 access AND the user's own: it never reaches anything the user could not.
 
-**IDs are never hardcoded.** Resolve `agentId`, `runId` and `approvalId` at runtime from
-the calls made in this conversation.
+**IDs are never hardcoded.** Resolve `agentId`, `conversationId`, `runId` and `approvalId`
+at runtime from the calls made in this conversation. An agent may also be named by its
+exact name wherever its id is asked.
 
 ## Finding the agent
 
@@ -42,6 +46,34 @@ the calls made in this conversation.
 
 If several agents could fit, list them and ask. Never guess. If none is listed, none has
 been shared with the user yet: the agent's owner or managers can share one.
+
+To see how one agent is set up, `listAgents` with `agentId` (its id or exact name) returns
+its whole definition: its mandate, its tools, the places it reaches and at what level, its
+approval level, who it is shared with, and its duties. Places this connection cannot open
+are counted, not named.
+
+## Talking to an agent
+
+Talk to an agent as a person would. Each `askAgent` call sends one message in a
+conversation and answers with the agent's reply and its sources.
+
+- **Start a conversation**: `askAgent` with `agentId` and `question` (the message, a
+  question or a request). The answer carries `conversationId`, the message's `turn`, and
+  the conversation's `state`: thinking, waiting_for_approval, answered, paused, failed or
+  stopped.
+- **Follow up**: `askAgent` with the same `conversationId` and the next `question`. The
+  agent sees the conversation so far. One message works at a time: while the last one is
+  still thinking or waiting for a decision, a new one is refused (conversation_busy).
+- **Read what is new**: `getAgentConversation` with `conversationId` and `afterTurn` (the
+  last turn already read). Each turn shows the message, the answer, what the agent did,
+  and any approvals waiting.
+- **Earlier conversations**: `getAgentConversation` without `conversationId` lists the
+  user's conversations, the latest first; pass `agentId` for one agent's.
+- **Stop**: `askAgent` with `conversationId` and `stop: true` stops the message still
+  working.
+
+The conversations also show in the Stable Baseline web app. Through this connection the
+user sees only the conversations that went through it.
 
 ## Asking and delegating
 
@@ -62,8 +94,9 @@ expected here: say in one line what the call will do.
 ## Following the job
 
 Each call waits up to `waitSeconds` (default 20, at most 45). When `status` is running or
-queued, call `getAgentRun` with the `runId` once the wait the answer suggests has passed,
-and report from `progress` rather than going silent. Stop once `settled` is true. If it is
+queued, call `getAgentRun` with the `runId` (or, for a conversation, `getAgentConversation`
+with `conversationId` and `afterTurn`) once the wait the answer suggests has passed, and
+report from `progress` rather than going silent. Stop once `settled` is true. If it is
 still working after a few minutes, give the user the run id and stop polling.
 
 A job is queued, running, awaiting_approval, paused, completed, failed or cancelled.
@@ -107,12 +140,44 @@ app.
 
 ## Setting up an agent or a duty
 
-This happens in the Stable Baseline web app. Offer to draft the text in the conversation
-first, then walk the user through it.
+When the user allowed "Set up agents" for this connection:
+
+- **A new agent**: `setUpAgent` with `name`, `mandate` (what it is for and how it should
+  work, in plain words), `toolSets` (what it works on and how far: documents, diagrams and
+  pictures, whiteboards, plans and tasks, improvements, databases and dashboards, the
+  Brain, each at read, edit or delete, several at once) and `access` (the places it may
+  reach and one level: read, write or delete). It is the user's, and it always asks before
+  any change.
+- **A change to an agent the user owns or manages**: `setUpAgent` with `agent` and only
+  what changes: name, description, mandate, its permission sets (`toolSets`) or single
+  tools (`tools`), access, sharing or status.
+
+An agent is never given tools for the organisation's members, teams, permissions, the
+organisation itself and its settings, billing, sign-up, the Brain's settings or other
+agents. The server refuses them, so do not offer them.
+- **A duty**: `setUpAgentDuty` with `agent` and `settings` (name, kind schedule or
+  platform_event, trigger, instructions) to add one; with `duty` too to change one; with
+  `check: true` to check without saving; with `status` to pause, resume, turn on or turn
+  off. A failed check saves nothing and names each problem.
+
+Through a connection an agent and its duties always ask before acting, never reach
+further than the connection does, and never get a connected app or web pages: those, and
+an agent that acts on its own, are the user's to choose in the web app. An agent that
+reaches further than the connection keeps its mandate, tools and approval level, and is
+not resumed, through it (it may still be renamed, described, paused or narrowed), and a
+duty that uses a connected app is only paused or turned off. When a call is
+refused because the connection may not set up agents, say the user can allow it when
+making an API key or connecting the app again. Show the user what will be set up, and
+wait for their go ahead, before each call.
+
+Otherwise, setting up happens in the Stable Baseline web app. Offer to draft the text in
+the conversation first, then walk the user through it.
 
 - **A new agent**: Agents in the sidebar, then New agent, or a template. Its name, avatar
-  and description; its mandate (instructions in plain words, up to 8,000 characters, and its
-  tools: all of them or the ones picked, with Read only, Editor and Full access presets);
+  and description; its mandate (instructions in plain words, up to 8,000 characters, and
+  what it works on: permission sets such as Documents, Whiteboards or Databases and
+  dashboards, several at once, each at Read, Edit or Delete, with single tools under
+  Choose tools one by one);
   its access (workspaces, projects or folders, and what it may read, change or delete;
   databases have a row of their own, and with nothing ticked there the agent reaches no
   database, while Scope to Databases can hold it to chosen databases and tables); and who
@@ -135,12 +200,14 @@ match its filters or the work runs on the organisation's own AI.
 
 ## Guardrails
 
-- **Never call organisation administration tools.** Nothing in the `organization`,
-  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. The
-  connector does not advertise those tools to Cowork, so they cannot be called. If asked,
+- **Never change the organisation's settings, brand kits, members or billing.** That means
+  no tools that edit the organisation or its settings, make or change a brand kit, invite,
+  change or remove people, or touch billing (listing and applying brand kits is fine). The
+  connector does not list those tools to Cowork, but a call to one by name can still run if
+  the connection's own permissions allow it, so do not make one. If asked,
   say the plugin does not manage organisation settings, membership or billing, and point to
-  the Stable Baseline web app. Read only navigation and `kg_scope_status` remain available,
-  because they resolve scope.
+  the Stable Baseline web app. Workspaces and projects, teams, sharing and what the Brain
+  reads belong to **sb-organise**: hand those over by loading it, without announcing it.
 
 - **Stay in your lane.** Mailbox connections belong to sb-connect, tables and rows to
   sb-database, documents to sb-author, plans to sb-plan.
@@ -165,13 +232,15 @@ match its filters or the work runs on the organisation's own AI.
 ## Trigger phrase examples
 
 1. "Ask the Policy agent what our travel rules say about first class."
-2. "Have the Documenter agent write release notes from this week's tasks."
-3. "What is the agent working on now?"
-4. "Show me what the agent wants to change before it does it."
-5. "Approve the plan."
-6. "Decline that, it should not touch the pricing page."
-7. "Undo what the agent did this morning."
-8. "Help me set up an agent that triages new support requests."
+2. "Ask Ava what the latest status of the project is, then ask her what is blocking it."
+3. "What did I ask the Documenter agent yesterday?"
+4. "Have the Documenter agent write release notes from this week's tasks."
+5. "What is the agent working on now?"
+6. "Show me what the agent wants to change before it does it."
+7. "Approve the plan."
+8. "Decline that, it should not touch the pricing page."
+9. "Undo what the agent did this morning."
+10. "Help me set up an agent that triages new support requests."
 
 ## Edge cases
 

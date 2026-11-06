@@ -55,11 +55,12 @@ const UA = "stable-baseline-cowork-package-build/3.0";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_OUT = path.join(HERE, "..", "build", "tools", "stable-baseline-tools.json");
 // Repo path to the server's own per-client policy, the single source of truth
-// for the curated Copilot surface. Override with SB_REPO if the checkout moves.
-const CLIENT_POLICY = path.join(
-  process.env.SB_REPO || "D:/Orixian/Dev/OWorld/clouddocs",
-  "supabase/functions/cloud-serve/core/clientPolicy.ts",
-);
+// for the curated Copilot and Cowork surfaces. It is read from the SAME checkout
+// as this script (20 October 2026: a fixed path pointed at a months-old checkout,
+// whose Cowork allowlist lacked the 22 agent and database tools, so a rebuild
+// would have dropped them silently). SB_REPO still overrides it.
+const REPO = process.env.SB_REPO || path.resolve(HERE, "..", "..", "..");
+const CLIENT_POLICY = path.join(REPO, "supabase/functions/cloud-serve/core/clientPolicy.ts");
 
 // ── 1a. Emoji removals, hand written so the sentence still reads ────────────
 // Each entry is checked: if `from` is absent from the live text the script
@@ -300,6 +301,7 @@ async function main() {
   console.log(`wrote ${outFile}`);
   console.log(`  tools from live tools/list : ${liveCount}`);
   console.log(`  surface                    : ${curated ? `Power Platform (${report.dropped} dropped, ${names.length} kept)` : `Cowork (${report.dropped} dropped, ${names.length} kept)`}`);
+  console.log(`  allowlist read from        : ${CLIENT_POLICY}`);
   console.log(`  emoji phrase fixes         : ${report.phraseFixes.join(", ")}`);
   console.log(`  punctuation substitutions  : ${report.punct}`);
   console.log(`  contentEncoding added to   : ${report.contentEncoding.join(", ")}`);

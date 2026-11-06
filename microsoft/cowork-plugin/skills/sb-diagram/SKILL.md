@@ -123,12 +123,14 @@ keep it small, or prepare the data file in the Stable Baseline web app.
   and you have no source, search Stable Baseline first with **sb-find**, or draw the
   structure with clearly marked placeholder node names and say which parts you inferred. Do
   not fabricate system names, data flows or figures.
-- **Never call organisation administration tools.** Nothing in the `organization`,
-  `members`, `teams`, `permissions`, `billing`, `kg_admin` or `signup` categories. The
-  connector does not advertise those tools to Cowork, so they cannot be called. If asked,
+- **Never change the organisation's settings, brand kits, members or billing.** That means
+  no tools that edit the organisation or its settings, make or change a brand kit, invite,
+  change or remove people, or touch billing (listing and applying brand kits is fine). The
+  connector does not list those tools to Cowork, but a call to one by name can still run if
+  the connection's own permissions allow it, so do not make one. If asked,
   say the plugin does not manage organisation settings, membership or billing, and point to
-  the Stable Baseline web app. Read only navigation and `kg_scope_status` remain available,
-  because they resolve scope.
+  the Stable Baseline web app. Workspaces and projects, teams, sharing and what the Brain
+  reads belong to **sb-organise**: hand those over by loading it, without announcing it.
 
 - **Stay in your lane.** Document prose belongs to sb-author, board composition to
   sb-whiteboard, slide decks to sb-deck, plans to sb-plan.
