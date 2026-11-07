@@ -135,6 +135,21 @@ jobs:
           find . -type f \( -name '*.tar.gz' -o -name '*.zip' \) -exec sha256sum {} \; > checksums.txt
           cat checksums.txt
 
+      # A tag is cli-vX.Y.Z and its prefix already holds a hyphen, so testing the
+      # whole tag for one marked every release a prerelease. Only the version after
+      # cli-v is tested: a suffix there (0.11.0-rc.1) makes a prerelease. A ref that
+      # is not a cli-v tag (a manual run from a branch) is never a full release.
+      - name: Decide whether this is a prerelease
+        id: kind
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#cli-v}"
+          prerelease=false
+          if [[ "$version" == "$GITHUB_REF_NAME" || "$version" == *-* ]]; then prerelease=true; fi
+          echo "version ${version}: prerelease ${prerelease}"
+          echo "prerelease=${prerelease}" >> "$GITHUB_OUTPUT"
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
         with:
@@ -143,7 +158,7 @@ jobs:
             artifacts/**/*.zip
             artifacts/checksums.txt
           generate_release_notes: true
-          prerelease: ${{ contains(github.ref_name, '-') }}
+          prerelease: ${{ steps.kind.outputs.prerelease == 'true' }}
 
       - name: Install workspace deps
         run: npm ci
