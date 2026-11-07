@@ -152,9 +152,9 @@ Recipes for Warp, OpenCode, Antigravity, OpenAI Codex, ChatGPT Developer Mode, G
 | Category | Sample tools | Docs |
 |---|---|---|
 | **navigation** | `listOrganisations`, `getProjectHierarchy`, `searchTools` | [→](https://stablebaseline.io/docs/mcp/tools/navigation) |
-| **folders** | `createFolder`, `listFolders`, `setPlanItemParent` | [→](https://stablebaseline.io/docs/mcp/tools/folders) |
+| **folders** | `createFolder`, `listFolders`, `reorderFolders` | [→](https://stablebaseline.io/docs/mcp/tools/folders) |
 | **documents** | `createDocument`, `editDocument`, `exportDocument` | [→](https://stablebaseline.io/docs/mcp/tools/documents) |
-| **diagrams** | `insertDiagramInDocument`, `listDiagramTypes`, `getCdmdLanguageGuide` | [→](https://stablebaseline.io/docs/mcp/tools/diagrams) |
+| **diagrams** | `insertDiagramInDocument`, `listDiagramTypes`, `renderDiagram` | [→](https://stablebaseline.io/docs/mcp/tools/diagrams) |
 | **whiteboards** | `createWhiteboard`, `addWhiteboardElements`, `designDeckInWhiteboard` | [→](https://stablebaseline.io/docs/mcp/tools/whiteboards) |
 | **images** | `createImageUploadSession`, `insertImageInDocument` | [→](https://stablebaseline.io/docs/mcp/tools/images) |
 | **data** | `createVegaDataUploadSession` (CSV/JSON/TSV → Vega charts) | [→](https://stablebaseline.io/docs/mcp/tools/data) |
