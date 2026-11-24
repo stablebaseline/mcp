@@ -30,7 +30,7 @@ Both point at the same production MCP server:
 | Skill | Covers |
 |---|---|
 | `sb-find` | Locating artefacts and answering questions from content |
-| `sb-author` | Writing and editing documents in CDMD |
+| `sb-author` | Writing and editing documents in CDMD, and leaving comments and suggested changes on them |
 | `sb-diagram` | Generating diagrams across 40+ DSL families |
 | `sb-whiteboard` | Authoring whiteboards |
 | `sb-deck` | Branded deck generation |

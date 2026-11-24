@@ -79,9 +79,9 @@ On the agent's Duties tab, Add a duty.
 6. **Its limits:** which events count, runs a day, a monthly credit limit and the time zone.
    Then Save duty.
 
-A duty may do at most two of these three: read things from outside, reach private
-information, and act outside on its own. The editor stops a duty that would do all three, so
-decide with the user which two this one needs.
+A duty's owner decides how it acts outside: prepare drafts, ask before each send, or send on
+its own. On send on its own it sends with nobody checking, whatever it read, so decide with
+the user which one this duty needs.
 
 ### Drafting the instructions
 
